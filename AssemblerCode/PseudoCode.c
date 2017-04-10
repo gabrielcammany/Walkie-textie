@@ -1,21 +1,22 @@
- 
 int temps = 0x00, comptaBytes = 0, espera = 0, aux = 0x00, LEDs = 0x01;
 
 void main(){
 	while(1){
 		if(PIE1.RCIF == 1){
+			tempsUn = 0x00;
 			if(RCREG == 0x99){ //Ens diu el ordinador que ens enviaran les dades ara
 				enviaConfirmacio();
 				comptaBytes = 0;
 				FSR0 = 0x80;
 			}else if(RCREG == 0x96){ //Ens demana el ordinador enviar per RF
-				enviaConfirmacio();
-				status = 0x02;
-				enviaRF();
-				status = 0x03;
+				if(comptaBytes != 0x00){
+					enviaConfirmacio();
+					status = 0x02;
+					enviaRF();
+					status = 0x03;
+				}
 			}else if(RCREG == 0x97){ //Rebre confirmacio quan ens apreten el Polsador i el ordinador començara a enviar les dades
 				status = 0x00;
-				temps = 0x00;
 			}else{
 				comptaBytes++; 
 				RCREG -> POSTINC0;
@@ -23,19 +24,35 @@ void main(){
 		}
 		if(polsadorCarregaMissatge == 1){
 			status = 0x01;
-			temps = 0x00;
-			enviaPeticioMissatge();
+			tempsUn = 0x00;
+			enviaPC(0x91);
 		}
 		if(polsadorEnviaRF == 1){
 			if(comptaBytes != 0x00){
 				enviaRF(comptaBytes);
 			}else{
 				LEDs = 0x20;
+				tempsUn = 0x00;
 				status = 0x04;
 			}
 		}
 		if(status == 0x04){ //Leds circular
 			ledsCircular();
+		}
+		if(status == 0x01){
+			if(tempsUn >= 10){
+				tempsUn = 0x00;
+				status = 0x04;
+			}
+		}
+		if(status == 0x03){ //Blinking 10 Hz
+			if(tempsUn == 20){
+				encendreLEDS(); //Encendre i apagar els leds
+			}
+			if(tempsUn == 40){
+				apagarLEDS();
+				tempsUn = 0x00;
+			}
 		}
 	}
 }
@@ -66,20 +83,16 @@ void HighInt(){
 		if(status == 0x01)temps++; 
 		tempsUn = 0;
 	}
-	if(status == 0x03){ //Blinking 10 Hz
-		if(tempsUn == 20){
-			encendreLEDS(); //Encendre i apagar els leds
-		}
-		if(tempsUn == 40){
-			apagarLEDS();
-			tempsUn = 0x00;
-		}
-	}
 
 }
 
 void ledsCircular(){
-	if(tempsUn
+	if(tempsUn >= 500){
+		if(aux >= 6){
+			LEDs = 0x08; 
+		}
+		LEDs >> 1;
+	}
 	
 }
 
@@ -122,15 +135,14 @@ void enviaRF(int num){
 			}
 		}
 	}
-	
+	aux = 0x00;
 }
 
 void dividir10(int num){
-	num = ((num * 205).High);
-	(num >> 3);
+	num = ((num * 205).High); //Donat que 205/2048 dona 0,10009765, es una aproximacio a 0,10. Ens permet dividir qualsevol numero de 0-300 entre 10 amb un error d'un bit sense us de taules.
+	(num >> 3); //El número maxim sera ‭1111 0000 0011 1100 (300d) ‬Agafarem el byte high i shiftarem 3 posicions es a dir: 1111 0000 (240d) -> 0001 1111 (30d) (Ja que 240/8 -> 30)
 }
 
 void enviaPeticioMissatge(){
-	enviaPC(0x91);
 }
 
