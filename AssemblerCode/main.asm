@@ -12,13 +12,35 @@ CONFIG	WDT = OFF
 ;* VARIABLES *
 ;*************
     
-RAM ORG 0x01    
+ESTAT ORG 0x02   
+TEMPS_UN ORG 0x03     
 
  
 ;*************
 ;* CONSTANTS *
 ;*************
-
+POLS_CARREGA ORG 0x05   
+POLS_ENVIA_RF ORG 0x04 
+BIT_RESPOSTA_PC ORG 0x08   
+FLAG_DESAR_MSG ORG 0x81
+FLAG_ENVIAR_RF_MSG ORG 0x82 
+FLAG_CONFIRMACIO_MSG ORG 0x83
+ESTAT_LEDS_CIRCULAR ORG 0x04
+ESTAT_POLSADOR ORG 0x01
+ESTAT_BLINKING_10HZ ORG 0x08
+POSICIO_A_DESAR_RAM ORG 0x80
+END_BYTE ORG 0x88
+MAX_LEDS ORG 0x0B
+LED0 ORG 0x04
+LED1 ORG 0x05
+LED2 ORG 0x06
+LED3 ORG 0x07
+LED4 ORG 0x00
+LED5 ORG 0x01
+LED6 ORG 0x02
+LED7 ORG 0x03
+LED8 ORG 0x04
+LED9 ORG 0x05
 
 ;*********************************
 ; VECTORS DE RESET I INTERRUPCIï¿½ *
@@ -40,15 +62,16 @@ LOW_INT_VECTOR
 ;* RUTINES DE SERVEI D'INTERRUPCIï¿½ *
 ;***********************************
 HIGH_INT
-    
-    
-    movlw 0x00
-    cpfseq FINAL, 0
-    call BLINKING
-    
-    
+    call RESET_TIMER
     
     retfie FAST;2
+    
+ENVIAR_BIT_RF
+    btfsc AUX,0,0
+    call POSITIVE_BIT
+    btfss AUX,0,0
+    call NEGATIVE_BIT
+    
     
 ;****************************
 ;* MAIN I RESTA DE FUNCIONS *
@@ -56,7 +79,6 @@ HIGH_INT
 
     
 INIT_VARS
-    
     return;2
     
 INIT_SIO
@@ -121,7 +143,6 @@ RESET_TIMER
 ;********
 ;* MAIN *
 ;******** 
-;todos esp -2!!!
 
     
 MAIN
@@ -130,10 +151,63 @@ MAIN
     call INIT_TIMER
     
 LOOP
+    btfsc PIR1,RCIF,0
+    call REBUT
+    
+    btfsc LATC,POLS_CARREGA,0
+    call POLS_CARREGA_MISSATGE
+    
+    btfsc LATC,POLS_RF,0
+    call POLS_ENVIAR_RF
+    
+    btfsc ESTAT,ESTAT_LEDS_CIRCULAR,0
+    call LEDS_CIRCULAR
+    
+    btfsc ESTAT,ESTAT_POLSADOR,0
+    call ESPERA_POLSADOR
+    
+    btfsc ESTAT,ESTAT_BLINKING_10HZ,0
+    call BLINKING_10HZ
+    
     goto LOOP
     
+ENVIAR_RF
       
+    
+REBUT
+    clrf TEMPS_UN
+    btfsc RCREG, BIT_RESPOSTA_PC,0 //Qualsevol byte rebut que tingui aquest bit a 1 es refereix a una resposta del pc
+    return //Si rebem un byte i no esta activat no hauriem dentrar aqui
+    movlw FLAG_ENVIAR_RF_MSG //Valor del RCREG per enviar per RF
+    cpfslt RCREG,0
+    goto DESA //Desem els bytes
+    movlw FLAG_CONFIRMACIO_MSG //Valor del RCREG com a confirmacio del PC per enviar dades
+    cpfseq RCREG,0
+    goto ENVIAR_RF //Enviar dades per RF
+    goto DESA_SENSE_CONFIRMACIO //Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
+    return
+ 
 	
+DESA
+    call ENVIAR_CONFIRMACIO
+
+DESA_SENSE_CONFIRMACIO
+    clrf COMPTA_BYTES;
+    movlw POSICIO_A_DESAR_RAM
+    movwf FSR0,0
+    
+BUCLE_DESAR
+    btfss PIR1,RCIF,0
+	goto BUCLE_DESAR //Mentres no valgui 1 el bit RCIF que ens indica que hi ha un byte ens esperem
+    movlw END_BYTE 
+    cpfslt RCREG, 0 //Si rebem el byte de final del ordinador sortim, no el desem
+	return
+    movff RCREG, POSTINC0,0 //Movem el caracter a la posicio de la ram corresponent
+    incf COMPTA_BYTES //Incrementem en numero de bytes rebut
+    goto BUCLE_DESAR //Esperem una nova dada
+    
+    
+    
 ;*******
 ;* END *
 ;*******    

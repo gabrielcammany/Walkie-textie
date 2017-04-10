@@ -1,98 +1,109 @@
-int temps = 0x00, comptaBytes = 0, espera = 0, aux = 0x00, LEDs = 0x01;
+#define FLAG_ENVIAR_RF_MSG 0x80
+#define POLS_CARREGA 0x05
+#define POLS_ENVIA_RF 0x04
+#define BIT_RESPOSTA_PC 0x08
+#define FLAG_DESAR_MSG 0x81
+#define FLAG_ENVIAR_RF_MSG 0x82
+#define FLAG_CONFIRMACIO_MSG 0x83
+#define ESTAT_LEDS_CIRCULAR 0x04
+#define ESTAT_POLSADOR 0x01
+#define ESTAT_BLINKING_10HZ 0x08
+#define POSICIO_A_DESAR_RAM 0x80
+#define END_BYTE 0x88
+#define MAX_LEDS 0x0B
+#define LED0 0x04
+#define LED1 0x05
+#define LED2 0x06
+#define LED3 0x07
+#define LED4 0x00
+#define LED5 0x01
+#define LED6 0x02
+#define LED7 0x03
+#define LED8 0x04
+#define LED9 0x05
+
+int temps = 0x00, comptaBytes = 0, ESTAT = 0, aux = 0x00, LEDs = 0x01;
+
 
 void main(){
 	while(1){
-		if(PIE1.RCIF == 1){
-			tempsUn = 0x00;
-			if(RCREG == 0x99){ //Ens diu el ordinador que ens enviaran les dades ara
-				enviaConfirmacio();
-				comptaBytes = 0;
-				FSR0 = 0x80;
-			}else if(RCREG == 0x96){ //Ens demana el ordinador enviar per RF
-				if(comptaBytes != 0x00){
-					enviaConfirmacio();
-					status = 0x02;
-					enviaRF();
-					status = 0x03;
-				}
-			}else if(RCREG == 0x97){ //Rebre confirmacio quan ens apreten el Polsador i el ordinador començara a enviar les dades
-				status = 0x00;
-			}else{
-				comptaBytes++; 
-				RCREG -> POSTINC0;
-			}
+		if(PIR1.RCIF == 1){
+			rebut();
 		}
-		if(polsadorCarregaMissatge == 1){
-			status = 0x01;
-			tempsUn = 0x00;
-			enviaPC(0x91);
+		if(LATC.POLS_CARREGA == 1){
+			pols_carrega_missatge();
 		}
-		if(polsadorEnviaRF == 1){
-			if(comptaBytes != 0x00){
-				enviaRF(comptaBytes);
-			}else{
-				LEDs = 0x20;
-				tempsUn = 0x00;
-				status = 0x04;
-			}
+		if(LATC.POLS_ENVIA_RF == 1){
+			pols_enviar_rf();
 		}
-		if(status == 0x04){ //Leds circular
+		if(ESTAT == ESTAT_LEDS_CIRCULAR){ //Leds circular
 			ledsCircular();
 		}
-		if(status == 0x01){
-			if(tempsUn >= 10){
-				tempsUn = 0x00;
-				status = 0x04;
-			}
+		if(ESTAT == ESTAT_POLSADOR){
+			espera_polsador();
 		}
-		if(status == 0x03){ //Blinking 10 Hz
-			if(tempsUn == 20){
-				encendreLEDS(); //Encendre i apagar els leds
-			}
-			if(tempsUn == 40){
-				apagarLEDS();
-				tempsUn = 0x00;
-			}
+		if(status == ESTAT_BLINKING_10HZ){ //Blinking 10 Hz
+			blinking_10hz();
 		}
 	}
 }
 
+void blinking_10hz(){
+	if(tempsUn == 20){
+				encendreLEDS(); //Encendre i apagar els leds
+	}
+	if(tempsUn == 40){
+		apagarLEDS();
+		tempsUn = 0x00;
+	}
+}
+
+void espera_polsador(){
+	if(tempsUn >= 10){
+				tempsUn = 0x00;
+				status = 0x04;
+	}
+}
+
+void pols_carrega_missatge(){
+	status = 0x01;
+	tempsUn = 0x00;
+	enviaPC(0x91);
+}
+
+void pols_enviar_rf(){
+	if(comptaBytes != 0x00){
+		enviaRF(comptaBytes);
+	}else{
+		LEDs = 0x20;
+		tempsUn = 0x00;
+		status = 0x04;
+	}
+}
+
+void rebut(){
+	tempsUn = 0x00;
+	if(RCREG.BIT_RESPOSTA_PC == 1){
+		if(RCREG < FLAG_ENVIAR_RF_MSG){ 
+			desar()
+		}
+		if(RCREG == FLAG_CONFIRMACIO_MSG){ 
+			enviaRF();
+		}else{
+			desar_sense_confirmacio();
+		}
+	}else{
+		return;
+	}
+}
 
 void HighInt(){
 	resetTimer();
-	if(status == 0x02){ //Enviar per RF
-		if(AUX.Bit0 == 1){ //Si el bit a enviar es 1
-			if(tempsUn == 0){ 
-				clrBit(LATC5.Bit5); //La primera part a 0
-			}else{
-				setBit(LATC5.Bit5); //La segona part a 1
-				enviat++; //Hem de tenir un recompte dels bits enviats per anar a la seguent dada en la ram un cop enviats 8 
-			}
-		}
-		if(AUX.Bit0 == 0){
-			if(tempsUn == 0){ 
-				setBit(LATC5.Bit5); //La primera part a 0
-			}else{
-				clrBit(LATC5.Bit5); //La segona part a 1
-				enviat++; //Hem de tenir un recompte dels bits enviats per anar a la seguent dada en la ram un cop enviats 8 
-			}
-		}
-	}
 	tempsUn++;
-	if(tempsUn >= 200){ //Compte 1 segon
-		if(status == 0x01)temps++; 
-		tempsUn = 0;
-	}
-
 }
 
 void ledsCircular(){
-	if(tempsUn >= 500){
-		if(aux >= 6){
-			LEDs = 0x08; 
-		}
-		LEDs >> 1;
-	}
+	//Per fer
 	
 }
 
@@ -107,35 +118,71 @@ void apagarLEDS(){
 }
 
 
+
 void enviaRF(int num){
-	result = dividir10(num);
-	char i;
-	while(LEDs < 0x0B){ //Hi hauran 10 leds i anira 10-1
-		while(i<result){ // Result es el numero de bytes total entre 10
-			POSTINC0 -> AUX; //Afegim el valor de la ram al auxiliar
-			tempsUn = 0x00; // Per tal de fer el temps a 0 i 1 amb la codificacio manchester, fiquem tempsUn a 0 per quan salti la interrupcio
-			while(enviat<0x08){ //Enviat son els 8 bits que hem denviar
-				if(tempsUn >0x01){ //Si ja ha passat 10 ms hem de enviar el seguent bit
-					AUX >> 1; //Rotem al seguent bit
-					tempsUn = 0x00; //Reiniciem el tempsUn per tal de enviar el seguent bit amb la codificacio manchester
+	if(comptaBytes != 0x00){
+		LATC = 0x00;
+		LATD = 0x00;
+		LEDs = 0x01; //Ja que es del 1-10
+		enviaConfirmacio();
+		result = dividir10(num);
+		char i = 0x00;
+		while(LEDs < MAX_LEDS){ //Hi hauran 10 leds i anira 10-1
+			while(i<result){ // Result es el numero de bytes total entre 10
+				POSTINC0 -> AUX; //Afegim el valor de la ram al auxiliar
+				tempsUn = 0x00; // Per tal de fer el temps a 0 i 1 amb la codificacio manchester, fiquem tempsUn a 0 per quan salti la interrupcio
+				while(enviat<0x08){ //Enviat son els 8 bits que hem denviar
+					if(tempsUn == 0x01){
+						enviar_bit_pos();
+					}
+					if(tempsUn == 0x02){
+						enviar_bit_neg();
+						AUX >> 1;
+						tempsUn = 0x00;
+					}
 				}
+				i++;
 			}
-			i++;
+			LEDs++; 
+			activar_leds();
 		}
-		LEDs++; //Va del 1-10
-		i == LEDs;
-		while(i>=0){ // Activara els LEDs del 0 - 9
-			i--; //Restem al principi per ferho del 0-9
-			if(i<6){ //Els leds del LATB 5-4-3-2-1-0
-				setBit(LATB(i));
-			}else{ //Leds del LATD, 9-8-7-6
-				i = i - 2; //Restem 2 ja que els ports sera del 7-6-5-4
-				setBit(LATD(i));
-				i = i + 2;
-			}
-		}
+	}else{
+		//LEDs circular
 	}
-	aux = 0x00;
+}
+
+void enviar_bit_pos(){
+	if(AUX.Bit0){ //Si el bit a enviar es 1
+		clrBit(LATC5.Bit5); //La primera part a 0
+	}else{
+		setBit(LATC5.Bit5); //La primera part a 0
+	}
+}
+
+void enviar_bit_neg(){
+	if(AUX.Bit0){ //Si el bit a enviar es 1
+		setBit(LATC5.Bit5); //La segona part a 1
+	}else{
+		clrBit(LATC5.Bit5); //La segona part a 1
+	}
+	enviat++;//Hem de tenir un recompte dels bits enviats per anar a la seguent dada en la ram un cop enviats 8 
+	
+}
+
+void activar_leds(){
+	if(LEDs > 1){
+		if(!LATD.LED3){
+			LATD >> 1;
+			LATD.LED0 = 1;
+		}else{
+			LATC >> 1;
+		}
+		if(STATUS.C){
+			LATC.LED4 = 1;
+		}
+	}else{
+		LATD.LED0
+	}
 }
 
 void dividir10(int num){
@@ -146,3 +193,25 @@ void dividir10(int num){
 void enviaPeticioMissatge(){
 }
 
+void desar(){
+	enviaConfirmacio();
+	comptaBytes = 0;
+	FSR0 = POSICIO_A_DESAR_RAM;
+	goto bucle_desar();
+	
+}
+
+void bucle_desar(){
+	if(PIR1.RCIF == 0){goto bucle_desar();}
+	if(RCREG == END_BYTE){
+		return //Retornara al bucle principal ja que hem vingut a desar amb goto
+	}
+	POSTINC0 = RCREG;
+	goto bucle_desar();
+}
+
+void desar_sense_confirmacio(){
+	comptaBytes = 0;
+	FSR0 = POSICIO_A_DESAR_RAM;
+	goto bucle_desar();
+}
