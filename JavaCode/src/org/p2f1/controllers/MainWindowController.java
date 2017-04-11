@@ -37,12 +37,17 @@ public class MainWindowController implements ActionListener{
 			switch(btn.getName()){
 				case MainWindowView.BTN_RF:
 					//TODO Afegir el codi per enviar per RF
-					
+                    sp
+                    while(){
+
+                    }
 					JOptionPane.showMessageDialog(null, "M'has de programar!", "Missatge",JOptionPane.INFORMATION_MESSAGE);
 					break;
 				case MainWindowView.BTN_UART:
+                    byte value = Byte.parseByte("1", 2);
 					//TODO Afegir el codi per enviar per UART
-					
+                    byte[] byteArray = new byte[] {value, 79, 87, 46, 46, 46};
+                    JOptionPane.showMessageDialog(null, "M'has de programar!", ,JOptionPane.INFORMATION_MESSAGE);
 					if(model.checkInputText(view.getText())){
 						JOptionPane.showMessageDialog(null, "M'has de programar!", "Missatge",JOptionPane.INFORMATION_MESSAGE);
 					}else{

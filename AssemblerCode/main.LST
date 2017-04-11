@@ -1,0 +1,1536 @@
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001  LIST P=18F4321, F=INHX32
+                      00002  #include <P18F4321.INC>        
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Jan 30 2017
+                      00005 ;  MPASM PIC18F4321 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2017 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      01455         LIST
+                      00003 
+                      00004 ;******************
+                      00005 ;* CONFIGURACIONS *
+                      00006 ;******************
+06 1F 1E 81 85 03 C0 000007  CONFIG OSC = HSPLL          
+       3 E0 03 40 
+                      00008  CONFIG PBADEN = DIG
+                      00009  CONFIG WDT = OFF
+                      00010 
+                      00011 
+                      00012 ;*************
+                      00013 ;* VARIABLES *
+                      00014 ;*************
+                      00015     
+  00000002            00016 ESTAT EQU 0x02   
+  00000003            00017 TEMPS_UN EQU 0x03    
+  00000004            00018 COMPTA_BYTES EQU 0x04 
+  00000005            00019 LEDs EQU 0x05  
+  00000006            00020 RESULTAT_DIVISIO EQU 0x06
+  00000007            00021 INDEX EQU 0x07
+  00000008            00022 AUXILIAR EQU 0x08  
+  00000009            00023 ENVIAT EQU 0x09 
+                      00024 
+                      00025  
+                      00026 ;*************
+                      00027 ;* CONSTANTS *
+                      00028 ;*************
+                      00029  
+000008                00030 BIT_RESPOSTA_PC ORG 0x08   
+Error[157]  : ORG at odd address
+000081                00031 FLAG_DESAR_MSG ORG 0x81 
+Error[157]  : ORG at odd address
+000085                00032 FLAG_DESAT_MSG ORG 0x85
+000082                00033 FLAG_ENVIAR_RF_MSG ORG 0x82 
+Error[157]  : ORG at odd address
+000083                00034 FLAG_CONFIRMACIO_MSG ORG 0x83
+000084                00035 FLAG_DESAR_SENSE_CONFIRMACIO_MSG ORG 0x84
+                      00036  
+000004                00037 ESTAT_LEDS_CIRCULAR ORG 0x04
+Error[157]  : ORG at odd address
+000001                00038 ESTAT_POLSADOR ORG 0x01
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000008                00039 ESTAT_BLINKING_10HZ ORG 0x08
+000010                00040 ESTAT_BLINKING_5HZ ORG 0x10
+                      00041  
+000080                00042 POSICIO_A_DESAR_RAM ORG 0x80
+000088                00043 END_BYTE ORG 0x88
+Error[157]  : ORG at odd address
+00000B                00044 MAX_LEDS ORG 0x0B
+                      00045  
+Error[157]  : ORG at odd address
+0000CD                00046 VALOR_A_MULTIPLICAR ORG 0xCD ;205
+                      00047  
+000014                00048 TEMPS_100_MSEG ORG 0x14 ;20
+000028                00049 TEMPS_200_MSEG ORG 0x28 ;40
+000050                00050 TEMPS_400_MSEG ORG 0x50 ;80
+000064                00051 TEMPS_500_MSEG ORG 0x64 ;100
+0000C8                00052 TEMPS_1000_MSEG ORG 0xC8 ;200
+                      00053  
+                      00054 ;*********************************
+                      00055 ; VECTORS DE RESET I INTERRUPCIï¿½ *
+                      00056 ;*********************************
+000000                00057     ORG 0x000000
+000000                00058 RESET_VECTOR
+000000 EF37 F000      00059     goto MAIN           
+                      00060 
+000008                00061     ORG 0x000008
+000008                00062 HI_INT_VECTOR
+000008 EF0D F000      00063     goto HIGH_INT       
+                      00064 
+000018                00065     ORG 0x000018
+000018                00066 LOW_INT_VECTOR
+000018 0011           00067     retfie FAST         
+                      00068 
+                      00069 
+                      00070 ;***********************************
+                      00071 ;* RUTINES DE SERVEI D'INTERRUPCIï¿½ *
+                      00072 ;***********************************
+00001A                00073 HIGH_INT
+00001A EC31 F000      00074     call RESET_TIMER
+                      00075     
+00001E 0011           00076     retfie FAST;2
+                      00077     
+                      00078 ;****************************
+                      00079 ;* MAIN I RESTA DE FUNCIONS *
+                      00080 ;****************************
+                      00081 
+000020                00082 INIT_VARS
+000020 0012           00083     return;2
+                      00084     
+000022                00085 INIT_SIO
+                      00086     ;1001 0000 - 0x90
+000022 0E90           00087     movlw 0x90
+000024 6EAC           00088     movwf TXSTA,0
+                      00089     ;0010 0110 - 0x26
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000026 0E26           00090     movlw 0x26
+000028 6EAB           00091     movwf RCSTA,0
+00002A 0E81           00092     movlw 0x81
+00002C 6EAF           00093     movwf SPBRG,0
+00002E 6AB0           00094     clrf SPBRGH,0
+000030 6AB8           00095     clrf BAUDCON, 0
+000032 9A9D           00096     bcf PIE1, RCIE, 0
+000034 989D           00097     bcf PIE1, TXIE, 0
+000036 0012           00098     return
+                      00099     
+000038                00100 INIT_PORTS
+                      00101     ;clrf TRISA, 0
+000038 8E94           00102     bsf TRISC, 7, 0     ;RX Eusart
+00003A 9C94           00103     bcf TRISC, 6, 0     ;TX Eusart
+                      00104     
+00003C 9895           00105     bcf TRISD, 4, 0     ;LED0
+00003E 9A95           00106     bcf TRISD, 5, 0     ;LED1
+000040 9C95           00107     bcf TRISD, 6, 0     ;LED2
+000042 9E95           00108     bcf TRISD, 7, 0     ;LED3
+                      00109     
+000044 9093           00110     bcf TRISB, 0, 0     ;LED4
+000046 9293           00111     bcf TRISB, 1, 0     ;LED5
+000048 9493           00112     bcf TRISB, 2, 0     ;LED6
+00004A 9693           00113     bcf TRISB, 3, 0     ;LED7
+00004C 9893           00114     bcf TRISB, 4, 0     ;LED8
+00004E 9A93           00115     bcf TRISB, 5, 0     ;LED9
+                      00116         
+000050 0012           00117     return
+                      00118     
+000052                00119 INIT_TIMER
+                      00120     ;10001000
+000052 0E88           00121     movlw 0x88
+000054 6ED5           00122     movwf T0CON,0
+000056 9ED0           00123     bcf RCON, IPEN, 0
+                      00124     
+                      00125     ;11100000
+000058 0EE0           00126     movlw 0xE0
+00005A 6EF2           00127     movwf INTCON, 0
+                      00128     
+00005C EC31 F000      00129     call RESET_TIMER
+000060 0012           00130     return
+                      00131     
+000062                00132 RESET_TIMER
+000062 0E3C           00133     movlw 0x3C
+000064 6ED7           00134     movwf TMR0H, 0
+000066 0EB0           00135     movlw 0xB0
+000068 6ED6           00136     movwf TMR0L, 0
+00006A 94F2           00137     bcf INTCON, TMR0IF, 0
+00006C 0012           00138     return
+                      00139     
+                      00140 ;********
+                      00141 ;* MAIN *
+                      00142 ;******** 
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00143     
+00006E                00144 MAIN
+00006E EC10 F000      00145     call INIT_VARS
+000072 EC1C F000      00146     call INIT_PORTS
+000076 EC29 F000      00147     call INIT_TIMER
+00007A EC11 F000      00148     call INIT_SIO
+                      00149     
+00007E                00150 LOOP
+00007E BA9E           00151     btfsc PIR1,RCIF,0
+000080 ECA3 F000      00152     call REBUT
+                      00153     
+000084 BA8B           00154     btfsc LATC,5,0
+000086 EC39 F001      00155     call POLS_CARREGA_MISSATGE
+                      00156     
+00008A B88B           00157     btfsc LATC,4,0
+00008C EC3B F001      00158     call POLS_ENVIAR_RF
+                      00159     
+000090 B202           00160     btfsc ESTAT, 1,0
+000092 ECEC F000      00161     call LEDS_CIRCULAR
+                      00162     
+000096 B402           00163     btfsc ESTAT, 2,0
+000098 EC3D F001      00164     call ESPERA_POLSADOR
+                      00165     
+00009C B602           00166     btfsc ESTAT, 3,0
+00009E EC1A F001      00167     call BLINKING_10HZ
+                      00168     
+0000A2 B802           00169     btfsc ESTAT, 4,0
+0000A4 EC25 F001      00170     call BLINKING_5HZ
+                      00171     
+0000A8 EF3F F000      00172     goto LOOP
+                      00173 
+                      00174 ;**************** - BLOC RF - ****************************
+                      00175     
+0000AC                00176 ENVIAR_RF
+0000AC 0E00           00177     movlw 0x00
+0000AE 6404           00178     cpfsgt COMPTA_BYTES, 0
+0000B0 EFE4 F000      00179     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
+0000B4 6A8A           00180     clrf LATB, 0
+0000B6 6A8C           00181     clrf LATD, 0
+0000B8 6A05           00182     clrf LEDs, 0
+0000BA 6A08           00183     clrf AUXILIAR,0
+0000BC 2A05           00184     incf LEDs, 1, 0 
+0000BE ECCA F000      00185     call ENVIAR_CONFIRMACIO_RF
+0000C2 ECDA F000      00186     call DIVIDIR_10
+0000C6 6A07           00187     clrf INDEX,0
+                      00188 
+0000C8                00189 BUCLE_LEDS_ENVIAR_RF
+0000C8 0E0B           00190     movlw MAX_LEDS
+0000CA 6005           00191     cpfslt LEDs
+0000CC EF9F F000      00192     goto FINAL_RF
+0000D0 5006           00193     movf RESULTAT_DIVISIO,0,0
+                      00194 
+0000D2                00195 BUCLE_INDEX_DIVISOR_ENVIAR_RF 
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0000D2 6007           00196     cpfslt INDEX,0 ;Mentre INDEX < RESULTAT_DIVISIO ens quedem aqui
+0000D4 EF7E F000      00197     goto FINAL_BUCLE_INDEX_DIVISOR ;Quan sigui igual, incrementarem variable leds i activarem leds.
+0000D8 CFEE F008      00198     movff POSTINC0, AUXILIAR
+0000DC 6A03           00199     clrf TEMPS_UN,0
+                      00200     
+0000DE                00201 BUCLE_ENVIAR_8_BITS ;Ens quedarem aqui fins que no hem enviat 8 bits
+0000DE 0E08           00202     movlw 0x08 
+0000E0 6009           00203     cpfslt ENVIAT,0
+0000E2 EF7B F000      00204     goto FINAL_BUCLE_ENVIAR ;Incrementarem index
+0000E6 B003           00205     btfsc TEMPS_UN, 0,0 
+0000E8 EF84 F000      00206     goto ENVIAR_BIT_PRIMERA_MEITAT ;Primers 5 mseg
+0000EC B203           00207     btfsc TEMPS_UN, 1,0
+0000EE EF8A F000      00208     goto ENVIAR_BIT_SEGONA_MEITAT ;Segon 5 mseg
+0000F2 EF6F F000      00209     goto BUCLE_ENVIAR_8_BITS ;Tornem al inici del bucle   
+                      00210     
+0000F6                00211 FINAL_BUCLE_ENVIAR 
+0000F6 2807           00212     incf INDEX, 0,0
+0000F8 EF69 F000      00213     goto BUCLE_INDEX_DIVISOR_ENVIAR_RF ;Tornem al seguent 10 percent
+                      00214     
+0000FC                00215 FINAL_BUCLE_INDEX_DIVISOR
+0000FC 2805           00216     incf LEDs,0,0
+0000FE EC90 F000      00217     call ACTIVAR_LEDS_PROCES
+000102 6A07           00218     clrf INDEX, 0
+000104 EF64 F000      00219     goto BUCLE_LEDS_ENVIAR_RF
+                      00220 
+000108                00221 ENVIAR_BIT_PRIMERA_MEITAT
+000108 B008           00222     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la primera part a 0
+00010A 9A8B           00223     bcf LATC, 5, 0
+00010C A008           00224     btfss AUXILIAR,0,0 ;Si el primer es 0 fiquem la primera part a 1 
+00010E 8A8B           00225     bsf LATC, 5, 0
+000110 EF6F F000      00226     goto BUCLE_ENVIAR_8_BITS
+                      00227     
+000114                00228 ENVIAR_BIT_SEGONA_MEITAT
+000114 B008           00229     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la segona part a 1
+000116 8A8B           00230     bsf LATC, 5, 0
+000118 A008           00231     btfss AUXILIAR,0,0 ;Si el primer es 1 fiquem la segona part a 0
+00011A 9A8B           00232     bcf LATC, 5, 0
+00011C EF6F F000      00233     goto BUCLE_ENVIAR_8_BITS
+                      00234     
+000120                00235 ACTIVAR_LEDS_PROCES    
+000120 0E01           00236     movlw 0x01
+000122 6205           00237     cpfseq LEDs,0
+000124 EF96 F000      00238     goto LEDS_PROCES_MAJOR_1
+000128 888C           00239     bsf LATD, 4, 0
+00012A 0012           00240     return
+                      00241 
+00012C                00242 LEDS_PROCES_MAJOR_1
+00012C AE8C           00243     btfss LATD, 7,0
+00012E EF9C F000      00244     goto LEDS_PROCES_LATB
+000132 428C           00245     rrncf LATD, 1,0
+000134 808C           00246     bsf LATD, 0, 0
+000136 0012           00247     return 
+                      00248 
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000138                00249 LEDS_PROCES_LATB
+000138 428A           00250     rrncf LATB, 1,0
+00013A 808A           00251     bsf LATB, 0, 0
+00013C 0012           00252     return
+                      00253 
+00013E                00254 FINAL_RF
+00013E 0E08           00255     movlw ESTAT_BLINKING_10HZ 
+000140 6E02           00256     movwf ESTAT,0
+000142 6A03           00257     clrf TEMPS_UN,0
+000144 0012           00258     return
+                      00259     
+                      00260     
+                      00261 ;***********************************************************   
+                      00262     
+000146                00263 REBUT
+000146 6A03           00264     clrf TEMPS_UN
+000148 BEAE           00265     btfsc RCREG, 7,0 ;Qualsevol byte rebut que tingui aquest bit a 1 es refereix a una resposta del pc
+00014A 0012           00266     return ;Si rebem un byte i no esta activat no hauriem dentrar aqui
+00014C 0E81           00267     movlw FLAG_DESAR_MSG ;Valor del RCREG per enviar per RF
+00014E 64AE           00268     cpfsgt RCREG,0 ;Si es mes gran no desara el missatge
+000150 EFB3 F000      00269     goto DESA ;Desem els bytes
+000154 0E82           00270     movlw FLAG_ENVIAR_RF_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
+000156 62AE           00271     cpfseq RCREG,0
+000158 EF56 F000      00272     goto ENVIAR_RF ;Enviar dades per RF
+00015C 0E84           00273     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
+00015E 62AE           00274     cpfseq RCREG,0
+000160 EFB5 F000      00275     goto DESA_SENSE_CONFIRMACIO ;Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
+000164 0012           00276     return
+                      00277  
+                      00278 ;**************** - BLOC DESAR - ****************************
+                      00279         
+000166                00280 DESA
+000166 ECD0 F000      00281     call ENVIAR_CONFIRMACIO_DESAR
+                      00282 
+00016A                00283 DESA_SENSE_CONFIRMACIO ;Quan ens apreten el boto no necessitem enviar al pc la confirmacio
+00016A 6A04           00284     clrf COMPTA_BYTES; 
+00016C 0E80           00285     movlw POSICIO_A_DESAR_RAM
+00016E 6E00           00286     movwf FSR0,0
+                      00287     
+000170                00288 BUCLE_DESAR
+000170 AA9E           00289     btfss PIR1,RCIF,0
+000172 EFB8 F000      00290         goto BUCLE_DESAR ;Mentres no valgui 1 el bit RCIF que ens indica que hi ha un byte ens esperem
+000176 0E88           00291     movlw END_BYTE 
+000178 60AE           00292     cpfslt RCREG, 0 ;Si rebem el byte de final del ordinador sortim, no el desem
+00017A EFC6 F000      00293         goto RETORNA_DESAR 
+00017E CFAE FFEE      00294     movff RCREG, POSTINC0 ;Movem el caracter a la posicio de la ram corresponent
+000182 2A04           00295     incf COMPTA_BYTES ;Incrementem en numero de bytes rebut
+000184 ECCD F000      00296     call ENVIAR_CONFIRMACIO_DESAT ;Confirmarem al ordinador que ho hem desat
+000188 EFB8 F000      00297     goto BUCLE_DESAR ;Esperem una nova dada
+                      00298     
+00018C                00299 RETORNA_DESAR
+00018C 0E10           00300     movlw ESTAT_BLINKING_5HZ 
+00018E 6A03           00301     clrf TEMPS_UN,0
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000190 6E02           00302     movwf ESTAT,0
+000192 0012           00303     return
+                      00304     
+                      00305 ;***********************************************************    
+                      00306     
+                      00307 
+                      00308 ;*********** - BLOC COMUNICACIO PC - *****************
+                      00309     
+000194                00310 ENVIAR_CONFIRMACIO_RF 
+000194 0E82           00311     movlw FLAG_ENVIAR_RF_MSG
+000196 6EAD           00312     movwf TXREG,0
+000198 0012           00313     return
+                      00314     
+00019A                00315 ENVIAR_CONFIRMACIO_DESAT
+00019A 0E85           00316     movlw FLAG_DESAT_MSG
+00019C 6EAD           00317     movwf TXREG,0
+00019E 0012           00318     return    
+                      00319     
+0001A0                00320 ENVIAR_CONFIRMACIO_DESAR
+0001A0 0E81           00321     movlw FLAG_DESAR_MSG
+0001A2 6EAD           00322     movwf TXREG,0
+0001A4 0012           00323     return
+                      00324     
+0001A6                00325 ENVIAR_PETICIO_DESAR
+0001A6 6A08           00326     clrf AUXILIAR
+0001A8 6A03           00327     clrf TEMPS_UN
+0001AA 0E84           00328     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG
+0001AC 6EAD           00329     movwf TXREG,0
+0001AE 0E01           00330     movlw ESTAT_POLSADOR
+0001B0 6E02           00331     movwf ESTAT,0
+0001B2 0012           00332     return
+                      00333     
+                      00334 ;***********************************************************    
+                      00335 
+                      00336 
+                      00337 ;***************** - BLOC DIVIDIR - ************************
+                      00338     
+0001B4                00339 DIVIDIR_10
+0001B4 0ECD           00340     movlw VALOR_A_MULTIPLICAR
+0001B6 0204           00341     mulwf COMPTA_BYTES, 0
+0001B8 CFF4 F006      00342     movff PRODH, RESULTAT_DIVISIO
+0001BC 4206           00343     rrncf RESULTAT_DIVISIO,1
+0001BE 4206           00344     rrncf RESULTAT_DIVISIO,1
+0001C0 4206           00345     rrncf RESULTAT_DIVISIO,1
+0001C2 0E1F           00346     movlw 0x1F ;Assegurarnos que els bits que hem afegit son 0
+0001C4 1606           00347     andwf RESULTAT_DIVISIO,1,0
+0001C6 0012           00348     return
+                      00349     
+                      00350 ;***********************************************************  
+                      00351     
+                      00352 
+                      00353 ;***************** - BLOC LEDS - ***************************
+                      00354     
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00355 
+0001C8                00356 ACTIVACIO_LEDS_CIRCULAR
+0001C8 0E04           00357     movlw ESTAT_LEDS_CIRCULAR
+0001CA 6E02           00358     movwf ESTAT,0
+0001CC 6A8A           00359     clrf LATB,0
+0001CE 6A8C           00360     clrf LATD,0
+0001D0 6A03           00361     clrf TEMPS_UN
+0001D2 6A07           00362     clrf INDEX,0
+0001D4 8007           00363     bsf INDEX, 0,0
+0001D6 0012           00364     return
+                      00365     
+0001D8                00366 LEDS_CIRCULAR
+0001D8 0E64           00367    movlw TEMPS_500_MSEG
+0001DA 6003           00368    cpfslt TEMPS_UN
+0001DC EFF1 F000      00369    goto ACTIVAR_LEDS_CIRCULAR
+0001E0 0012           00370    return
+                      00371  
+0001E2                00372 ACTIVAR_LEDS_CIRCULAR
+0001E2 A007           00373    btfss INDEX,0,0 ;Comprovem si estem dreta o no
+0001E4 EF09 F001      00374    goto LEDS_CIRCULAR_ESQUERRA
+                      00375    
+0001E8                00376 LEDS_CIRCULAR_DRETA
+0001E8 0E00           00377    movlw 0x00
+0001EA 628C           00378    cpfseq LATD,0 ;Comprovem que latd no estigui a 0 
+0001EC EF01 F001      00379    goto LEDS_CIRCULAR_DRETA_LATB ;Si ho esta hem de canviar de registre
+0001F0 308C           00380    rrcf LATD,0 ;Rotem el LATD cap a la dreta
+0001F2 908C           00381    bcf LATD, 0, 0
+0001F4 B0D8           00382    btfsc STATUS, C,0 ;Si ja tenim carry del primer registre hem danar al seguent
+0001F6 EFFE F000      00383    goto LEDS_CIRCULAR_DRETA_SEGONA_PART
+0001FA 0012           00384    return
+                      00385    
+0001FC                00386 LEDS_CIRCULAR_DRETA_SEGONA_PART
+0001FC 6A8C           00387     clrf LATD,0 ;Borrem LATD
+0001FE 808A           00388     bsf LATB, 0, 0 ;Activem el primer bit del LATB
+000200 0012           00389     return ;Tornem al loop principal
+                      00390 
+000202                00391 LEDS_CIRCULAR_DRETA_LATB
+000202 308A           00392     rrcf LATB,0 
+000204 B0D8           00393     btfsc STATUS, C,0 ;Si ja hem arribat al final ja no podem anar mes cap a la dreta
+000206 EF06 F001      00394     goto LEDS_CIRCULAR_DRETA_ESQUERRA ;Haurem de canviar de sentit
+00020A 0012           00395     return ;Tornem al loop principal
+                      00396     
+00020C                00397 LEDS_CIRCULAR_DRETA_ESQUERRA
+00020C 6A07           00398     clrf INDEX,0 ;Borrem index per decidir que anirem cap a lesquerra
+00020E 8A8A           00399     bsf LATB, 5, 0 ;Activem lultim bit de latb 
+000210 0012           00400     return ;Tornem al bucle principal
+                      00401         
+                      00402     
+000212                00403 LEDS_CIRCULAR_ESQUERRA
+000212 0E00           00404    movlw 0x00
+000214 628C           00405    cpfseq LATD,0
+000216 EF16 F001      00406    goto LEDS_CIRCULAR_ESQUERRA_LATB
+00021A 348C           00407    rlcf LATD,0
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00021C 9E8C           00408    bcf LATD, 7, 0
+00021E B68C           00409    btfsc LATD, 3,0
+000220 EF13 F001      00410    goto LEDS_CIRCULAR_ESQUERRA_DRETA
+000224 0012           00411    return
+                      00412    
+000226                00413 LEDS_CIRCULAR_ESQUERRA_DRETA
+000226 8007           00414     bsf INDEX,0,0 ;Borrem index per decidir que anirem cap a lesquerra
+000228 888C           00415     bsf LATD, 4, 0 ;Activem lultim bit de latb 
+00022A 0012           00416     return ;Tornem al bucle principal
+                      00417    
+00022C                00418 LEDS_CIRCULAR_ESQUERRA_LATB
+00022C 348A           00419    rlcf LATB,0
+00022E B0D8           00420    btfsc STATUS,C,0
+000230 888C           00421    bsf LATD, 4,0
+000232 0012           00422    return
+                      00423    
+                      00424 ;LEDS_CIRCULAR_ESQUERRA_SEGONA_PART
+                      00425  ;   clrf LATD,0
+                      00426   ;  bsf LATB, 0, 0
+                      00427    ; return
+                      00428    
+000234                00429 BLINKING_10HZ
+000234 0E14           00430     movlw TEMPS_100_MSEG
+000236 6203           00431     cpfseq TEMPS_UN,0 ;Si estem als 100 no els encendrem
+000238 EF21 F001      00432     goto COMPROVA_APAGAR_10HZ ;En cas de estar per sota o sobre entrarem aqui
+00023C EF30 F001      00433     goto ENCENDRE_LEDS
+000240 0012           00434     return
+                      00435    
+000242                00436 COMPROVA_APAGAR_10HZ
+000242 6028           00437     cpfslt TEMPS_200_MSEG ;Si estem en menys de 200 no farem res, sino els apagarem
+000244 EF35 F001      00438     goto APAGAR_LEDS
+000248 0012           00439     return
+                      00440     
+00024A                00441 BLINKING_5HZ
+00024A 0E28           00442     movlw TEMPS_200_MSEG
+00024C 6203           00443     cpfseq TEMPS_UN,0 ;Si encara no estem als 200 mseg no els encendrem
+00024E EF2C F001      00444     goto COMPROVA_APAGAR_5HZ ;Si estem per sobre o sota entrarem aqui
+000252 EF30 F001      00445     goto ENCENDRE_LEDS
+000256 0012           00446     return
+                      00447 
+000258                00448 COMPROVA_APAGAR_5HZ
+000258 6050           00449     cpfslt TEMPS_400_MSEG ;En cas de arribar ja als 400 els apagarem
+00025A EF35 F001      00450     goto APAGAR_LEDS
+00025E 0012           00451     return
+                      00452   
+000260                00453 ENCENDRE_LEDS
+000260 0E3F           00454     movlw 0x3F
+000262 688A           00455     setf LATB,0
+000264 0E0F           00456     movlw 0x0F
+000266 248C           00457     addwf LATD,0
+000268 0012           00458     return
+                      00459     
+00026A                00460 APAGAR_LEDS
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00026A 6A03           00461     clrf TEMPS_UN
+00026C 6A8A           00462     clrf LATB,0
+00026E 6A8C           00463     clrf LATD,0
+000270 0012           00464     return
+                      00465     
+                      00466 ;***********************************************************  
+                      00467     
+                      00468 ;***************** - BLOC POLSADORS - ***************************
+                      00469     
+000272                00470 POLS_CARREGA_MISSATGE
+000272 EFD3 F000      00471     goto ENVIAR_PETICIO_DESAR
+                      00472     
+000276                00473 POLS_ENVIAR_RF
+000276 EF56 F000      00474     goto ENVIAR_RF
+                      00475 
+00027A                00476 ESPERA_POLSADOR
+00027A 0EC8           00477     movlw TEMPS_1000_MSEG
+00027C 6003           00478     cpfslt TEMPS_UN
+00027E EF42 F001      00479     goto COMPROVACIO_10_SEG
+000282 0012           00480     return
+                      00481     
+000284                00482 COMPROVACIO_10_SEG
+000284 2A08           00483     incf AUXILIAR,1,0
+000286 0E32           00484     movlw 0x32 ;50 ja que 50*200 son 10k
+000288 6008           00485     cpfslt AUXILIAR,0 ;Si encara no hem arribat a 50 encara ens hem desperar
+00028A ECE4 F000      00486     call ACTIVACIO_LEDS_CIRCULAR
+00028E 0012           00487     return
+                      00488     
+000290                00489 INCREMENTAR_SENSE_LEDS
+000290 2A08           00490     incf AUXILIAR,1,0
+000292 0012           00491     return
+                      00492     
+                      00493 ;***********************************************************  
+                      00494     
+                      00495 ;*******
+                      00496 ;* END *
+                      00497 ;*******    
+                      00498     END
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+A                                 00000000
+ABDEN                             00000000
+ABDOVF                            00000007
+ACCESS                            00000000
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ACQT0                             00000003
+ACQT1                             00000004
+ACQT2                             00000005
+ACTIVACIO_LEDS_CIRCULAR           000001C8
+ACTIVAR_LEDS_CIRCULAR             000001E2
+ACTIVAR_LEDS_PROCES               00000120
+ADCON0                            00000FC2
+ADCON1                            00000FC1
+ADCON2                            00000FC0
+ADCS0                             00000000
+ADCS1                             00000001
+ADCS2                             00000002
+ADDEN                             00000003
+ADEN                              00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADIP                              00000006
+ADMSK1                            00000001
+ADMSK2                            00000002
+ADMSK3                            00000003
+ADMSK4                            00000004
+ADMSK5                            00000005
+ADON                              00000000
+ADRES                             00000FC3
+ADRESH                            00000FC4
+ADRESL                            00000FC3
+AN0                               00000000
+AN1                               00000001
+AN10                              00000001
+AN11                              00000004
+AN12                              00000000
+AN2                               00000002
+AN3                               00000003
+AN4                               00000005
+AN5                               00000000
+AN6                               00000001
+AN7                               00000002
+AN8                               00000002
+AN9                               00000003
+APAGAR_LEDS                       0000026A
+AUXILIAR                          00000008
+BANKED                            00000001
+BAUDCON                           00000FB8
+BAUDCTL                           00000FB8
+BCLIE                             00000003
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BCLIF                             00000003
+BCLIP                             00000003
+BF                                00000000
+BGST                              00000005
+BIT_RESPOSTA_PC                   00000008
+BLINKING_10HZ                     00000234
+BLINKING_5HZ                      0000024A
+BOR                               00000000
+BRG16                             00000003
+BRGH                              00000002
+BSR                               00000FE0
+BUCLE_DESAR                       00000170
+BUCLE_ENVIAR_8_BITS               000000DE
+BUCLE_INDEX_DIVISOR_ENVIAR_RF     000000D2
+BUCLE_LEDS_ENVIAR_RF              000000C8
+C                                 00000000
+C1INV                             00000004
+C1N                               00000000
+C1OUT_CMCON                       00000006
+C1OUT_PORTA                       00000004
+C1P                               00000003
+C2INV                             00000005
+C2N                               00000001
+C2OUT_CMCON                       00000007
+C2OUT_PORTA                       00000005
+C2P                               00000002
+CCP1                              00000002
+CCP1CON                           00000FBD
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1IP                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           00000FBA
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2IP                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCP2_PORTB                        00000003
+CCP2_PORTC                        00000001
+CCPR1                             00000FBE
+CCPR1H                            00000FBF
+CCPR1L                            00000FBE
+CCPR2                             00000FBB
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCPR2H                            00000FBC
+CCPR2L                            00000FBB
+CFGS                              00000006
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+CIS                               00000003
+CK                                00000006
+CKE                               00000006
+CKP                               00000004
+CLKI                              00000007
+CLKO                              00000006
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             00000FB4
+CMIE                              00000006
+CMIF                              00000006
+CMIP                              00000006
+COMPROVACIO_10_SEG                00000284
+COMPROVA_APAGAR_10HZ              00000242
+COMPROVA_APAGAR_5HZ               00000258
+COMPTA_BYTES                      00000004
+CREN                              00000004
+CS                                00000002
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            00000FB5
+CVREF                             00000002
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+CVRSS                             00000004
+D                                 00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DDRA                              TRISA
+DDRB                              TRISB
+DDRC                              TRISC
+DDRD                              TRISD
+DDRE                              TRISE
+DESA                              00000166
+DESA_SENSE_CONFIRMACIO            0000016A
+DIVIDIR_10                        000001B4
+DONE                              00000001
+D_A                               00000005
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+D_NOT_A                           00000005
+ECCP1AS                           00000FB6
+ECCP1CON                          00000FBD
+ECCP1DEL                          00000FB7
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             00000FA9
+EECON1                            00000FA6
+EECON2                            00000FA7
+EEDATA                            00000FA8
+EEIE                              00000004
+EEIF                              00000004
+EEIP                              00000004
+EEPGD                             00000007
+ENCENDRE_LEDS                     00000260
+END_BYTE                          00000088
+ENVIAR_BIT_PRIMERA_MEITAT         00000108
+ENVIAR_BIT_SEGONA_MEITAT          00000114
+ENVIAR_CONFIRMACIO_DESAR          000001A0
+ENVIAR_CONFIRMACIO_DESAT          0000019A
+ENVIAR_CONFIRMACIO_RF             00000194
+ENVIAR_PETICIO_DESAR              000001A6
+ENVIAR_RF                         000000AC
+ENVIAT                            00000009
+ESPERA_POLSADOR                   0000027A
+ESTAT                             00000002
+ESTAT_BLINKING_10HZ               00000008
+ESTAT_BLINKING_5HZ                00000010
+ESTAT_LEDS_CIRCULAR               00000004
+ESTAT_POLSADOR                    00000001
+FAST                              00000001
+FERR                              00000002
+FINAL_BUCLE_ENVIAR                000000F6
+FINAL_BUCLE_INDEX_DIVISOR         000000FC
+FINAL_RF                          0000013E
+FLAG_CONFIRMACIO_MSG              00000083
+FLAG_DESAR_MSG                    00000081
+FLAG_DESAR_SENSE_CONFIRMACIO_MSG  00000084
+FLAG_DESAT_MSG                    00000085
+FLAG_ENVIAR_RF_MSG                00000082
+FLT0                              00000000
+FLTS                              00000002
+FREE                              00000004
+FSR0                              00000000
+FSR0H                             00000FEA
+FSR0L                             00000FE9
+FSR1                              00000001
+FSR1H                             00000FE2
+FSR1L                             00000FE1
+FSR2                              00000002
+FSR2H                             00000FDA
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+FSR2L                             00000FD9
+GCEN                              00000007
+GIE                               00000007
+GIEH                              00000007
+GIEL                              00000006
+GIE_GIEH                          00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HIGH_INT                          0000001A
+HI_INT_VECTOR                     00000008
+HLVDCON                           00000FD2
+HLVDEN                            00000004
+HLVDIE                            00000002
+HLVDIF                            00000002
+HLVDIN                            00000005
+HLVDIP                            00000002
+HLVDL0                            00000000
+HLVDL1                            00000001
+HLVDL2                            00000002
+HLVDL3                            00000003
+IBF                               00000007
+IBOV                              00000005
+IDLEN                             00000007
+INCREMENTAR_SENSE_LEDS            00000290
+INDEX                             00000007
+INDF0                             00000FEF
+INDF1                             00000FE7
+INDF2                             00000FDF
+INIT_PORTS                        00000038
+INIT_SIO                          00000022
+INIT_TIMER                        00000052
+INIT_VARS                         00000020
+INT0                              00000000
+INT0E                             00000004
+INT0F                             00000001
+INT0IE                            00000004
+INT0IF                            00000001
+INT1                              00000001
+INT1E                             00000003
+INT1F                             00000000
+INT1IE                            00000003
+INT1IF                            00000000
+INT1IP                            00000006
+INT1P                             00000006
+INT2                              00000002
+INT2E                             00000004
+INT2F                             00000001
+INT2IE                            00000004
+INT2IF                            00000001
+INT2IP                            00000007
+INT2P                             00000007
+INTCON                            00000FF2
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+INTCON2                           00000FF1
+INTCON3                           00000FF0
+INTEDG0                           00000006
+INTEDG1                           00000005
+INTEDG2                           00000004
+INTSRC                            00000007
+IOFS                              00000002
+IPEN                              00000007
+IPR1                              00000F9F
+IPR2                              00000FA2
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRVST                             00000005
+KBI0                              00000004
+KBI1                              00000005
+KBI2                              00000006
+KBI3                              00000007
+LATA                              00000F89
+LATA0                             00000000
+LATA1                             00000001
+LATA2                             00000002
+LATA3                             00000003
+LATA4                             00000004
+LATA5                             00000005
+LATA6                             00000006
+LATA7                             00000007
+LATB                              00000F8A
+LATB0                             00000000
+LATB1                             00000001
+LATB2                             00000002
+LATB3                             00000003
+LATB4                             00000004
+LATB5                             00000005
+LATB6                             00000006
+LATB7                             00000007
+LATC                              00000F8B
+LATC0                             00000000
+LATC1                             00000001
+LATC2                             00000002
+LATC3                             00000003
+LATC4                             00000004
+LATC5                             00000005
+LATC6                             00000006
+LATC7                             00000007
+LATD                              00000F8C
+LATD0                             00000000
+LATD1                             00000001
+LATD2                             00000002
+LATD3                             00000003
+LATD4                             00000004
+LATD5                             00000005
+LATD6                             00000006
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LATD7                             00000007
+LATE                              00000F8D
+LATE0                             00000000
+LATE1                             00000001
+LATE2                             00000002
+LEDS_CIRCULAR                     000001D8
+LEDS_CIRCULAR_DRETA               000001E8
+LEDS_CIRCULAR_DRETA_ESQUERRA      0000020C
+LEDS_CIRCULAR_DRETA_LATB          00000202
+LEDS_CIRCULAR_DRETA_SEGONA_PART   000001FC
+LEDS_CIRCULAR_ESQUERRA            00000212
+LEDS_CIRCULAR_ESQUERRA_DRETA      00000226
+LEDS_CIRCULAR_ESQUERRA_LATB       0000022C
+LEDS_PROCES_LATB                  00000138
+LEDS_PROCES_MAJOR_1               0000012C
+LEDs                              00000005
+LOOP                              0000007E
+LOW_INT_VECTOR                    00000018
+LVDCON                            00000FD2
+LVDEN                             00000004
+LVDIE                             00000002
+LVDIF                             00000002
+LVDIP                             00000002
+LVDL0                             00000000
+LVDL1                             00000001
+LVDL2                             00000002
+LVDL3                             00000003
+LVV0                              00000000
+LVV1                              00000001
+LVV2                              00000002
+LVV3                              00000003
+MAIN                              0000006E
+MAX_LEDS                          0000000B
+MCLR                              00000003
+N                                 00000004
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BOR                           00000000
+NOT_CS                            00000002
+NOT_DONE                          00000001
+NOT_MCLR                          00000003
+NOT_PD                            00000002
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RD                            00000000
+NOT_RI                            00000004
+NOT_SS                            00000005
+NOT_T1SYNC                        00000002
+NOT_T3SYNC                        00000002
+NOT_TO                            00000003
+NOT_W                             00000002
+NOT_WR                            00000001
+NOT_WRITE                         00000002
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OBF                               00000006
+OERR                              00000001
+OSC1                              00000007
+OSC2                              00000006
+OSCCON                            00000FD3
+OSCFIE                            00000007
+OSCFIF                            00000007
+OSCFIP                            00000007
+OSCTUNE                           00000F9B
+OSTS                              00000003
+OV                                00000003
+P                                 00000004
+P1A                               00000002
+P1B                               00000005
+P1C                               00000006
+P1D                               00000007
+P1M0                              00000006
+P1M1                              00000007
+PC                                00000FF9
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000FF9
+PCLATH                            00000FFA
+PCLATU                            00000FFB
+PD                                00000002
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEIE_GIEL                         00000006
+PEN                               00000002
+PGC                               00000006
+PGD                               00000007
+PGM                               00000005
+PIE1                              00000F9D
+PIE2                              00000FA0
+PIR1                              00000F9E
+PIR2                              00000FA1
+PLLEN                             00000006
+PLUSW0                            00000FEB
+PLUSW1                            00000FE3
+PLUSW2                            00000FDB
+POLS_CARREGA_MISSATGE             00000272
+POLS_ENVIAR_RF                    00000276
+POR                               00000001
+PORTA                             00000F80
+PORTB                             00000F81
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PORTC                             00000F82
+PORTD                             00000F83
+PORTE                             00000F84
+POSICIO_A_DESAR_RAM               00000080
+POSTDEC0                          00000FED
+POSTDEC1                          00000FE5
+POSTDEC2                          00000FDD
+POSTINC0                          00000FEE
+POSTINC1                          00000FE6
+POSTINC2                          00000FDE
+PR2                               00000FCB
+PREINC0                           00000FEC
+PREINC1                           00000FE4
+PREINC2                           00000FDC
+PROD                              00000FF3
+PRODH                             00000FF4
+PRODL                             00000FF3
+PRSEN                             00000007
+PSA                               00000003
+PSP0                              00000000
+PSP1                              00000001
+PSP2                              00000002
+PSP3                              00000003
+PSP4                              00000004
+PSP5                              00000005
+PSP6                              00000006
+PSP7                              00000007
+PSPIE                             00000007
+PSPIF                             00000007
+PSPIP                             00000007
+PSPMODE                           00000004
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PWM1CON                           00000FB7
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RBIE                              00000003
+RBIF                              00000000
+RBIP                              00000000
+RBPU                              00000007
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCIP                              00000005
+RCMT                              00000006
+RCON                              00000FD0
+RCREG                             00000FAE
+RCSTA                             00000FAB
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD16                              00000007
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+REBUT                             00000146
+RESET_TIMER                       00000062
+RESET_VECTOR                      00000000
+RESULTAT_DIVISIO                  00000006
+RETORNA_DESAR                     0000018C
+RI                                00000004
+RSEN                              00000001
+RX                                00000007
+RX9                               00000006
+RX9D                              00000000
+RXDTP                             00000005
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SBOREN                            00000006
+SCK                               00000003
+SCKP                              00000004
+SCL                               00000003
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SCS0                              00000000
+SCS1                              00000001
+SDA                               00000004
+SDI                               00000004
+SDO                               00000005
+SEN                               00000000
+SENDB                             00000003
+SMP                               00000007
+SP0                               00000000
+SP1                               00000001
+SP2                               00000002
+SP3                               00000003
+SP4                               00000004
+SPBRG                             00000FAF
+SPBRGH                            00000FB0
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000FC8
+SSPBUF                            00000FC9
+SSPCON1                           00000FC6
+SSPCON2                           00000FC5
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPIP                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000FC7
+STATUS                            00000FD8
+STKFUL                            00000007
+STKOVF                            00000007
+STKPTR                            00000FFC
+STKUNF                            00000006
+SWDTE                             00000000
+SWDTEN                            00000000
+SYNC                              00000004
+T016BIT                           00000006
+T08BIT                            00000006
+T0CKI                             00000004
+T0CON                             00000FD5
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0PS0                             00000000
+T0PS1                             00000001
+T0PS2                             00000002
+T0SE                              00000004
+T13CKI                            00000000
+T1CKI                             00000000
+T1CKPS0                           00000004
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1CKPS1                           00000005
+T1CON                             00000FCD
+T1OSCEN                           00000003
+T1OSI                             00000001
+T1OSO                             00000000
+T1RUN                             00000006
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000FCA
+T2OUTPS0                          00000003
+T2OUTPS1                          00000004
+T2OUTPS2                          00000005
+T2OUTPS3                          00000006
+T3CCP1                            00000003
+T3CCP2                            00000006
+T3CKPS0                           00000004
+T3CKPS1                           00000005
+T3CON                             00000FB1
+T3SYNC                            00000002
+TABLAT                            00000FF5
+TBLPTR                            00000FF6
+TBLPTRH                           00000FF7
+TBLPTRL                           00000FF6
+TBLPTRU                           00000FF8
+TEMPS_1000_MSEG                   000000C8
+TEMPS_100_MSEG                    00000014
+TEMPS_200_MSEG                    00000028
+TEMPS_400_MSEG                    00000050
+TEMPS_500_MSEG                    00000064
+TEMPS_UN                          00000003
+TMR0                              00000FD6
+TMR0H                             00000FD7
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR0IP                            00000002
+TMR0L                             00000FD6
+TMR0ON                            00000007
+TMR1                              00000FCE
+TMR1CS                            00000001
+TMR1H                             00000FCF
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1IP                            00000000
+TMR1L                             00000FCE
+TMR1ON                            00000000
+TMR2                              00000FCC
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2IP                            00000001
+TMR2ON                            00000002
+TMR3                              00000FB2
+TMR3CS                            00000001
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR3H                             00000FB3
+TMR3IE                            00000001
+TMR3IF                            00000001
+TMR3IP                            00000001
+TMR3L                             00000FB2
+TMR3ON                            00000000
+TO                                00000003
+TOS                               00000FFD
+TOSH                              00000FFE
+TOSL                              00000FFD
+TOSU                              00000FFF
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000F92
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000F93
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000F94
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000F95
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000F96
+TRISE0                            00000000
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX                                00000006
+TX9                               00000006
+TX9D                              00000000
+TXCKP                             00000004
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXIP                              00000004
+TXREG                             00000FAD
+TXSTA                             00000FAC
+UA                                00000001
+VALOR_A_MULTIPLICAR               000000CD
+VCFG0                             00000004
+VCFG1                             00000005
+VDIRMAG                           00000007
+VPP                               00000003
+VREFM                             00000002
+VREFP                             00000003
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000FD1
+WR                                00000001
+WREG                              00000FE8
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BBSIZ_BB1K_4L                    000000FF
+_BBSIZ_BB256_4L                   000000CF
+_BBSIZ_BB512_4L                   000000DF
+_BORV_0_2L                        000000E7
+_BORV_1_2L                        000000EF
+_BORV_2_2L                        000000F7
+_BORV_3_2L                        000000FF
+_BOR_NOSLP_2L                     000000FD
+_BOR_OFF_2L                       000000F9
+_BOR_ON_2L                        000000FF
+_BOR_SOFT_2L                      000000FB
+_CCP2MX_RB3_3H                    000000FE
+_CCP2MX_RC1_3H                    000000FF
+_CONFIG1H                         00300001
+_CONFIG2H                         00300003
+_CONFIG2L                         00300002
+_CONFIG3H                         00300005
+_CONFIG4L                         00300006
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_CONFIG5H                         00300009
+_CONFIG5L                         00300008
+_CONFIG6H                         0030000B
+_CONFIG6L                         0030000A
+_CONFIG7H                         0030000D
+_CONFIG7L                         0030000C
+_CP0_OFF_5L                       000000FF
+_CP0_ON_5L                        000000FE
+_CP1_OFF_5L                       000000FF
+_CP1_ON_5L                        000000FD
+_CPB_OFF_5H                       000000FF
+_CPB_ON_5H                        000000BF
+_CPD_OFF_5H                       000000FF
+_CPD_ON_5H                        0000007F
+_DEBUG_OFF_4L                     000000FF
+_DEBUG_ON_4L                      0000007F
+_DEVID1                           003FFFFE
+_DEVID2                           003FFFFF
+_EBTR0_OFF_7L                     000000FF
+_EBTR0_ON_7L                      000000FE
+_EBTR1_OFF_7L                     000000FF
+_EBTR1_ON_7L                      000000FD
+_EBTRB_OFF_7H                     000000FF
+_EBTRB_ON_7H                      000000BF
+_FCMEN_OFF_1H                     000000BF
+_FCMEN_ON_1H                      000000FF
+_IDLOC0                           00200000
+_IDLOC1                           00200001
+_IDLOC2                           00200002
+_IDLOC3                           00200003
+_IDLOC4                           00200004
+_IDLOC5                           00200005
+_IDLOC6                           00200006
+_IDLOC7                           00200007
+_IESO_OFF_1H                      0000007F
+_IESO_ON_1H                       000000FF
+_LPT1OSC_OFF_3H                   000000FB
+_LPT1OSC_ON_3H                    000000FF
+_LVP_OFF_4L                       000000FB
+_LVP_ON_4L                        000000FF
+_MCLRE_OFF_3H                     0000007F
+_MCLRE_ON_3H                      000000FF
+_OSC_ECIO_1H                      000000F5
+_OSC_EC_1H                        000000F4
+_OSC_HSPLL_1H                     000000F6
+_OSC_HS_1H                        000000F2
+_OSC_INTIO1_1H                    000000F9
+_OSC_INTIO2_1H                    000000F8
+_OSC_LP_1H                        000000F0
+_OSC_RCIO_1H                      000000F7
+_OSC_RC_1H                        000000F3
+_OSC_XT_1H                        000000F1
+_PBADEN_ANA_3H                    000000FF
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_PBADEN_DIG_3H                    000000FD
+_PWRT_OFF_2L                      000000FF
+_PWRT_ON_2L                       000000FE
+_STVREN_OFF_4L                    000000FE
+_STVREN_ON_4L                     000000FF
+_WDTPS_1024_2H                    000000F5
+_WDTPS_128_2H                     000000EF
+_WDTPS_16384_2H                   000000FD
+_WDTPS_16_2H                      000000E9
+_WDTPS_1_2H                       000000E1
+_WDTPS_2048_2H                    000000F7
+_WDTPS_256_2H                     000000F1
+_WDTPS_2_2H                       000000E3
+_WDTPS_32768_2H                   000000FF
+_WDTPS_32_2H                      000000EB
+_WDTPS_4096_2H                    000000F9
+_WDTPS_4_2H                       000000E5
+_WDTPS_512_2H                     000000F3
+_WDTPS_64_2H                      000000ED
+_WDTPS_8192_2H                    000000FB
+_WDTPS_8_2H                       000000E7
+_WDT_OFF_2H                       000000FE
+_WDT_ON_2H                        000000FF
+_WRT0_OFF_6L                      000000FF
+_WRT0_ON_6L                       000000FE
+_WRT1_OFF_6L                      000000FF
+_WRT1_ON_6L                       000000FD
+_WRTB_OFF_6H                      000000FF
+_WRTB_ON_6H                       000000BF
+_WRTC_OFF_6H                      000000FF
+_WRTC_ON_6H                       000000DF
+_WRTD_OFF_6H                      000000FF
+_WRTD_ON_6H                       0000007F
+_XINST_OFF_4L                     000000BF
+_XINST_ON_4L                      000000FF
+__18F4321                         00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXX----XXXX---- --------XXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+MPASM 5.72                          MAIN.ASM   4-12-2017  0:50:45         PAGE 27
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+01C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0200 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0240 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0280 : XXXXXXXXXXXXXXXX XXXX------------ ---------------- ----------------
+0000 : -XXX-XX-XXXXXX-- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Bytes Used:   655
+Program Memory Bytes Free:  7537
+
+
+Errors   :     6
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

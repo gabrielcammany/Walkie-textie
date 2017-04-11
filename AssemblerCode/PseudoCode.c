@@ -2,6 +2,7 @@
 #define POLS_ENVIA_RF 0x04
 #define BIT_RESPOSTA_PC 0x08
 #define FLAG_DESAR_MSG 0x81
+#define FLAG_DESAR_MSG 0x85
 #define FLAG_ENVIAR_RF_MSG 0x82
 #define FLAG_CONFIRMACIO_MSG 0x83
 #define FLAG_DESAR_SENSE_CONFIRMACIO_MSG 0x84
@@ -78,6 +79,11 @@ void enviarConfirmacioRf(){
 //Fet
 void enviarConfirmacioDesar(){
 	FLAG_DESAR_MSG -> TXREG
+}
+
+//Fet
+void enviarConfirmacioDesaT(){
+	FLAG_DESAT_MSG -> TXREG
 }
 
 //Fet
