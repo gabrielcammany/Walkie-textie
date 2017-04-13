@@ -201,5 +201,12 @@ public class MainWindowView  extends JFrame{
 	public String getText(){
 		return jtaText.getText();
 	}
+
+	public String getPort(){
+		return (String)comboPort.getSelectedItem();
+	}
+	public int getBaudRate(){
+		return (int)comboBaud.getSelectedItem();
+	}
 	
 }
