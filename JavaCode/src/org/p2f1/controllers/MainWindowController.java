@@ -36,6 +36,7 @@ public class MainWindowController implements ActionListener{
 		if(e.getSource() instanceof JButton){
 			JButton btn = (JButton) e.getSource();
             try {
+                byte end_byte = (byte) (Integer.parseInt("88",16));
                 switch(btn.getName()){
                     case MainWindowView.BTN_RF:
                         //TODO Afegir el codi per enviar per RF
@@ -46,6 +47,13 @@ public class MainWindowController implements ActionListener{
                             while(resposta == 0){ ;
                                 resposta = sp.readByte();
                             }
+                            while(resposta == 0){ ;
+                                resposta = sp.readByte();
+                            }
+                            while(resposta != end_byte){
+                                resposta = sp.readByte();
+                                System.out.print(" Reposta RF Enviat: "+resposta+"\n");
+                            }
                             System.out.print(" Reposta RF Enviat: "+resposta+"\n");
                         } catch (Exception e1) {
                             e1.printStackTrace();
@@ -55,7 +63,6 @@ public class MainWindowController implements ActionListener{
                         //TODO Afegir el codi per enviar per UART
                         byte flag_desar_msg = (byte) (Integer.parseInt("81",16));
                         byte flag_desat_msg = (byte) (Integer.parseInt("85",16));
-                        byte end_byte = (byte) (Integer.parseInt("88",16));
                         //byte flag_confirmacio_msg = Byte.parseByte("83", 16);
                         //byte flag_desar_sense_confirmacio_msg = Byte.parseByte("84", 16);
                         try {

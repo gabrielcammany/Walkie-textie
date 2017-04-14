@@ -167,6 +167,7 @@ void enviaRF(){
 						tempsUn = 0x00; //Reiniciem el comptador
 					}
 				}
+				enviat = 0;
 				i++;
 			}
 			i = 0;
@@ -229,30 +230,31 @@ void activar_leds_circular(){
 		if(dreta == 1){
 			if(LATD > 0){
 				LATD >> 1;
-				LATD.Bit0 = 0;
-				if(STATUS.C){
-					LATD = 0;
-					LATB.LED4 = 1;
+				LATD.LED3 = 0;
+				if(LATD.Bit3){
+					dreta = 0;
+					LATD << 1;
 				}
 			}else{
 				LATB >> 1;
-				if(LATD.Bit6){
-					dreta = 0;
-					LATB.LED9 = 1;
+				if(STATUS.C){
+					LATD.LED3 = 1;
 				}
 			}
 		}else{
 			if(LATD > 0){
 				LATD << 1;
-				LATD.LED3 = 0;
-				if(LATD.Bit3){
-					LATD.LED0 = 1;
-					dreta = 1;
+				LATD.Bit3 = 0;
+				if(STATUS.C){
+					LATB.LED4 = 1;
+					LATD = 0;
 				}
 			}else{
 				LATB << 1;
-				if(STATUS.C){
-					LATD.LED3 = 1;
+				LATB.LED4 = 0;
+				if(LATB.Bit6){
+					LATB >> 1;
+					dreta = 1;
 				}
 			}
 		}

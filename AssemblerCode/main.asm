@@ -15,7 +15,7 @@ CONFIG WDT = OFF
 ESTAT EQU 0x02   
 TEMPS_UN EQU 0x03    
 COMPTA_BYTES EQU 0x04 
-LEDs EQU 0x04  
+LEDS EQU 0x04  
 RESULTAT_DIVISIO EQU 0x05
 INDEX EQU 0x06   
 AUXILIAR EQU 0x07   
@@ -32,14 +32,15 @@ BIT_RESPOSTA_PC EQU 0x08
  
 FLAG_DESAR_MSG EQU 0x81 
 FLAG_DESAT_MSG EQU 0x85
+FLAG_BYTE_ENVIAT_MSG EQU 0x86
 FLAG_ENVIAR_RF_MSG EQU 0x82 
 FLAG_CONFIRMACIO_MSG EQU 0x83
 FLAG_DESAR_SENSE_CONFIRMACIO_MSG EQU 0x84
 
-ESTAT_LEDS_CIRCULAR EQU 0x04
+ESTAT_LEDS_CIRCULAR EQU 0x02
 ESTAT_POLSADOR EQU 0x01
-ESTAT_BLINKING_10HZ EQU 0x08
-ESTAT_BLINKING_5HZ EQU 0x10
+ESTAT_BLINKING_10HZ EQU 0x04
+ESTAT_BLINKING_5HZ EQU 0x08
 
 POSICIO_A_DESAR_RAM EQU 0x80
 END_BYTE EQU 0x88
@@ -50,7 +51,7 @@ VALOR_A_MULTIPLICAR EQU 0xCD ;205
 TEMPS_100_MSEG EQU 0x14 ;20
 TEMPS_200_MSEG EQU 0x28 ;40
 TEMPS_400_MSEG EQU 0x50 ;80
-TEMPS_500_MSEG EQU 0x64 ;100
+TEMPS_500_MSEG EQU 0x34 ;100 - 0x64
 TEMPS_1000_MSEG EQU 0xC8 ;200
  
 LED0 EQU 0x04
@@ -132,11 +133,13 @@ INIT_PORTS
     
 INIT_TIMER
     ;10001000
+    ;88
     movlw 0x88
     movwf T0CON,0
     bcf RCON, IPEN, 0
     
     ;10100000
+    ;E0
     movlw 0xE0
     movwf INTCON, 0
     
@@ -144,9 +147,13 @@ INIT_TIMER
     return
     
 RESET_TIMER
-    movlw 0xCF
+    ;CF
+    ;3A
+    movlw 0x3C
     movwf TMR0H, 0
-    movlw 0x30
+    ;30
+    ;98
+    movlw 0xA6
     movwf TMR0L, 0
     bcf INTCON, TMR0IF, 0
     return
@@ -175,13 +182,13 @@ LOOP
     btfsc ESTAT, 1,0
     call LEDS_CIRCULAR
     
-    btfsc ESTAT, 2,0
+    btfsc ESTAT, 0,0
     call ESPERA_POLSADOR
     
-    btfsc ESTAT, 3,0
+    btfsc ESTAT, 2,0
     call BLINKING_10HZ
     
-    btfsc ESTAT, 4,0
+    btfsc ESTAT, 3,0
     call BLINKING_5HZ
     
     goto LOOP
@@ -194,9 +201,10 @@ ENVIAR_RF
     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
     clrf LATB, 0
     clrf LATD, 0
-    clrf LEDs, 0
+    clrf LEDS, 0
+    clrf ENVIAT,0
     clrf AUXILIAR,0
-    incf LEDs, 1, 0 
+    incf LEDS, 1, 0 
     call ENVIAR_CONFIRMACIO_RF
     call DIVIDIR_10
     clrf INDEX,0
@@ -205,11 +213,11 @@ ENVIAR_RF
 
 BUCLE_LEDS_ENVIAR_RF
     movlw MAX_LEDS
-    cpfslt LEDs,0
+    cpfslt LEDS,0
     goto FINAL_RF
-    movf RESULTAT_DIVISIO,0,0
 
 BUCLE_INDEX_DIVISOR_ENVIAR_RF 
+    movf RESULTAT_DIVISIO,0,0
     cpfslt INDEX,0 ;Mentre INDEX < RESULTAT_DIVISIO ens quedem aqui
     goto FINAL_BUCLE_INDEX_DIVISOR ;Quan sigui igual, incrementarem variable leds i activarem leds.
     movff POSTINC0, AUXILIAR
@@ -227,10 +235,11 @@ BUCLE_ENVIAR_8_BITS ;Ens quedarem aqui fins que no hem enviat 8 bits
     
 FINAL_BUCLE_ENVIAR 
     incf INDEX, 1,0
+    clrf ENVIAT,0
     goto BUCLE_INDEX_DIVISOR_ENVIAR_RF ;Tornem al seguent 10 percent
     
 FINAL_BUCLE_INDEX_DIVISOR
-    incf LEDs,1,0
+    incf LEDS,1,0
     call ACTIVAR_LEDS_PROCES
     clrf INDEX, 0
     goto BUCLE_LEDS_ENVIAR_RF
@@ -247,30 +256,35 @@ ENVIAR_BIT_SEGONA_MEITAT
     bsf LATC, 5, 0
     btfss AUXILIAR,0,0 ;Si el primer es 1 fiquem la segona part a 0
     bcf LATC, 5, 0
+    incf ENVIAT,1,0
+    rrncf AUXILIAR,1,0
+    call ENVIAR_CONFIRMACIO_BYTE_ENVIAT
+    clrf TEMPS_UN,0
     goto BUCLE_ENVIAR_8_BITS
     
 ACTIVAR_LEDS_PROCES    
     movlw 0x01
-    cpfseq LEDs,0
+    cpfslt LEDS,0
     goto LEDS_PROCES_MAJOR_1
     bsf LATD, LED0, 0
     return
 
 LEDS_PROCES_MAJOR_1
-    btfss LATD, LED3,0
+    btfsc LATD, LED3,0
     goto LEDS_PROCES_LATB
-    rrncf LATD, 1,0
-    bsf LATD, LED4, 0
+    rlncf LATD, 1,0
+    bsf LATD, LED0, 0
     return 
 
 LEDS_PROCES_LATB
-    rrncf LATB, 1,0
-    bsf LATB, LED0, 0
+    bsf LATB, LED4, 0
+    rlncf LATB, 1,0
     return
 
 FINAL_RF
     movlw ESTAT_BLINKING_10HZ 
     movwf ESTAT,0
+    call ENVIAR_END_BYTE
     clrf TEMPS_UN,0
     return
     
@@ -309,7 +323,7 @@ BUCLE_DESAR
     cpfslt RCREG, 0 ;Si rebem el byte de final del ordinador sortim, no el desem
 	goto RETORNA_DESAR 
     movff RCREG, POSTINC0 ;Movem el caracter a la posicio de la ram corresponent
-    incf COMPTA_BYTES ;Incrementem en numero de bytes rebut
+    incf COMPTA_BYTES,1,0 ;Incrementem en numero de bytes rebut
     call ENVIAR_CONFIRMACIO_DESAT ;Confirmarem al ordinador que ho hem desat
     goto BUCLE_DESAR ;Esperem una nova dada
     
@@ -317,6 +331,7 @@ RETORNA_DESAR
     movlw ESTAT_BLINKING_5HZ 
     movwf ESTAT,0
     clrf TEMPS_UN,0
+    ;call ACTIVACIO_LEDS_CIRCULAR
     return
     
 ;***********************************************************    
@@ -337,8 +352,20 @@ ENVIAR_CONFIRMACIO_DESAT
     call ESPERA
     return
     
+ENVIAR_CONFIRMACIO_BYTE_ENVIAT
+    movlw FLAG_BYTE_ENVIAT_MSG
+    movwf TXREG,0
+    call ESPERA
+    return
+    
 ENVIAR_CONFIRMACIO_DESAR
     movlw FLAG_DESAR_MSG
+    movwf TXREG,0
+    call ESPERA
+    return
+    
+ENVIAR_END_BYTE
+    movlw END_BYTE
     movwf TXREG,0
     call ESPERA
     return
@@ -365,6 +392,7 @@ ENVIAR_PETICIO_DESAR
 ;***************** - BLOC DIVIDIR - ************************
     
 DIVIDIR_10
+    clrf RESULTAT_DIVISIO,0
     movlw VALOR_A_MULTIPLICAR
     mulwf COMPTA_BYTES, 0
     movff PRODH, RESULTAT_DIVISIO
@@ -386,73 +414,82 @@ ACTIVACIO_LEDS_CIRCULAR
     movwf ESTAT,0
     clrf LATB,0
     clrf LATD,0
-    clrf TEMPS_UN
+    clrf TEMPS_UN,0
     clrf INDEX,0
-    bsf INDEX, 0,0
+    bsf LATD, LED0, 0 ;Activem el primer bit del LATB
+    ;bcf INDEX, 0,0
     return
     
 LEDS_CIRCULAR
    movlw TEMPS_500_MSEG
-   cpfslt TEMPS_UN
+   cpfslt TEMPS_UN,0
    goto ACTIVAR_LEDS_CIRCULAR
    return
  
 ACTIVAR_LEDS_CIRCULAR
+   clrf TEMPS_UN,0
    btfss INDEX,0,0 ;Comprovem si estem dreta o no
    goto LEDS_CIRCULAR_ESQUERRA
    
 LEDS_CIRCULAR_DRETA
+   ;movff INDEX, LATB
    movlw 0x00
-   cpfseq LATD,0 ;Comprovem que latd no estigui a 0 
+   cpfsgt LATD,0 ;Comprovem que latd no estigui a 0 
    goto LEDS_CIRCULAR_DRETA_LATB ;Si ho esta hem de canviar de registre
-   rrcf LATD,0 ;Rotem el LATD cap a la dreta
-   bcf LATD, 0, 0
-   btfsc STATUS, C,0 ;Si ja tenim carry del primer registre hem danar al seguent
-   goto LEDS_CIRCULAR_DRETA_SEGONA_PART
+   rrcf LATD,1,0 ;Rotem el LATD cap a la dreta
+   bcf LATD, LED3, 0
+   btfsc LATD, 3,0 ;Si ja tenim carry del primer registre hem danar al seguent
+   goto LEDS_CIRCULAR_DRETA_ESQUERRA
    return
-   
-LEDS_CIRCULAR_DRETA_SEGONA_PART
-    clrf LATD,0 ;Borrem LATD
-    bsf LATB, LED4, 0 ;Activem el primer bit del LATB
-    return ;Tornem al loop principal
 
 LEDS_CIRCULAR_DRETA_LATB
-    rrcf LATB,0 
+    rrcf LATB,1,0 
+    bcf LATB,LED9,0
     btfsc STATUS, C,0 ;Si ja hem arribat al final ja no podem anar mes cap a la dreta
-    goto LEDS_CIRCULAR_DRETA_ESQUERRA ;Haurem de canviar de sentit
+    goto LEDS_CIRCULAR_DRETA_SEGONA_PART  
     return ;Tornem al loop principal
     
 LEDS_CIRCULAR_DRETA_ESQUERRA
     clrf INDEX,0 ;Borrem index per decidir que anirem cap a lesquerra
-    bsf LATB, LED9, 0 ;Activem lultim bit de latb 
+    clrf LATD, 0 
+    bsf LATD,LED0,0
     return ;Tornem al bucle principal
-        
+   
+LEDS_CIRCULAR_DRETA_SEGONA_PART
+   bsf LATD, LED3, 0
+   clrf LATB,0
+   return    
+    
+    
     
 LEDS_CIRCULAR_ESQUERRA
    movlw 0x00
-   cpfseq LATD,0
+   cpfsgt LATD,0
    goto LEDS_CIRCULAR_ESQUERRA_LATB
-   rlcf LATD,0
-   bcf LATD, LED3, 0
-   btfsc LATD, 3,0
-   goto LEDS_CIRCULAR_ESQUERRA_DRETA
+   rlcf LATD,1,0
+   bcf LATD, 3, 0
+   btfsc STATUS, C,0
+   goto LEDS_CIRCULAR_ESQ_SEGONA_PART
    return
    
 LEDS_CIRCULAR_ESQUERRA_DRETA
     bsf INDEX,0,0 ;Ativem index per decidir que anirem cap a la dreta
-    bsf LATD, LED0, 0 ;Activem el primers bit de latD 
+    rrcf LATB,1,0
+    clrf LATD,0
     return ;Tornem al bucle principal
    
 LEDS_CIRCULAR_ESQUERRA_LATB
-   rlcf LATB,0
-   btfsc STATUS,C,0
-   bsf LATD, LED3,0
+   rlcf LATB,1,0
+   bcf LATB,LED4,0
+   btfsc LATB,6,0
+   goto LEDS_CIRCULAR_ESQUERRA_DRETA
    return
    
-;LEDS_CIRCULAR_ESQUERRA_SEGONA_PART
- ;   clrf LATD,0
-  ;  bsf LATB, LED4, 0
-   ; return
+LEDS_CIRCULAR_ESQ_SEGONA_PART
+   bsf LATB, LED4,0
+   clrf LATD,0
+   return
+   
    
 BLINKING_10HZ
     movlw TEMPS_100_MSEG
@@ -463,12 +500,12 @@ BLINKING_10HZ
    
 COMPROVA_APAGAR_10HZ
     movlw TEMPS_200_MSEG
-    cpfseq TEMPS_UN,0 ;Si estem en menys de 200 no farem res, sino els apagarem
+    cpfslt TEMPS_UN,0 ;Si estem en menys de 200 no farem res, sino els apagarem
     goto APAGAR_LEDS
     return
     
 BLINKING_5HZ
-    movlw 0x10
+    movlw TEMPS_200_MSEG
     cpfseq TEMPS_UN,0 ;Si encara no estem als 200 mseg no els encendrem
     goto COMPROVA_APAGAR_5HZ ;Si estem per sobre o sota entrarem aqui
     goto ENCENDRE_LEDS
