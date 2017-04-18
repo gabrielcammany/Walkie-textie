@@ -15,11 +15,11 @@ CONFIG WDT = OFF
 ESTAT EQU 0x02   
 TEMPS_UN EQU 0x03    
 COMPTA_BYTES EQU 0x04 
-LEDS EQU 0x04  
-RESULTAT_DIVISIO EQU 0x05
-INDEX EQU 0x06   
-AUXILIAR EQU 0x07   
-ENVIAT EQU 0x08  
+LEDS EQU 0x05  
+RESULTAT_DIVISIO EQU 0x06
+INDEX EQU 0x07   
+AUXILIAR EQU 0x08   
+ENVIAT EQU 0x09  
 
  
 ;*************
@@ -87,6 +87,7 @@ LOW_INT_VECTOR
 HIGH_INT
     call RESET_TIMER
     incf TEMPS_UN,1,0
+    ;bsf LATB,5,0
     retfie FAST;2
   
     
@@ -97,6 +98,13 @@ HIGH_INT
     
 INIT_VARS
     clrf ESTAT,0
+    ;clrf TEMPS_UN,0
+    ;clrf COMPTA_BYTES,0
+    ;clrf LEDS,0  
+    ;clrf RESULTAT_DIVISIO,0
+    ;clrf INDEX,0  
+    ;clrf AUXILIAR,0   
+    ;clrf ENVIAT,0 
     ;clrf TEMPS_UN,0
     return;2
     
@@ -115,6 +123,7 @@ INIT_SIO
     
 INIT_PORTS
     ;clrf TRISA, 0
+    bcf TRISC, 5, 0	;Bit RF
     bsf TRISC, 7, 0	;RX Eusart
     bsf TRISC, 6, 0	;TX Eusart
     
@@ -173,10 +182,10 @@ LOOP
     btfsc PIR1,RCIF,0
     call REBUT
     
-    btfsc LATC,5,0
+    btfsc LATC,4,0
     call POLS_CARREGA_MISSATGE
     
-    btfsc LATC,4,0
+    btfsc LATC,3,0
     call POLS_ENVIAR_RF
     
     btfsc ESTAT, 1,0
@@ -217,6 +226,9 @@ BUCLE_LEDS_ENVIAR_RF
     goto FINAL_RF
 
 BUCLE_INDEX_DIVISOR_ENVIAR_RF 
+    movlw 0x00
+    cpfsgt RESULTAT_DIVISIO,0
+    call ENVIA_WORK
     movf RESULTAT_DIVISIO,0,0
     cpfslt INDEX,0 ;Mentre INDEX < RESULTAT_DIVISIO ens quedem aqui
     goto FINAL_BUCLE_INDEX_DIVISOR ;Quan sigui igual, incrementarem variable leds i activarem leds.
@@ -277,8 +289,14 @@ LEDS_PROCES_MAJOR_1
     return 
 
 LEDS_PROCES_LATB
-    bsf LATB, LED4, 0
+    btfss LATB, LED4,0
+    goto LEDS_PROCES_LATB_INICI
     rlncf LATB, 1,0
+    bsf LATB, LED4, 0
+    return
+    
+LEDS_PROCES_LATB_INICI
+    bsf LATB, LED4, 0
     return
 
 FINAL_RF
@@ -309,10 +327,10 @@ REBUT
 ;**************** - BLOC DESAR - ****************************
 	
 DESA
+    clrf COMPTA_BYTES; 
     call ENVIAR_CONFIRMACIO_DESAR
 
 DESA_SENSE_CONFIRMACIO ;Quan ens apreten el boto no necessitem enviar al pc la confirmacio
-    clrf COMPTA_BYTES; 
     movlw POSICIO_A_DESAR_RAM
     movwf FSR0,0
     
@@ -347,10 +365,24 @@ ENVIAR_CONFIRMACIO_RF
     return
     
 ENVIAR_CONFIRMACIO_DESAT
-    movlw FLAG_DESAT_MSG
+    ;movlw FLAG_DESAT_MSG
+    movf COMPTA_BYTES,0,0
     movwf TXREG,0
     call ESPERA
     return
+    
+ENVIA_WORK
+    movlw 0x13
+    movwf TXREG,0
+    call ESPERA
+    movf RESULTAT_DIVISIO,0,0
+    movwf TXREG,0
+    call ESPERA
+    movlw 0x14
+    movwf TXREG,0
+    call ESPERA
+    return
+    
     
 ENVIAR_CONFIRMACIO_BYTE_ENVIAT
     movlw FLAG_BYTE_ENVIAT_MSG
@@ -394,11 +426,11 @@ ENVIAR_PETICIO_DESAR
 DIVIDIR_10
     clrf RESULTAT_DIVISIO,0
     movlw VALOR_A_MULTIPLICAR
-    mulwf COMPTA_BYTES, 0
+    mulwf COMPTA_BYTES,0
     movff PRODH, RESULTAT_DIVISIO
-    rrncf RESULTAT_DIVISIO,1
-    rrncf RESULTAT_DIVISIO,1
-    rrncf RESULTAT_DIVISIO,1
+    rrncf RESULTAT_DIVISIO,1,0
+    rrncf RESULTAT_DIVISIO,1,0
+    rrncf RESULTAT_DIVISIO,1,0
     movlw 0x1F ;Assegurarnos que els bits que hem afegit son 0
     andwf RESULTAT_DIVISIO,1,0
     return

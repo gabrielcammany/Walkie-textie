@@ -12,7 +12,7 @@ import org.p2f1.views.MainWindowView;
 import com.SerialPort.SerialPort;
 
 public class MainWindowController implements ActionListener{
-
+    private static boolean enviat = false;
 	private MainWindowView view = null;
 	private MainWindowModel model = null;
 	private SerialPort sp = null;
@@ -33,6 +33,7 @@ public class MainWindowController implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
 		if(e.getSource() instanceof JButton){
 			JButton btn = (JButton) e.getSource();
             try {
@@ -44,15 +45,11 @@ public class MainWindowController implements ActionListener{
                             byte flag_enviar_rf_msg = (byte) (Integer.parseInt("82",16));
                             sp.writeByte(flag_enviar_rf_msg);
                             byte resposta = sp.readByte();
-                            while(resposta == 0){ ;
-                                resposta = sp.readByte();
-                            }
-                            while(resposta == 0){ ;
-                                resposta = sp.readByte();
-                            }
-                            while(resposta != end_byte){
-                                resposta = sp.readByte();
-                                System.out.print(" Reposta RF Enviat: "+resposta+"\n");
+                            if(enviat){
+                                while(resposta != end_byte){
+                                    resposta = sp.readByte();
+                                    if(resposta != 0)System.out.print(" Reposta RF Enviat: "+resposta+"\n");
+                                }
                             }
                             System.out.print(" Reposta RF Enviat: "+resposta+"\n");
                         } catch (Exception e1) {
@@ -60,6 +57,7 @@ public class MainWindowController implements ActionListener{
                         }
                         break;
                     case MainWindowView.BTN_UART:
+                        enviat = true;
                         //TODO Afegir el codi per enviar per UART
                         byte flag_desar_msg = (byte) (Integer.parseInt("81",16));
                         byte flag_desat_msg = (byte) (Integer.parseInt("85",16));
