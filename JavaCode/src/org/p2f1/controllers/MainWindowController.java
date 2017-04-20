@@ -39,7 +39,6 @@ public class MainWindowController implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        portThread.setEscolta(false);
 		if(e.getSource() instanceof JButton){
 			JButton btn = (JButton) e.getSource();
             try {
@@ -49,13 +48,16 @@ public class MainWindowController implements ActionListener{
                         try {
                             sp.writeByte(flag_enviar_rf_msg);
 
+
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
                         break;
                     case MainWindowView.BTN_UART:
                         //TODO Afegir el codi per enviar per UART
+                        portThread.setEscolta(false);
                         enviar(false);
+                        portThread.setEscolta(true);
                         break;
 
                 }
@@ -64,7 +66,6 @@ public class MainWindowController implements ActionListener{
             }
 
 		}
-        portThread.setEscolta(true);
 	}
 	
 	public void showView(){
@@ -86,20 +87,21 @@ public class MainWindowController implements ActionListener{
                     }
                 }
                 int i = 0;
-                System.out.print(" Index1: "+i+"\n");
-                System.out.print(" Mida1: "+utf8Bytes.length+"\n");
+                //System.out.print(" Mida1: "+utf8Bytes.length+"\n");
                 for (byte value:utf8Bytes) {
-                    System.out.print(" Gika: \n");
-                    System.out.print(" Byte: "+value+"\n");
+                    //System.out.print(" Byte Enviat: "+value+"\n");
                     sp.writeByte(value);
                     resposta = sp.readByte();
                     while(resposta == 0){ ;
                         resposta = sp.readByte();
+                        //System.out.print(" Mhe quedat aqui: "+resposta+"\n");
                     }
-                    System.out.print(" Index2: "+i+"\n");
+                    //System.out.print(" Byte Desat: "+resposta+"\n");
+                    //ystem.out.print(" Index: "+i+"\n");
                     i++;
                 }
                 sp.writeByte(end_byte);
+                System.out.print(" Done!\n");
 
             }else{
                 JOptionPane.showMessageDialog(null, "No has escrit cap missatge! " + confirmacio, "Error",JOptionPane.ERROR_MESSAGE);

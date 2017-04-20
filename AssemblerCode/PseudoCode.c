@@ -151,6 +151,51 @@ void enviaRF(){
 		LEDs = 0x01; //Ja que es del 1-10
 		enviaConfirmacio();
 		result = dividir10();
+		restant = comptaBytes;
+		char i = 0x00;
+		while(restant != 0){ // Result es el numero de bytes total entre 10
+			POSTINC0 -> AUX; //Afegim el valor de la ram al auxiliar
+			tempsUn = 0x00; // Per tal de fer el temps a 0 i 1 amb la codificacio manchester, fiquem 
+							//tempsUn a 0 per quan salti la interrupcio
+			while(enviat<0x08){ //Enviat son els 8 bits que hem denviar
+				if(tempsUn == 0x01){
+					enviar_bit_pos(); //Primers 5 mseg
+				}
+				if(tempsUn == 0x02){
+					enviar_bit_neg(); //Segon 5 mseg
+					AUX >> 1; //Posem la seguent dada 
+					tempsUn = 0x00; //Reiniciem el comptador
+				}
+			}
+			restant--;
+			enviat = 0;
+			i++;
+			if(i==result){
+				LEDs++; 
+				activar_leds();
+				i=0;
+			}
+		}
+		while(LEDS<10){
+			LEDs++;
+			activar_leds();
+		}
+		ESTAT = ESTAT_BLINKING_10HZ;
+	}else{
+		activacio_leds_circular();
+	}
+}
+
+
+//Fet
+void enviaRF(){
+	if(comptaBytes != 0x00){
+		LATC = 0x00;
+		LATD = 0x00;
+		LEDs = 0x01; //Ja que es del 1-10
+		enviaConfirmacio();
+		result = dividir10();
+		restant = comptaBytes;
 		char i = 0x00;
 		while(LEDs < MAX_LEDS){ //Hi hauran 10 leds i anira 10-1
 			while(i<result){ // Result es el numero de bytes total entre 10
@@ -167,10 +212,11 @@ void enviaRF(){
 						tempsUn = 0x00; //Reiniciem el comptador
 					}
 				}
+				restant--;
 				enviat = 0;
 				i++;
 			}
-			i = 0;
+			if(restant !=0)i = 0;
 			LEDs++; 
 			activar_leds();
 		}

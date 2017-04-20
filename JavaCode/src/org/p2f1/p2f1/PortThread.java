@@ -31,11 +31,14 @@ public class PortThread implements Runnable {
                     if(aux == flag){
                         mainWindowController.enviar(true);
                         mainWindowController.restart();
+                        //System.out.print("Dintre");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //System.out.print("Escoltant\n");
             }
+            //System.out.print("No Escoltant\n");
         }
     }
 
