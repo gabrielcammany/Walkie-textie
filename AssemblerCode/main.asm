@@ -18,7 +18,7 @@ COMPTA_BYTES EQU 0x04
 LEDS EQU 0x05  
 RESULTAT_DIVISIO EQU 0x06
 INDEX EQU 0x07   
-AUXILIAR EQU 0x08   
+AUXILIAR EQU 0x10   
 ENVIAT EQU 0x09  
 
  
@@ -52,7 +52,7 @@ TEMPS_100_MSEG EQU 0x14 ;20
 TEMPS_200_MSEG EQU 0x28 ;40
 TEMPS_400_MSEG EQU 0x50 ;80
 TEMPS_500_MSEG EQU 0x34 ;100 - 0x64
-TEMPS_1000_MSEG EQU 0xC8 ;200
+TEMPS_1000_MSEG EQU 0xF8 ;200
  
 LED0 EQU 0x04
 LED1 EQU 0x05
@@ -98,14 +98,16 @@ HIGH_INT
     
 INIT_VARS
     clrf ESTAT,0
-    ;clrf TEMPS_UN,0
-    ;clrf COMPTA_BYTES,0
-    ;clrf LEDS,0  
-    ;clrf RESULTAT_DIVISIO,0
-    ;clrf INDEX,0  
-    ;clrf AUXILIAR,0   
-    ;clrf ENVIAT,0 
-    ;clrf TEMPS_UN,0
+    clrf TEMPS_UN,0
+    clrf COMPTA_BYTES,0
+    clrf LEDS,0  
+    clrf RESULTAT_DIVISIO,0
+    clrf INDEX,0  
+    clrf AUXILIAR,0   
+    clrf ENVIAT,0 
+    clrf TEMPS_UN,0
+    clrf PORTB,0
+    clrf PORTD,0
     return;2
     
 INIT_SIO
@@ -123,6 +125,8 @@ INIT_SIO
     
 INIT_PORTS
     ;clrf TRISA, 0
+    bsf TRISC, 3, 0	;Polsador Carrega
+    bsf TRISC, 4, 0	;Polsador RF
     bcf TRISC, 5, 0	;Bit RF
     bsf TRISC, 7, 0	;RX Eusart
     bsf TRISC, 6, 0	;TX Eusart
@@ -182,10 +186,10 @@ LOOP
     btfsc PIR1,RCIF,0
     call REBUT
     
-    btfsc LATC,4,0
+    btfsc PORTC,3,0
     call POLS_CARREGA_MISSATGE
     
-    btfsc LATC,3,0
+    btfsc PORTC,4,0
     call POLS_ENVIAR_RF
     
     btfsc ESTAT, 1,0
@@ -228,7 +232,7 @@ BUCLE_LEDS_ENVIAR_RF
 BUCLE_INDEX_DIVISOR_ENVIAR_RF 
     movlw 0x00
     cpfsgt RESULTAT_DIVISIO,0
-    call ENVIA_WORK
+    incf RESULTAT_DIVISIO,1,0
     movf RESULTAT_DIVISIO,0,0
     cpfslt INDEX,0 ;Mentre INDEX < RESULTAT_DIVISIO ens quedem aqui
     goto FINAL_BUCLE_INDEX_DIVISOR ;Quan sigui igual, incrementarem variable leds i activarem leds.
@@ -253,6 +257,8 @@ FINAL_BUCLE_ENVIAR
 FINAL_BUCLE_INDEX_DIVISOR
     incf LEDS,1,0
     call ACTIVAR_LEDS_PROCES
+    movf COMPTA_BYTES,0,0
+    cpfsgt LEDS,0
     clrf INDEX, 0
     goto BUCLE_LEDS_ENVIAR_RF
 
@@ -270,7 +276,7 @@ ENVIAR_BIT_SEGONA_MEITAT
     bcf LATC, 5, 0
     incf ENVIAT,1,0
     rrncf AUXILIAR,1,0
-    call ENVIAR_CONFIRMACIO_BYTE_ENVIAT
+    ;call ENVIAR_CONFIRMACIO_BYTE_ENVIAT
     clrf TEMPS_UN,0
     goto BUCLE_ENVIAR_8_BITS
     
@@ -302,7 +308,7 @@ LEDS_PROCES_LATB_INICI
 FINAL_RF
     movlw ESTAT_BLINKING_10HZ 
     movwf ESTAT,0
-    call ENVIAR_END_BYTE
+    ;call ENVIAR_END_BYTE
     clrf TEMPS_UN,0
     return
     
@@ -327,10 +333,12 @@ REBUT
 ;**************** - BLOC DESAR - ****************************
 	
 DESA
-    clrf COMPTA_BYTES; 
+    clrf COMPTA_BYTES,0
     call ENVIAR_CONFIRMACIO_DESAR
 
 DESA_SENSE_CONFIRMACIO ;Quan ens apreten el boto no necessitem enviar al pc la confirmacio
+    clrf COMPTA_BYTES,0
+    clrf ESTAT,0
     movlw POSICIO_A_DESAR_RAM
     movwf FSR0,0
     
@@ -408,11 +416,10 @@ ESPERA
     return
     
 ENVIAR_PETICIO_DESAR
-    clrf AUXILIAR
-    clrf TEMPS_UN
+    clrf AUXILIAR,0
+    clrf TEMPS_UN,0
     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG
     movwf TXREG,0
-    btfss TXSTA,TRMT,0
     call ESPERA
     movlw ESTAT_POLSADOR
     movwf ESTAT,0
@@ -448,6 +455,7 @@ ACTIVACIO_LEDS_CIRCULAR
     clrf LATD,0
     clrf TEMPS_UN,0
     clrf INDEX,0
+    clrf AUXILIAR,0
     bsf LATD, LED0, 0 ;Activem el primer bit del LATB
     ;bcf INDEX, 0,0
     return
@@ -491,8 +499,6 @@ LEDS_CIRCULAR_DRETA_SEGONA_PART
    bsf LATD, LED3, 0
    clrf LATB,0
    return    
-    
-    
     
 LEDS_CIRCULAR_ESQUERRA
    movlw 0x00
@@ -568,24 +574,38 @@ APAGAR_LEDS
     
 POLS_CARREGA_MISSATGE
     ;goto ENVIAR_PETICIO_DESAR
+    clrf TEMPS_UN,0
+    call ESPERA_16MS
+    goto ENVIAR_PETICIO_DESAR
     return
     
 POLS_ENVIAR_RF
     ;goto ENVIAR_RF
+    clrf TEMPS_UN,0
+    call ESPERA_16MS
+    goto ENVIAR_RF;
+    return
+    
+ESPERA_16MS
+    movlw 0x03
+    cpfsgt TEMPS_UN,0
+    goto ESPERA_16MS
     return
 
 ESPERA_POLSADOR
     movlw TEMPS_1000_MSEG
-    cpfslt TEMPS_UN
-    goto COMPROVACIO_10_SEG
+    cpfsgt TEMPS_UN,0
     return
+    goto COMPROVACIO_10_SEG
+    ;return
     
 COMPROVACIO_10_SEG
     incf AUXILIAR,1,0
     movlw 0x32 ;50 ja que 50*200 son 10k
-    cpfslt AUXILIAR,0 ;Si encara no hem arribat a 50 encara ens hem desperar
-    call ACTIVACIO_LEDS_CIRCULAR
+    cpfseq AUXILIAR,0 ;Si encara no hem arribat a 50 encara ens hem desperar
     return
+    goto ACTIVACIO_LEDS_CIRCULAR
+    ;return
     
 INCREMENTAR_SENSE_LEDS
     incf AUXILIAR,1,0

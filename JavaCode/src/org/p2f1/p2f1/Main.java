@@ -13,7 +13,7 @@ public class Main {
 		MainWindowModel model = new MainWindowModel();
 		MainWindowController controller = new MainWindowController(view, model);
 		controller.showView();
-		
+		controller.start();
 	}
 	
 }

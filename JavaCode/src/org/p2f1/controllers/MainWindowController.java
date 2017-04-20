@@ -6,16 +6,22 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import org.omg.PortableServer.POA;
 import org.p2f1.models.MainWindowModel;
+import org.p2f1.p2f1.PortThread;
 import org.p2f1.views.MainWindowView;
 
 import com.SerialPort.SerialPort;
 
 public class MainWindowController implements ActionListener{
-    private static boolean enviat = false;
 	private MainWindowView view = null;
 	private MainWindowModel model = null;
 	private SerialPort sp = null;
+	private PortThread portThread = null;
+    private final byte end_byte = (byte) (Integer.parseInt("88",16));
+    private final byte flag_desar_msg = (byte) (Integer.parseInt("81",16));
+    private final byte flag_enviar_rf_msg = (byte) (Integer.parseInt("82",16));
+    private final byte flag = (byte) (Integer.parseInt("84",16));
 	
 	public MainWindowController(MainWindowView view, MainWindowModel model){
 		try{
@@ -25,7 +31,7 @@ public class MainWindowController implements ActionListener{
 			this.view.associateController(this);
 			this.view.setBaudRateList(sp.getAvailableBaudRates());
 			this.view.setPortsList(sp.getPortList());
-            sp.openPort("COM3",19200);
+            this.portThread = new PortThread(sp,this);
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
@@ -33,69 +39,23 @@ public class MainWindowController implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+        portThread.setEscolta(false);
 		if(e.getSource() instanceof JButton){
 			JButton btn = (JButton) e.getSource();
             try {
-                byte end_byte = (byte) (Integer.parseInt("88",16));
                 switch(btn.getName()){
                     case MainWindowView.BTN_RF:
                         //TODO Afegir el codi per enviar per RF
                         try {
-                            byte flag_enviar_rf_msg = (byte) (Integer.parseInt("82",16));
                             sp.writeByte(flag_enviar_rf_msg);
-                            byte resposta = sp.readByte();
-                            if(enviat){
-                                while(resposta != end_byte){
-                                    resposta = sp.readByte();
-                                    if(resposta != 0)System.out.print(" Reposta RF Enviat: "+resposta+"\n");
-                                }
-                            }
-                            System.out.print(" Reposta RF Enviat: "+resposta+"\n");
+
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
                         break;
                     case MainWindowView.BTN_UART:
-                        enviat = true;
                         //TODO Afegir el codi per enviar per UART
-                        byte flag_desar_msg = (byte) (Integer.parseInt("81",16));
-                        byte flag_desat_msg = (byte) (Integer.parseInt("85",16));
-                        //byte flag_confirmacio_msg = Byte.parseByte("83", 16);
-                        //byte flag_desar_sense_confirmacio_msg = Byte.parseByte("84", 16);
-                        try {
-                            //sp.openPort(view.getPort(),view.getBaudRate());
-                            if(model.checkInputText(view.getText())){
-                                byte[] utf8Bytes = view.getText().getBytes("UTF-8");
-                                sp.writeByte(flag_desar_msg);
-                                byte resposta = sp.readByte();
-                                while(resposta == 0){ ;
-                                    resposta = sp.readByte();
-                                }
-                                System.out.print(" Reposta Enviat: "+resposta+"\n");
-                                int i = 0;
-                                System.out.print(" Index1: "+i+"\n");
-                                System.out.print(" Mida1: "+utf8Bytes.length+"\n");
-                                for (byte value:utf8Bytes) {
-                                    sp.writeByte(value);
-                                    resposta = sp.readByte();
-                                    while(resposta == 0){ ;
-                                        resposta = sp.readByte();
-                                    }
-                                    System.out.print(" Index2: "+i+"\n");
-                                    System.out.print(" Reposta Enviat: "+resposta+"\n");
-                                    i++;
-                                }
-                                sp.writeByte(end_byte);
-
-                            }else{
-                                JOptionPane.showMessageDialog(null, "No has escrit cap missatge!", "Error",JOptionPane.ERROR_MESSAGE);
-                            }
-
-                        } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(null, "Error en enviar les dades!\n "+ e1.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
-
-                        }
+                        enviar(false);
                         break;
 
                 }
@@ -104,10 +64,70 @@ public class MainWindowController implements ActionListener{
             }
 
 		}
+        portThread.setEscolta(true);
 	}
 	
 	public void showView(){
 		view.setVisible(true);
 	}
-	
+
+	public void enviar(boolean confirmacio){
+        try {
+            if(model.checkInputText(view.getText())){
+                byte resposta;
+                byte[] utf8Bytes = view.getText().getBytes("UTF-8");
+                if(confirmacio){
+                    sp.writeByte(flag);
+                }else{
+                    sp.writeByte(flag_desar_msg);
+                    resposta = sp.readByte();
+                    while(resposta == 0){ ;
+                        resposta = sp.readByte();
+                    }
+                }
+                int i = 0;
+                System.out.print(" Index1: "+i+"\n");
+                System.out.print(" Mida1: "+utf8Bytes.length+"\n");
+                for (byte value:utf8Bytes) {
+                    System.out.print(" Gika: \n");
+                    System.out.print(" Byte: "+value+"\n");
+                    sp.writeByte(value);
+                    resposta = sp.readByte();
+                    while(resposta == 0){ ;
+                        resposta = sp.readByte();
+                    }
+                    System.out.print(" Index2: "+i+"\n");
+                    i++;
+                }
+                sp.writeByte(end_byte);
+
+            }else{
+                JOptionPane.showMessageDialog(null, "No has escrit cap missatge! " + confirmacio, "Error",JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e1) {
+            JOptionPane.showMessageDialog(null, "Error en enviar les dades!\n "+ e1.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
+
+        }
+    }
+
+    public void start(){
+        try {
+            sp.openPort("COM3",19200);
+            portThread.setPort(sp);
+            portThread.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void restart() {
+        try {
+            sp.closePort();
+            sp.openPort("COM3",19200);
+            portThread.setPort(sp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -122,7 +122,7 @@ public class MainWindowView  extends JFrame{
 		filePanel.setMaximumSize(new Dimension(1000,50));
 		
 		//Creem els TextFields
-		jtaText = new JTextArea ("Escriu aquí el text a enviar.");
+		jtaText = new JTextArea ();
 		sp = new JScrollPane(jtaText); 
 		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	    sp.setBounds(3,3,400,400);
@@ -205,6 +205,7 @@ public class MainWindowView  extends JFrame{
 	public String getPort(){
 		return (String)comboPort.getSelectedItem();
 	}
+
 	public int getBaudRate(){
 		return (int)comboBaud.getSelectedItem();
 	}
