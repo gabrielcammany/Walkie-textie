@@ -7,6 +7,7 @@ LIST P=18F4321, F=INHX32
 CONFIG OSC = HSPLL          
 CONFIG PBADEN = DIG
 CONFIG WDT = OFF
+CONFIG LVP = OFF
 
 ;*************
 ;* VARIABLES *
@@ -445,6 +446,7 @@ ENVIAR_PETICIO_DESAR
     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG
     movwf TXREG,0
     call ESPERA
+    clrf TEMPS_UN,0
     movlw ESTAT_POLSADOR
     movwf ESTAT,0
     return
@@ -607,21 +609,35 @@ APAGAR_LEDS
 ;***************** - BLOC POLSADORS - ***************************
     
 POLS_CARREGA_MISSATGE
-    call ESPERA_16MS
+    clrf LATB,0
+    clrf LATD,0
     clrf TEMPS_UN,0
+    call ESPERA_16MS
+    call ESPERA_BAIXAR_3
     goto ENVIAR_PETICIO_DESAR
+    return
+    
+ESPERA_BAIXAR_3
+    btfsc PORTC,3,0
+    goto $-2
+    return
+    
+ESPERA_BAIXAR_4
+    btfsc PORTC,4,0
+    goto $-2
     return
     
 POLS_ENVIAR_RF
     clrf LATB,0
     clrf LATD,0
     call ESPERA_16MS
+    call ESPERA_BAIXAR_4
     clrf TEMPS_UN,0
     goto ENVIAR_RF_SENSE_CONFIRMACIO;
     return
     
 ESPERA_16MS
-    movlw 0x04
+    movlw 0x08
     cpfseq TEMPS_UN,0
     goto $-2
     return

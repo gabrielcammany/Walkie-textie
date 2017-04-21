@@ -3,8 +3,7 @@ package org.p2f1.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import org.omg.PortableServer.POA;
 import org.p2f1.models.MainWindowModel;
@@ -57,13 +56,13 @@ public class MainWindowController implements ActionListener{
                         //TODO Afegir el codi per enviar per UART
                         portThread.setEscolta(false);
                         enviar(false);
-                        portThread.setEscolta(true);
                         break;
 
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
+            portThread.setEscolta(true);
 
 		}
 	}
@@ -102,9 +101,10 @@ public class MainWindowController implements ActionListener{
                 }
                 sp.writeByte(end_byte);
                 System.out.print(" Done!\n");
+                System.out.print("Boto\n");
 
             }else{
-                JOptionPane.showMessageDialog(null, "No has escrit cap missatge! " + confirmacio, "Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No has escrit cap missatge! ", "Error",JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (Exception e1) {
@@ -115,7 +115,9 @@ public class MainWindowController implements ActionListener{
 
     public void start(){
         try {
-            sp.openPort("COM3",19200);
+            //System.out.print(view.getPort()+"\n");
+            System.out.print(view.getBaudRate() +"\n");
+            sp.openPort(view.getPort(),19200);
             portThread.setPort(sp);
             portThread.run();
         } catch (Exception e) {
@@ -125,8 +127,10 @@ public class MainWindowController implements ActionListener{
 
     public void restart() {
         try {
+            //System.out.print(view.getPort()+"\n");
+            System.out.print(view.getBaudRate() +"\n");
             sp.closePort();
-            sp.openPort("COM3",19200);
+            sp.openPort(view.getPort(),19200);
             portThread.setPort(sp);
         } catch (Exception e) {
             e.printStackTrace();

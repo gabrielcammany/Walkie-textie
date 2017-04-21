@@ -97,6 +97,7 @@ public class MainWindowView  extends JFrame{
 		
 		//Afegim els components al port Panel
 		portPanel.add(lblBaudRate);
+		comboBaud.setSelectedItem(19200);
 		portPanel.add(comboBaud);
 		portPanel.add(lblPort);
 		portPanel.add(comboPort);
@@ -175,10 +176,13 @@ public class MainWindowView  extends JFrame{
 		//Assignem el nom per distingir els botons
 		btnUART.setName(BTN_UART);
 		btnRF.setName(BTN_RF);
+		//comboBaud.setName("BAUD");
 		
 		//Assignem el controlador dels botons
 		btnUART.addActionListener(controller);
 		btnRF.addActionListener(controller);
+		 //comboBaud.addActionListener(controller);
+		//comboPort.addActionListener(controller);
 
 		
 		
