@@ -23,11 +23,11 @@ void myItoa(int num){
 void Menu(void){
     SiPutsCooperatiu("\r\nLes opcions de test son:\r\n\0");
     SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("1-Visualitzacio del timestamp\r\n\0");
-    SiPutsCooperatiu("2-Visualitzacio dels pulsadors\r\n\0");
-    SiPutsCooperatiu("3-Encendre/apagar altaveu\r\n\0");
-    SiPutsCooperatiu("4-Mostrar el numero del polsador\r\n\0");
-    SiPutsCooperatiu("5-Reset\r\n\n\0");
+    SiPutsCooperatiu("1-Introduir un nou identificador\r\n\0");
+    SiPutsCooperatiu("2-Consultar ID actual\r\n\0");
+    SiPutsCooperatiu("3-Consultar trames identificades\r\n\0");
+    SiPutsCooperatiu("4-Consultar trames rebudes totals\r\n\0");
+    SiPutsCooperatiu("5-Visualitzar	l?últim	missatge rebut\r\n\n\0");
     SiPutsCooperatiu("\r\n");
     SiPutsCooperatiu("Per sortir de qualsevol opcio, prem ESC\r\n");
 }
@@ -37,7 +37,6 @@ void initPropaganda(void){
     SiPutsCooperatiu(PROPAGANDA_1);
     SiPutsCooperatiu(PROPAGANDA_2);
     Menu();
-    timestamp = 0;
     timerPropaganda= TiGetTimer();
     estatPropaganda = 0;
 }
@@ -67,8 +66,6 @@ void MotorPropaganda(void){
         case 1:
             //Mostrar timestamp
             if (TiGetTics(timerPropaganda) > 1000){
-                if (++timestamp == 10000) timestamp=0;
-                myItoa(timestamp);
                 SiSendChar('\r');
                 SiPutsCooperatiu(temp);
                 TiResetTics(timerPropaganda);
@@ -84,7 +81,6 @@ void MotorPropaganda(void){
             //Visualització pulsadors
             if (TiGetTics(timerPropaganda) > 1000){
                 TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
                 SiSendChar('\r');
                 SiPutsCooperatiu("PB1: \0");
                     SiSendChar(getPB1()+'0');
@@ -106,15 +102,12 @@ void MotorPropaganda(void){
             break;
 
         case 4:
-           // SiPutsCooperatiu("4-Mostrar el numero del polsador\r\n\0");
-
                 if (TiGetTics(timerPropaganda) > 1000){
-                TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
-                SiSendChar('\r');
-                SiPutsCooperatiu("Numero: \0");
-                    SiSendChar(getNumero()+'0');
-                estatPropaganda = 4;
+                    TiResetTics(timerPropaganda);
+                    SiSendChar('\r');
+                    SiPutsCooperatiu("Numero: \0");
+                        SiSendChar(getNumero()+'0');
+                    estatPropaganda = 4;
                 }
             if (SiCharAvail() != 0){
                 if (SiGetChar() == 27){
@@ -122,7 +115,6 @@ void MotorPropaganda(void){
                     estatPropaganda=0;
                 }
             }
-
             break;
         
         case 5:
@@ -136,7 +128,6 @@ void MotorPropaganda(void){
         case 31:
             if (TiGetTics(timerPropaganda) > 1000){
                 TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
             }
             if (SiCharAvail() != 0){
                 switch (SiGetChar()){

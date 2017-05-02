@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Practica 2_V3.X
+PROJECTNAME=Phase 2
 
 # Active Configuration
 DEFAULTCONF=default

@@ -90,21 +90,21 @@ void LcMotor(char priority) {
      if (priority){
        TramitaOrdre(priority);
      }else{
-    switch (estat){
-        case 0:
-             if(i2cFree()){
-              TramitaOrdre(priority);
-              estat=0;
-              TiResetTics(timerLCD);
-             }
-            break;
-        case 1:
-            if(TiGetTics(timerLCD)>10){
-                estat=0;
-            }
-            break;
-    }
-  }
+        switch (estat){
+            case 0:
+                 if(i2cFree()){
+                  TramitaOrdre(priority);
+                  estat=0;
+                  TiResetTics(timerLCD);
+                 }
+                break;
+            case 1:
+                if(TiGetTics(timerLCD)>10){
+                    estat=0;
+                }
+                break;
+        }
+     }
 
 #endif
 }

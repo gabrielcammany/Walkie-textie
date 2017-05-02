@@ -36,6 +36,7 @@ void motors(){
                 // Les ordres del I2c sens desordenarien i seria un pitate.
     MotorI2C();
     MotorLCD();
+    //MotorPWM()
 
 }
 
