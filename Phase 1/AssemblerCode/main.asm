@@ -28,7 +28,6 @@ RESTANT EQU 0x13
 ;*************
 ;* CONSTANTS *
 ;*************
-ZERO EQU 0x00
 POLS_CARREGA EQU 0x05   
 POLS_ENVIA_RF EQU 0x04 
 BIT_RESPOSTA_PC EQU 0x08  
@@ -81,17 +80,16 @@ HI_INT_VECTOR
 
     ORG 0x000018
 LOW_INT_VECTOR
-    retfie FAST		
-
+    retfie FAST	
 
 ;***********************************
 ;* RUTINES DE SERVEI D'INTERRUPCIï¿½ *
 ;***********************************
+    
 HIGH_INT
     call RESET_TIMER
     incf TEMPS_UN,1,0
     retfie FAST;2
-  
     
 ;****************************
 ;* MAIN I RESTA DE FUNCIONS *
@@ -102,6 +100,7 @@ INIT_VARS
     clrf ESTAT,0
     clrf TEMPS_UN,0
     clrf COMPTA_BYTES_L,0
+    clrf COMPTA_BYTES_H,0
     clrf LEDS,0  
     clrf RESULTAT_DIVISIO,0
     clrf INDEX,0  
@@ -218,7 +217,7 @@ ENVIAR_RF
     goto ENVIAR
    
 ENVIAR_RF_SENSE_CONFIRMACIO
-    movlw ZERO
+    movlw 0x00
     cpfsgt COMPTA_BYTES_L, 0
     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
     
@@ -309,48 +308,10 @@ FINAL_RF
     clrf TEMPS_UN,0
     return
     
-
-ACTIVAR_LEDS_PROCES    
-    movlw 0x01
-    cpfslt LEDS,0
-    goto LEDS_PROCES_MAJOR_1
-    bsf LATD, LED0, 0
-    return
-
-LEDS_PROCES_MAJOR_1
-    btfsc LATD, LED3,0
-    goto LEDS_PROCES_LATB
-    rlncf LATD, 1,0
-    bsf LATD, LED0, 0
-    return 
-
-LEDS_PROCES_LATB
-    btfss LATB, LED4,0
-    goto LEDS_PROCES_LATB_INICI
-    rlncf LATB, 1,0
-    bsf LATB, LED4, 0
-    return
-    
-LEDS_PROCES_LATB_INICI
-    bsf LATB, LED4, 0
-    return
     
 ;***********************************************************   
     
-REBUT
-    btfss RCREG, 7,0 ;Qualsevol byte rebut que tingui aquest bit a 1 es refereix a una resposta del pc
-    return ;Si rebem un byte i no esta activat no hauriem dentrar aqui
-    movlw FLAG_DESAR_MSG ;Valor del RCREG per enviar per RF
-    cpfsgt RCREG,0 ;Si es mes gran no desara el missatge
-    goto DESA ;Desem els bytes
-    movlw FLAG_ENVIAR_RF_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
-    cpfsgt RCREG,0
-    goto ENVIAR_RF ;Enviar dades per RF
-    movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
-    cpfsgt RCREG,0
-    goto DESA_SENSE_CONFIRMACIO ;Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
-    return
- 
+    
 ;**************** - BLOC DESAR - ****************************
 	
 DESA
@@ -404,20 +365,7 @@ ENVIAR_CONFIRMACIO_DESAT
     movlw FLAG_DESAT_MSG
     movwf TXREG,0
     call ESPERA
-    return
-    
-ENVIA_WORK
-    movlw 0x13
-    movwf TXREG,0
-    call ESPERA
-    movf RESULTAT_DIVISIO,0,0
-    movwf TXREG,0
-    call ESPERA
-    movlw 0x14
-    movwf TXREG,0
-    call ESPERA
-    return
-    
+    return 
     
 ENVIAR_CONFIRMACIO_BYTE_ENVIAT
     movlw FLAG_BYTE_ENVIAT_MSG
@@ -450,6 +398,21 @@ ENVIAR_PETICIO_DESAR
     movlw ESTAT_POLSADOR
     movwf ESTAT,0
     return
+    
+REBUT
+    btfss RCREG, 7,0 ;Qualsevol byte rebut que tingui aquest bit a 1 es refereix a una resposta del pc
+    return ;Si rebem un byte i no esta activat no hauriem dentrar aqui
+    movlw FLAG_DESAR_MSG ;Valor del RCREG per enviar per RF
+    cpfsgt RCREG,0 ;Si es mes gran no desara el missatge
+    goto DESA ;Desem els bytes
+    movlw FLAG_ENVIAR_RF_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
+    cpfsgt RCREG,0
+    goto ENVIAR_RF ;Enviar dades per RF
+    movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
+    cpfsgt RCREG,0
+    goto DESA_SENSE_CONFIRMACIO ;Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
+    return
+ 
     
 ;***********************************************************    
 
@@ -496,6 +459,8 @@ ACTIVACIO_LEDS_CIRCULAR
     clrf AUXILIAR,0
     bsf LATD, LED0, 0 ;Activem el primer bit del LATB
     return
+    
+		;*******************
     
 LEDS_CIRCULAR
    movlw TEMPS_500_MSEG
@@ -564,6 +529,7 @@ LEDS_CIRCULAR_ESQ_SEGONA_PART
    clrf LATD,0
    return
    
+		;*******************
    
 BLINKING_10HZ
     movlw TEMPS_100_MSEG
@@ -592,9 +558,7 @@ COMPROVA_APAGAR_5HZ
     return
   
 ENCENDRE_LEDS
-    ;movlw 0x3F
     setf LATB,0
-    ;movlw 0x0F
     setf LATD,0
     return
     
@@ -602,6 +566,33 @@ APAGAR_LEDS
     clrf TEMPS_UN,0
     clrf LATB,0
     clrf LATD,0
+    return
+    
+		;******************* 
+
+ACTIVAR_LEDS_PROCES    
+    movlw 0x01
+    cpfslt LEDS,0
+    goto LEDS_PROCES_MAJOR_1
+    bsf LATD, LED0, 0
+    return
+
+LEDS_PROCES_MAJOR_1
+    btfsc LATD, LED3,0
+    goto LEDS_PROCES_LATB
+    rlncf LATD, 1,0
+    bsf LATD, LED0, 0
+    return 
+
+LEDS_PROCES_LATB
+    btfss LATB, LED4,0
+    goto LEDS_PROCES_LATB_INICI
+    rlncf LATB, 1,0
+    bsf LATB, LED4, 0
+    return
+    
+LEDS_PROCES_LATB_INICI
+    bsf LATB, LED4, 0
     return
     
 ;***********************************************************  
@@ -664,7 +655,6 @@ RETORNA_POLSADOR
     return
     
 ;***********************************************************  
-    
 ;*******
 ;* END *
 ;*******    
