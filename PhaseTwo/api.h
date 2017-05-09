@@ -19,6 +19,7 @@
 #include "LeTLeds.h"
 #include "BNumero.h"
 #include "PrTPropaganda.h"
+#include "TPWM.h"
 
 #endif	/* API_H */
 

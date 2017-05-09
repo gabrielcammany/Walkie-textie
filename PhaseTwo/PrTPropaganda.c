@@ -1,10 +1,14 @@
 #include "PrTPropaganda.h"
 
-
+#define MAX_ID 3
 static int timestamp;
 static char timerPropaganda, estatPropaganda;
-static char temp[50], opcio;
+static char opcio;
+static char id[MAX_ID];
+static char tramesRebudes;
+static char tramesPropiesRebudes;
 
+/*
 void myItoa(int num){
     //Post: escriu el valor ascii de num a tmp;
     temp[0] = (char)((int)num/(int)1000);
@@ -18,8 +22,9 @@ void myItoa(int num){
     temp[2]+='0';
     temp[1]+='0';
     temp[0]+='0';
-
 }
+*/
+
 void Menu(void){
     SiPutsCooperatiu("\r\nLes opcions de test son:\r\n\0");
     SiPutsCooperatiu("\r\n\0");
@@ -39,6 +44,13 @@ void initPropaganda(void){
     Menu();
     timerPropaganda= TiGetTimer();
     estatPropaganda = 0;
+    id={':',':',':'};
+    tramesPropiesRebudes = 0;
+    tramesRebudes = 0;
+}
+
+char getIDPos(char pos){
+    return id[pos];
 }
 
 void MotorPropaganda(void){
@@ -67,7 +79,7 @@ void MotorPropaganda(void){
             //Mostrar timestamp
             if (TiGetTics(timerPropaganda) > 1000){
                 SiSendChar('\r');
-                SiPutsCooperatiu(temp);
+                //SiPutsCooperatiu(temp);
                 TiResetTics(timerPropaganda);
             }
             if (SiCharAvail() != 0){
@@ -150,10 +162,14 @@ void MotorPropaganda(void){
 
 }
 
+char getVelocitat(){
+    AdGetMostra();
+}
+
 #define     MAXCOLUMNES 16
 static char estatLCD = 0;
 const unsigned char cadena[]={"S6M 2013-14     "}; //Més val que tingui 16 caràcters...
-static unsigned char timerLCD, caracterInici, i,j;
+static unsigned char timerLCD, caracterInici, i,j,tincID;
 static unsigned int mostra;
 static unsigned char segonaLinia[MAXCOLUMNES];
 
@@ -164,17 +180,32 @@ void initMotorLCD(void){
     caracterInici = 0;
     LcClear(0); 
     //Hi ha caselles de la segona línia que sempre valdran el mateix, les preparo!
-    segonaLinia[0]='P';
-    segonaLinia[1]='B';
-    segonaLinia[2]=':';
+    segonaLinia[0]='0';
+    segonaLinia[1]='/';
+    segonaLinia[2]='0';
+    segonaLinia[3]=' ';
+    segonaLinia[4]=' ';
     segonaLinia[5]=' ';
-	segonaLinia[6]=' ';
+    segonaLinia[6]=' ';
+    segonaLinia[7]=' ';
+    segonaLinia[8]=' ';
+    segonaLinia[9]=' ';
+    segonaLinia[10]='I';
+    segonaLinia[11]='D';
+    segonaLinia[12]=':';
+    segonaLinia[13]='0';
+    segonaLinia[14]='0';
+    segonaLinia[15]='0';
+    tincID = 0;
 }
 
 
 void MotorLCD(void){
     switch (estatLCD){
         case 0:
+            if(TiGetTics(timerLCD) > getVelocitat()){
+                
+            }
             LcPutChar(cadena[j++]);
             if (j==16) j= 0;
             if (i == MAXCOLUMNES-1) {
@@ -186,18 +217,21 @@ void MotorLCD(void){
             break;
 
         case 1: //Preparo el string
-            segonaLinia[3] = getPB1() + '0';
-            segonaLinia[4] = getPB2() + '0';
+            if(getIDPos(0)!=':'){
+                segonaLinia[3] = getIDPos(0);
+                segonaLinia[4] = getIDPos(1);
+                segonaLinia[5] = getIDPos(2);
+            }else{
+                segonaLinia[3] = '9' - getTemps();
+                segonaLinia[4] = '9' - getTemps();
+                segonaLinia[5] = '9' - getTemps();
+            }
             estatLCD= 2;
             break;
         case 2: //Aquí faig l'itoa, que deu trigar una bona estona el pobre...
             mostra = AdGetMostra();
             myItoa(mostra);
-            segonaLinia[7]=temp[0];
-            segonaLinia[8]=temp[1];
-            segonaLinia[9]=temp[2];
-            segonaLinia[10]=temp[3];
-            segonaLinia[11]=segonaLinia[12]=segonaLinia[13]=segonaLinia[14]=segonaLinia[15]=' ';
+            
             estatLCD = 3;
             break;
         case 3:

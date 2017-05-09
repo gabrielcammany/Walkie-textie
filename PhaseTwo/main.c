@@ -21,11 +21,11 @@ void init()
     PbInit();
     AdInit();
     initMotorLCD();
+    PwInit();
 
 }
 
 void motors(){
-
     MotorAudio();
     motorBNumero(); // gestiona el polsador del mode
     MotorPropaganda();
@@ -36,8 +36,7 @@ void motors(){
                 // Les ordres del I2c sens desordenarien i seria un pitate.
     MotorI2C();
     MotorLCD();
-    //MotorPWM()
-
+    MotorPWM();
 }
 
             

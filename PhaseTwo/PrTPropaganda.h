@@ -21,6 +21,7 @@
 #include "LcTLCD.h"
 #include "AdTADC.h"
 #include "TITTIMER.h"
+#include "TPWM.h"
 
 
 #define PROPAGANDA_1 "\n\rPlaca LS69. Sistemes Digitals i uProcessadors\r\n\0"
@@ -44,6 +45,6 @@ void initMotorLCD(void);
 //Post: inicialitza el LCD per posar la marquesina a 0
 void MotorLCD(void);
 
-
+char getIDPos(char pos);
 #endif	/* PRTPROPAGANDA_H */
 
