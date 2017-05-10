@@ -32,8 +32,8 @@ void MotorPWM () {
 		estatPWM = 1;
 		break;
 	case 1:
-		temps = '9' - TiGetTics(timerPWM);
-		if(TiGetTics(timerPWM)>10){
+		temps = '9' - (TiGetTics(timerPWM)/2);
+		if(TiGetTics(timerPWM)>20){
 			PWM[0] = (PWM[0]!=getIDPos(0) ? PWM[0]++ : PWM[0]);
 			PWM[1] = (PWM[1]!=getIDPos(1) ? PWM[1]++ : PWM[1]);
 			PWM[2] = (PWM[2]!=getIDPos(2) ? PWM[2]++ : PWM[2]);

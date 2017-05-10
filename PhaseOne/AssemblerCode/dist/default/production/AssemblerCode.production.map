@@ -1,5 +1,5 @@
 MPLINK 5.08, LINKER
-Linker Map File - Created Fri Apr 21 18:26:59 2017
+Linker Map File - Created Wed May 10 18:53:54 2017
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -7,7 +7,7 @@ Linker Map File - Created Fri Apr 21 18:26:59 2017
                    .org_0       code   0x000000    program   0x000004
                    .cinit    romdata   0x000004    program   0x000002
                    .org_1       code   0x000008    program   0x000004
-                   .org_2       code   0x000018    program   0x0003a6
+                   .org_2       code   0x000018    program   0x000384
 .config_300001_BUILD/DEFAULT/PRODUCTION/MAIN.O    romdata   0x300001    program   0x000001
 .config_300003_BUILD/DEFAULT/PRODUCTION/MAIN.O    romdata   0x300003    program   0x000001
 .config_300005_BUILD/DEFAULT/PRODUCTION/MAIN.O    romdata   0x300005    program   0x000001
@@ -20,164 +20,160 @@ Linker Map File - Created Fri Apr 21 18:26:59 2017
                            ---------   ---------      
                             0x000000    0x000005      
                             0x000008    0x00000b      
-                            0x000018    0x0003bd      
+                            0x000018    0x00039b      
                             0x300001    0x300001      
                             0x300003    0x300003      
                             0x300005    0x300006      
-            948 out of 8472 program addresses used, program memory utilization is 11%
+            914 out of 8472 program addresses used, program memory utilization is 10%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-  ACTIVACIO_LEDS_CIRCULAR   0x00029e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-    ACTIVAR_LEDS_CIRCULAR   0x0002ba    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      ACTIVAR_LEDS_PROCES   0x000188    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           ACTIVA_LEDS_RF   0x00013a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              APAGAR_LEDS   0x000354    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            BLINKING_10HZ   0x00031e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             BLINKING_5HZ   0x000336    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              BUCLE_DESAR   0x0001de    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      BUCLE_ENVIAR_8_BITS   0x000110    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-  BUCLE_RESTANT_ENVIAR_RF   0x000102    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-       COMPROVACIO_10_SEG   0x0003ac    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-     COMPROVA_APAGAR_10HZ   0x00032c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      COMPROVA_APAGAR_5HZ   0x000344    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                     DESA   0x0001ce    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-   DESA_SENSE_CONFIRMACIO   0x0001d2    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               DIVIDIR_10   0x000272    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            ENCENDRE_LEDS   0x00034e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                   ENVIAR   0x0000de    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-ENVIAR_BIT_PRIMERA_MEITAT   0x000144    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- ENVIAR_BIT_SEGONA_MEITAT   0x000150    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-ENVIAR_CONFIRMACIO_BYTE_ENVIAT   0x00023c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- ENVIAR_CONFIRMACIO_DESAR   0x000246    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- ENVIAR_CONFIRMACIO_DESAT   0x000218    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-    ENVIAR_CONFIRMACIO_RF   0x00020e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ENVIAR_END_BYTE   0x000250    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-     ENVIAR_PETICIO_DESAR   0x000262    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                ENVIAR_RF   0x0000c6    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-ENVIAR_RF_SENSE_CONFIRMACIO   0x0000d6    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               ENVIA_WORK   0x000222    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                   ESPERA   0x00025a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              ESPERA_16MS   0x000394    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ESPERA_BAIXAR_3   0x000370    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ESPERA_BAIXAR_4   0x000378    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ESPERA_POLSADOR   0x00039e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-       FINAL_BUCLE_ENVIAR   0x000128    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                 FINAL_RF   0x000170    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                 HIGH_INT   0x00001a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            HI_INT_VECTOR   0x000008    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               INIT_PORTS   0x00004c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                 INIT_SIO   0x00003a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               INIT_TIMER   0x00006c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                INIT_VARS   0x000022    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            LEDS_CIRCULAR   0x0002b0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      LEDS_CIRCULAR_DRETA   0x0002c2    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_DRETA_ESQUERRA   0x0002e2    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- LEDS_CIRCULAR_DRETA_LATB   0x0002d6    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_DRETA_SEGONA_PART   0x0002ea    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-   LEDS_CIRCULAR_ESQUERRA   0x0002f0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_ESQUERRA_DRETA   0x000304    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_ESQUERRA_LATB   0x00030c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_ESQ_SEGONA_PART   0x000318    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-         LEDS_PROCES_LATB   0x0001a0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-   LEDS_PROCES_LATB_INICI   0x0001ac    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      LEDS_PROCES_MAJOR_1   0x000194    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                     LOOP   0x000098    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           LOW_INT_VECTOR   0x000018    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                     MAIN   0x000088    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-    POLS_CARREGA_MISSATGE   0x00035c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           POLS_ENVIAR_RF   0x000380    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             PRE_FINAL_RF   0x000162    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                    REBUT   0x0001b0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              RESET_TIMER   0x00007c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             RESET_VECTOR   0x000000    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           RESTART_COMPTA   0x000208    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            RETORNA_DESAR   0x000200    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-         RETORNA_POLSADOR   0x0003ba    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           SUMA_PART_ALTA   0x000294    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_017E   0x00017e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_0372   0x000372    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_037A   0x00037a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_0398   0x000398    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
+  ACTIVACIO_LEDS_CIRCULAR   0x000254    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+    ACTIVAR_LEDS_CIRCULAR   0x000270    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      ACTIVAR_LEDS_PROCES   0x000312    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           ACTIVA_LEDS_RF   0x00013c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              APAGAR_LEDS   0x00030a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            BLINKING_10HZ   0x0002d4    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             BLINKING_5HZ   0x0002ec    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              BUCLE_DESAR   0x00019a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      BUCLE_ENVIAR_8_BITS   0x000112    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+  BUCLE_RESTANT_ENVIAR_RF   0x000104    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+       COMPROVACIO_10_SEG   0x00038a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+     COMPROVA_APAGAR_10HZ   0x0002e2    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      COMPROVA_APAGAR_5HZ   0x0002fa    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                     DESA   0x00018a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+   DESA_SENSE_CONFIRMACIO   0x00018e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+               DIVIDIR_10   0x000228    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            ENCENDRE_LEDS   0x000304    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                   ENVIAR   0x0000e0    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ENVIAR_BIT_PRIMERA_MEITAT   0x000146    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ ENVIAR_BIT_SEGONA_MEITAT   0x000152    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ ENVIAR_CONFIRMACIO_DESAR   0x0001de    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ ENVIAR_CONFIRMACIO_DESAT   0x0001d4    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+    ENVIAR_CONFIRMACIO_RF   0x0001ca    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ENVIAR_END_BYTE   0x0001e8    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+     ENVIAR_PETICIO_DESAR   0x0001fa    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                ENVIAR_RF   0x0000c8    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ENVIAR_RF_SENSE_CONFIRMACIO   0x0000d8    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                   ESPERA   0x0001f2    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              ESPERA_16MS   0x000372    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ESPERA_BAIXAR_3   0x00034e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ESPERA_BAIXAR_4   0x000356    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ESPERA_POLSADOR   0x00037c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+       FINAL_BUCLE_ENVIAR   0x00012a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                 FINAL_RF   0x000172    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                 HIGH_INT   0x00001a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            HI_INT_VECTOR   0x000008    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+               INIT_PORTS   0x00004e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                 INIT_SIO   0x00003c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+               INIT_TIMER   0x00006e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                INIT_VARS   0x000022    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            LEDS_CIRCULAR   0x000266    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      LEDS_CIRCULAR_DRETA   0x000278    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_DRETA_ESQUERRA   0x000298    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ LEDS_CIRCULAR_DRETA_LATB   0x00028c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_DRETA_SEGONA_PART   0x0002a0    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+   LEDS_CIRCULAR_ESQUERRA   0x0002a6    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_ESQUERRA_DRETA   0x0002ba    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_ESQUERRA_LATB   0x0002c2    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_ESQ_SEGONA_PART   0x0002ce    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+         LEDS_PROCES_LATB   0x00032a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+   LEDS_PROCES_LATB_INICI   0x000336    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      LEDS_PROCES_MAJOR_1   0x00031e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                     LOOP   0x00009a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           LOW_INT_VECTOR   0x000018    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                     MAIN   0x00008a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+    POLS_CARREGA_MISSATGE   0x00033a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           POLS_ENVIAR_RF   0x00035e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             PRE_FINAL_RF   0x000164    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                    REBUT   0x00020a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              RESET_TIMER   0x00007e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             RESET_VECTOR   0x000000    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           RESTART_COMPTA   0x0001c4    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            RETORNA_DESAR   0x0001bc    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+         RETORNA_POLSADOR   0x000398    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           SUMA_PART_ALTA   0x00024a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0180   0x000180    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0350   0x000350    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0358   0x000358    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0376   0x000376    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-             RESET_VECTOR   0x000000    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            HI_INT_VECTOR   0x000008    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           LOW_INT_VECTOR   0x000018    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                 HIGH_INT   0x00001a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                INIT_VARS   0x000022    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                 INIT_SIO   0x00003a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               INIT_PORTS   0x00004c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               INIT_TIMER   0x00006c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              RESET_TIMER   0x00007c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                     MAIN   0x000088    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                     LOOP   0x000098    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                ENVIAR_RF   0x0000c6    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-ENVIAR_RF_SENSE_CONFIRMACIO   0x0000d6    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                   ENVIAR   0x0000de    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-  BUCLE_RESTANT_ENVIAR_RF   0x000102    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      BUCLE_ENVIAR_8_BITS   0x000110    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-       FINAL_BUCLE_ENVIAR   0x000128    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           ACTIVA_LEDS_RF   0x00013a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-ENVIAR_BIT_PRIMERA_MEITAT   0x000144    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- ENVIAR_BIT_SEGONA_MEITAT   0x000150    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             PRE_FINAL_RF   0x000162    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                 FINAL_RF   0x000170    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_017E   0x00017e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      ACTIVAR_LEDS_PROCES   0x000188    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      LEDS_PROCES_MAJOR_1   0x000194    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-         LEDS_PROCES_LATB   0x0001a0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-   LEDS_PROCES_LATB_INICI   0x0001ac    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                    REBUT   0x0001b0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                     DESA   0x0001ce    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-   DESA_SENSE_CONFIRMACIO   0x0001d2    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              BUCLE_DESAR   0x0001de    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            RETORNA_DESAR   0x000200    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           RESTART_COMPTA   0x000208    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-    ENVIAR_CONFIRMACIO_RF   0x00020e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- ENVIAR_CONFIRMACIO_DESAT   0x000218    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               ENVIA_WORK   0x000222    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-ENVIAR_CONFIRMACIO_BYTE_ENVIAT   0x00023c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- ENVIAR_CONFIRMACIO_DESAR   0x000246    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ENVIAR_END_BYTE   0x000250    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-                   ESPERA   0x00025a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-     ENVIAR_PETICIO_DESAR   0x000262    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-               DIVIDIR_10   0x000272    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           SUMA_PART_ALTA   0x000294    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-  ACTIVACIO_LEDS_CIRCULAR   0x00029e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            LEDS_CIRCULAR   0x0002b0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-    ACTIVAR_LEDS_CIRCULAR   0x0002ba    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      LEDS_CIRCULAR_DRETA   0x0002c2    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
- LEDS_CIRCULAR_DRETA_LATB   0x0002d6    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_DRETA_ESQUERRA   0x0002e2    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_DRETA_SEGONA_PART   0x0002ea    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-   LEDS_CIRCULAR_ESQUERRA   0x0002f0    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_ESQUERRA_DRETA   0x000304    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_ESQUERRA_LATB   0x00030c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-LEDS_CIRCULAR_ESQ_SEGONA_PART   0x000318    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            BLINKING_10HZ   0x00031e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-     COMPROVA_APAGAR_10HZ   0x00032c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             BLINKING_5HZ   0x000336    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-      COMPROVA_APAGAR_5HZ   0x000344    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-            ENCENDRE_LEDS   0x00034e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              APAGAR_LEDS   0x000354    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-    POLS_CARREGA_MISSATGE   0x00035c    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ESPERA_BAIXAR_3   0x000370    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_0372   0x000372    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ESPERA_BAIXAR_4   0x000378    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_037A   0x00037a    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-           POLS_ENVIAR_RF   0x000380    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-              ESPERA_16MS   0x000394    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-             _.org_2_0398   0x000398    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-          ESPERA_POLSADOR   0x00039e    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-       COMPROVACIO_10_SEG   0x0003ac    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
-         RETORNA_POLSADOR   0x0003ba    program     static C:\Users\gabri\git\Walkie-Textie\AssemblerCode\main.asm
+             RESET_VECTOR   0x000000    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            HI_INT_VECTOR   0x000008    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           LOW_INT_VECTOR   0x000018    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                 HIGH_INT   0x00001a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                INIT_VARS   0x000022    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                 INIT_SIO   0x00003c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+               INIT_PORTS   0x00004e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+               INIT_TIMER   0x00006e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              RESET_TIMER   0x00007e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                     MAIN   0x00008a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                     LOOP   0x00009a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                ENVIAR_RF   0x0000c8    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ENVIAR_RF_SENSE_CONFIRMACIO   0x0000d8    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                   ENVIAR   0x0000e0    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+  BUCLE_RESTANT_ENVIAR_RF   0x000104    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      BUCLE_ENVIAR_8_BITS   0x000112    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+       FINAL_BUCLE_ENVIAR   0x00012a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           ACTIVA_LEDS_RF   0x00013c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ENVIAR_BIT_PRIMERA_MEITAT   0x000146    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ ENVIAR_BIT_SEGONA_MEITAT   0x000152    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             PRE_FINAL_RF   0x000164    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                 FINAL_RF   0x000172    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0180   0x000180    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                     DESA   0x00018a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+   DESA_SENSE_CONFIRMACIO   0x00018e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              BUCLE_DESAR   0x00019a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            RETORNA_DESAR   0x0001bc    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           RESTART_COMPTA   0x0001c4    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+    ENVIAR_CONFIRMACIO_RF   0x0001ca    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ ENVIAR_CONFIRMACIO_DESAT   0x0001d4    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ ENVIAR_CONFIRMACIO_DESAR   0x0001de    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ENVIAR_END_BYTE   0x0001e8    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                   ESPERA   0x0001f2    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+     ENVIAR_PETICIO_DESAR   0x0001fa    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+                    REBUT   0x00020a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+               DIVIDIR_10   0x000228    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           SUMA_PART_ALTA   0x00024a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+  ACTIVACIO_LEDS_CIRCULAR   0x000254    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            LEDS_CIRCULAR   0x000266    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+    ACTIVAR_LEDS_CIRCULAR   0x000270    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      LEDS_CIRCULAR_DRETA   0x000278    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+ LEDS_CIRCULAR_DRETA_LATB   0x00028c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_DRETA_ESQUERRA   0x000298    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_DRETA_SEGONA_PART   0x0002a0    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+   LEDS_CIRCULAR_ESQUERRA   0x0002a6    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_ESQUERRA_DRETA   0x0002ba    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_ESQUERRA_LATB   0x0002c2    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+LEDS_CIRCULAR_ESQ_SEGONA_PART   0x0002ce    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            BLINKING_10HZ   0x0002d4    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+     COMPROVA_APAGAR_10HZ   0x0002e2    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             BLINKING_5HZ   0x0002ec    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      COMPROVA_APAGAR_5HZ   0x0002fa    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+            ENCENDRE_LEDS   0x000304    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              APAGAR_LEDS   0x00030a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      ACTIVAR_LEDS_PROCES   0x000312    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+      LEDS_PROCES_MAJOR_1   0x00031e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+         LEDS_PROCES_LATB   0x00032a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+   LEDS_PROCES_LATB_INICI   0x000336    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+    POLS_CARREGA_MISSATGE   0x00033a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ESPERA_BAIXAR_3   0x00034e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0350   0x000350    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ESPERA_BAIXAR_4   0x000356    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0358   0x000358    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+           POLS_ENVIAR_RF   0x00035e    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+              ESPERA_16MS   0x000372    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+             _.org_2_0376   0x000376    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+          ESPERA_POLSADOR   0x00037c    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+       COMPROVACIO_10_SEG   0x00038a    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
+         RETORNA_POLSADOR   0x000398    program     static C:\Users\gabri\git\Walkie-Textie\PhaseOne\AssemblerCode\main.asm
 
 

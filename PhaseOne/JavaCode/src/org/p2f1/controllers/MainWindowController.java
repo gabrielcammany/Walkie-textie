@@ -81,27 +81,19 @@ public class MainWindowController implements ActionListener{
                 }else{
                     sp.writeByte(flag_desar_msg);
                     resposta = sp.readByte();
-                    while(resposta == 0){ ;
+                    while(resposta == 0){
                         resposta = sp.readByte();
                     }
                 }
-                int i = 0;
-                //System.out.print(" Mida1: "+utf8Bytes.length+"\n");
                 for (byte value:utf8Bytes) {
-                    //System.out.print(" Byte Enviat: "+value+"\n");
                     sp.writeByte(value);
                     resposta = sp.readByte();
-                    while(resposta == 0){ ;
+                    while(resposta == 0){
                         resposta = sp.readByte();
-                        //System.out.print(" Mhe quedat aqui: "+resposta+"\n");
                     }
-                    //System.out.print(" Byte Desat: "+resposta+"\n");
-                    //ystem.out.print(" Index: "+i+"\n");
-                    i++;
                 }
                 sp.writeByte(end_byte);
                 System.out.print(" Done!\n");
-                System.out.print("Boto\n");
 
             }else{
                 JOptionPane.showMessageDialog(null, "No has escrit cap missatge! ", "Error",JOptionPane.ERROR_MESSAGE);

@@ -23,24 +23,20 @@ public class PortThread implements Runnable {
 
     public void run() {
         byte aux;
-        while(true){
-            //System.out.print(escolta);
-            while(escolta){
+        while (true) {
+            while (escolta) {
                 try {
                     aux = sp.readByte();
                     Thread.sleep(2);
-                    if(aux !=0)System.out.print(aux);
-                    if(aux == flag){
+                    if (aux != 0) System.out.print(aux);
+                    if (aux == flag) {
                         mainWindowController.enviar(true);
                         mainWindowController.restart();
-                        //System.out.print("Dintre");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //System.out.print("Escoltant\n");
             }
-            //System.out.print("No Escoltant\n");
             try {
                 Thread.sleep(3);
             } catch (InterruptedException e) {

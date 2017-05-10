@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Phase 2
+PROJECTNAME=PhaseTwo
 
 # Active Configuration
 DEFAULTCONF=default

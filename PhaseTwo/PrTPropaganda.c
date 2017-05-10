@@ -72,7 +72,7 @@ void MotorPropaganda(void){
             }
             if (TiGetTics(timerPropaganda) > 1000){
                 TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
+                if (++timestamp == 5000) timestamp=0;
             }
             break;
         case 1:
@@ -163,7 +163,10 @@ void MotorPropaganda(void){
 }
 
 char getVelocitat(){
-    AdGetMostra();
+    return ((1,75)*(AdGetMostra()))+200;
+    /*
+     * Haurem d'agafar la mostra i utilizar una ecuacio de la recta per obtenir el temps, 0.78*x+200
+     */
 }
 
 #define     MAXCOLUMNES 16
@@ -204,16 +207,15 @@ void MotorLCD(void){
     switch (estatLCD){
         case 0:
             if(TiGetTics(timerLCD) > getVelocitat()){
-                
-            }
-            LcPutChar(cadena[j++]);
-            if (j==16) j= 0;
-            if (i == MAXCOLUMNES-1) {
-                estatLCD = 1;
-                TiResetTics(timerLCD);
-                LcGotoXY(0,1);
-            }
-            i++;
+                LcPutChar(cadena[j++]);
+                if (j==16) j= 0;
+                if (i == MAXCOLUMNES-1) {
+                    estatLCD = 1;
+                    TiResetTics(timerLCD);
+                    LcGotoXY(0,1);
+                }
+                i++;
+            }            
             break;
 
         case 1: //Preparo el string

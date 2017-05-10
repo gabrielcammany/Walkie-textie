@@ -6,8 +6,8 @@
 CND_BASEDIR=`pwd`
 # default configuration
 CND_ARTIFACT_DIR_default=dist/default/production
-CND_ARTIFACT_NAME_default=Phase_2.production.hex
-CND_ARTIFACT_PATH_default=dist/default/production/Phase_2.production.hex
+CND_ARTIFACT_NAME_default=PhaseTwo.production.hex
+CND_ARTIFACT_PATH_default=dist/default/production/PhaseTwo.production.hex
 CND_PACKAGE_DIR_default=${CND_DISTDIR}/default/package
-CND_PACKAGE_NAME_default=phase2.tar
-CND_PACKAGE_PATH_default=${CND_DISTDIR}/default/package/phase2.tar
+CND_PACKAGE_NAME_default=phasetwo.tar
+CND_PACKAGE_PATH_default=${CND_DISTDIR}/default/package/phasetwo.tar

@@ -4,7 +4,7 @@ LIST P=18F4321, F=INHX32
 ;******************
 ;* CONFIGURACIONS *
 ;******************
-CONFIG OSC = HSPLL          
+CONFIG OSC = HSPLL         
 CONFIG PBADEN = DIG
 CONFIG WDT = OFF
 CONFIG LVP = OFF
@@ -36,7 +36,6 @@ FLAG_DESAR_MSG EQU 0x81
 FLAG_DESAT_MSG EQU 0x85
 FLAG_BYTE_ENVIAT_MSG EQU 0x86
 FLAG_ENVIAR_RF_MSG EQU 0x82 
-FLAG_CONFIRMACIO_MSG EQU 0x83
 FLAG_DESAR_SENSE_CONFIRMACIO_MSG EQU 0x84
 
 ESTAT_LEDS_CIRCULAR EQU 0x02
@@ -210,7 +209,7 @@ LOOP
 ;**************** - BLOC RF - ****************************
     
 ENVIAR_RF
-    movlw ZERO
+    movlw 0x00
     cpfsgt COMPTA_BYTES_L, 0
     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
     call ENVIAR_CONFIRMACIO_RF
@@ -252,7 +251,7 @@ BUCLE_ENVIAR_8_BITS ;Ens quedarem aqui fins que no hem enviat 8 bits
     goto FINAL_BUCLE_ENVIAR ;Incrementarem index
     btfsc TEMPS_UN, 0,0 
     goto ENVIAR_BIT_PRIMERA_MEITAT ;Primers 5 mseg
-    btfsc TEMPS_UN, 1,0
+    btfsc TEMPS_UN, 1,0 
     goto ENVIAR_BIT_SEGONA_MEITAT ;Segon 5 mseg
     goto BUCLE_ENVIAR_8_BITS ;Tornem al inici del bucle   
     
@@ -265,12 +264,6 @@ FINAL_BUCLE_ENVIAR
     call ACTIVA_LEDS_RF
     goto BUCLE_RESTANT_ENVIAR_RF ;Tornem al seguent 10 percent
     
-ACTIVA_LEDS_RF
-    incf LEDS,1,0
-    call ACTIVAR_LEDS_PROCES
-    clrf INDEX, 0
-    return
-
 ENVIAR_BIT_PRIMERA_MEITAT
     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la primera part a 0
     bcf LATC, 5, 0
@@ -288,13 +281,18 @@ ENVIAR_BIT_SEGONA_MEITAT
     clrf TEMPS_UN,0
     goto BUCLE_ENVIAR_8_BITS
 
+ACTIVA_LEDS_RF
+    incf LEDS,1,0
+    call ACTIVAR_LEDS_PROCES
+    clrf INDEX, 0
+    return
+
 PRE_FINAL_RF
     btfss ESTAT,0,0
     goto FINAL_RF
     setf RESTANT,0
     clrf ESTAT,0
     goto BUCLE_RESTANT_ENVIAR_RF
-    
     
 FINAL_RF
     movlw MAX_LEDS
@@ -367,12 +365,6 @@ ENVIAR_CONFIRMACIO_DESAT
     call ESPERA
     return 
     
-ENVIAR_CONFIRMACIO_BYTE_ENVIAT
-    movlw FLAG_BYTE_ENVIAT_MSG
-    movwf TXREG,0
-    call ESPERA
-    return
-    
 ENVIAR_CONFIRMACIO_DESAR
     movlw FLAG_DESAR_MSG
     movwf TXREG,0
@@ -412,6 +404,10 @@ REBUT
     cpfsgt RCREG,0
     goto DESA_SENSE_CONFIRMACIO ;Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
     return
+    
+    
+    
+    
  
     
 ;***********************************************************    
