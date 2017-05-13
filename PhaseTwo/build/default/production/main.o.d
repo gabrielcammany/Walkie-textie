@@ -1,16 +1,13 @@
 build/default/production/main.o:  \
 main.c  \
-api.h  \
-TITTIMER.H  \
-LCTLcd.h  \
- I2TI2C.h  \
-I2TI2C.H  \
-SiTSio.h  \
-AuTAudio.h  \
+time.h  \
 LeTLeds.h  \
-BNumero.h  \
- PrTPropaganda.h  \
-PbTPushbutton.h  \
 LcTLCD.h  \
+ AuTAudio.h  \
+SwTSwitch.h  \
+PbTPushbutton.h  \
+BlTBacklight.h  \
 AdTADC.h  \
-TITTIMER.h 
+SiTSio.h  \
+ PrTPropaganda.h  \
+TPWM.h 

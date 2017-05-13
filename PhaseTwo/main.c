@@ -1,57 +1,97 @@
 /* 
  * File:   main.c
- * Author: 
+ * Author: navarrito
  *
- * Created on 24 de noviembre de 2013, 19:08
+ * Created on 25 de enero de 2014, 20:15
  */
 
-#include "api.h"
+#include <xc.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+//#include "TiTTimer.h"
+#include "time.h"
+#include "LeTLeds.h"
+#include "LcTLCD.h"
+#include "AuTAudio.h"
+#include "SwTSwitch.h"
+#include "PbTPushbutton.h"
+#include "AdTADC.h"
+#include "BlTBacklight.h"
+#include "SiTSio.h"
+#include "PrTPropaganda.h"
+/*
+ * 
+ */
 
 
-void init()
-{
+
+// Configuration Bits - 24.1 del Datasheet 
+_CONFIG2(		IESO_OFF				// Two Speed Start-up               DISABLED
+			&	SOSCSEL_LPSOSC       		// Low Power Secondary Oscillator   ENABLE
+			&	WUTSEL_LEG           		// Legacy Wake-up timer selected
+		 	&	FNOSC_FRCPLL        		// Fast RC oscillator w/ divide and PLL
+		 	& 	FCKSM_CSDCMD			// Clock switching and clock monitor
+			&	OSCIOFNC_ON			// OSCO/RC15 function               RC15
+			&	IOL1WAY_OFF			// Una configuraciÛ per I/O remapejables deshabilitat
+			&	POSCMOD_NONE			// Primary disabled
+			& 	I2C1SEL_SEC
+);
+
+
+_CONFIG1(		JTAGEN_OFF                              // JTAG                             DISABLED
+			&	GCP_OFF				// Code Protect                     DISABLED
+			&	GWRP_OFF			// Write Protect                    DISABLED
+			&	BKBUG_OFF			// Background Debugger              DISABLED
+			&	COE_OFF				// Clip-on Emulation                DISABLED
+			&	ICS_PGx1			// ICD pins select share            PGC1/PGD1
+			&	FWDTEN_OFF			// Watchdog Timer                   DISABLED
+			&	WINDIS_OFF			// Windowed WDT                     DISABLED
+			&	FWPSA_PR128			// Watchdog prescaler	1:128
+			&	WDTPS_PS2048			// Watchdog postscale	1:2048      Pre=128 i Post=2048 --> WatchDog Timer = 8seg
+);
+
+
+
+void initCPU(){
+    CLKDIV=0x0000;          // Divisió del clock pel timer i CPU per 1
+ //   OSCCON=0x0020;
+    RCONbits.SWDTEN = 0;    // Desactivem el Watchdog
+}
+
+
+
+
+int main(void){
+    initCPU();
     TiInit();
-    i2Init();
-    AuInit();
-    LcInit(4, 16); // L'inicialització no fa servir el motor I2c
-    SiInit();
     LeInit();
-    BNinit();
-    initPropaganda();
+    LcInit(2,16);
+    AuInit();
+    SwInit();
     PbInit();
     AdInit();
-    initMotorLCD();
+    BlInit();
+    SiInit();
     PwInit();
-
-}
-
-void motors(){
-    MotorAudio();
-    motorBNumero(); // gestiona el polsador del mode
-    MotorPropaganda();
-    MotorLed();
-    MotorSIO();
-    MotorPulsador();
-    LcMotor(0); // Alerta!, no barrejar mode coperatiu i no coperatiu, ja que
-                // Les ordres del I2c sens desordenarien i seria un pitate.
-    MotorI2C();
-    MotorLCD();
-    MotorPWM();
-}
-
-            
-    
-
-int main(){
-
-    init();
-
-    while (1)
-    {
-         motors();
-        ClrWdt();
+    LcClear();
+    LcCursorOff();
+    LcGotoXY(0,0);
+    LcPutString("Booting...");
+    initMotorLCD();
+    initPropaganda();
+    while(1){
         
+        MotorPWM();
+        MotorPulsador();
+        BlMotor();
+        MotorLed();
+        MotorLCD();
+        MotorAudio();
+        MotorPropaganda();
+        MotorSIO();
+  
     }
-    return 0;
 }
 

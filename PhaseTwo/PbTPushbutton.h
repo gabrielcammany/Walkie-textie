@@ -15,6 +15,7 @@
 
 #include<xc.h>
 #include "time.h"
+#include "BlTBacklight.h"
 void PbInit(void);
 //Posa els ports d'entrada i demana un timer!
 char getPB1(void);

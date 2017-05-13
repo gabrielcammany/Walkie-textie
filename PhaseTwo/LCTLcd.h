@@ -1,87 +1,117 @@
+#ifndef LCTLCD_H
+#define	LCTLCD_H
 //
-// TAD per a manipular un display alfanumèric basat en el
-// controlador HD44780 usant només 4 bits de dades.
-// Aquest és el controlador que porten la  immensa majoria de displays.
-// Tamany màxim, 4 files per 40 columnes
+// TAD per a manipular un display alfanumËric basat en el
+// controlador HD44780 usant nomÈs 4 bits de dades.
+// Aquest Ès el controlador que porten la  immensa majoria de displays.
+// Tamany m?xim, 4 files per 40 columnes
 //
 // F. Escudero vCli v1.0 Piera, gener de 2004
 //
 // He provat aquest TAD amb un LCD de 2x16. Qualsevol error que observeu,
-// us agraïria que m'ho féssiu saber a sisco@salleurl.edu.
+// us agraÔria que m'ho fÈssiu saber a sisco@salleurl.edu.
 //
 // Vcli V1.1, Sisco, a 26 de novembre de 2004. He vist que en alguns LCDs cal esperar 2ms
-// després de fer un Clear, amb independència del que digui el Busy.
+// desprÈs de fer un Clear, amb independËncia del que digui el Busy.
 // Sembla extrany, quan tingui temps haig de mirar el bit de Busy amb l'oscil.loscop
 // De moment, retardo amb timer.
 //
-// Vcli V2.0, Sisco, 3 de març de 2010. L'adapto per a funcionar sobre un PIC24F16KA102
-// Vcli V2.1, Sisco, 2 de juny de 2010. L'adapto per a funcionar a través d'un expansor I2C
+// VCli V1.3, jnavarro, a 2013. He ampliat els temps d'inicialització (ara trigo uns
+// 150 ms. però inicialitzo a la primera (sobretot en cold starts). Més info aquÌ:
+// http://web.alfredstate.edu/weimandn/lcd/lcd_initialization/lcd_initialization_index.html
+// Segueixo observant
+// la mateixa anomalia del Busy, menys mal del timeout perquè sempre que li ho pregunto
+// el fastigòs busy està 1...
 
 //
-// Durant el procés d'inicialització, es demanarà un timer al tad timer
+// Durant el procÈs d'inicialització, es demanar? un timer al tad timer
 //
 // ------------------------------------HARDWARE---AREA--------------------
 // La connexió serà de 4 bits de dades (D4 a D7), i els senyals
 // RS, R/W i E.
+// En aquest exemple, tenim connectat
 //
-// 	Es pot usar qualsevol altre configuració. Només
-//  cal ajustar els defines que venen a continuació.
+// 	RS				a RB3
+//	R/!W                            a RB15
+//      E				a RB5
+//	D4				a RB6
+//	D5				a RB7
+//	D6				a RB8
+//	D7				a RB9
+//  ?s important que els senyals D0..D3 del LCD no es deixin a l'aire i
+//  es connectin a GND mitjanÁant resistËncies de, per exemple, 4K7
 //
+// 	Es pot usar qualsevol altre configuraciÛ. NomÈs
+//  cal ajustar els defines que venen a continuaciÛ.
+//
+
+#include <xc.h>
+
+
+#define SetD4_D7Sortida()		(TRISBbits.TRISB6 = TRISBbits.TRISB7 = TRISBbits.TRISB8 = TRISBbits.TRISB9 = 0)
+#define SetD4_D7Entrada()		(TRISBbits.TRISB6 = TRISBbits.TRISB7 = TRISBbits.TRISB8 = TRISBbits.TRISB9 = 1)
+#define SetControlsSortida()            (TRISBbits.TRISB3 = TRISBbits.TRISB15 = TRISBbits.TRISB5 = 0)
+#define SetD4(On)				(LATBbits.LATB6 = (On))
+#define SetD5(On)				(LATBbits.LATB7 = (On))
+#define SetD6(On)				(LATBbits.LATB8 = (On))
+#define SetD7(On)				(LATBbits.LATB9 = (On))
+#define GetBusyFlag()                           (PORTBbits.RB9)
+#define RSUp()					(LATBbits.LATB3 = 1)
+#define RSDown()				(LATBbits.LATB3 = 0)
+#define RWUp()					(LATBbits.LATB15 = 1)
+#define RWDown()				(LATBbits.LATB15 = 0)
+#define EnableUp()				(LATBbits.LATB5 = 1)
+#define EnableDown()                            (LATBbits.LATB5 = 0)
 // -------------------------------END--HARDWARE---AREA--------------------
 
-#include "I2TI2C.h"
 
-void LcInit(int Files, int Columnes);
+void LcInit(char Files, char Columnes);
 // Pre: Files = {1, 2, 4}  Columnes = {8, 16, 20, 24, 32, 40 }
 // Pre: Hi ha un timer lliure
-// Post: L'Hitachi merdós necessita 40ms de tranquilitat desde
+// Post: L'Hitachi merdÛs necessita 40ms de tranquilitat desde
 // la pujada de Vcc fins cridar aquest constructor
 // Post: Aquesta rutina pot trigar fins a 100ms
 // Post: El display queda esborrat, el cursor apagat i a la
-// posició 0, 0.
-void LcMotor(char priority);
-// Si prioritat val 1 tramitara les ordres si o si
-// Si val 0 es tramitarant només si el motor I2C està lliure
+// posiciÛ 0, 0.
 
 void LcEnd(void);
 // El Destructor
 
-void LcClear(char priority);
-// Post: Esborra el display i posa el cursor a la posició zero en
+void LcClear(void);
+// Post: Esborra el display i posa el cursor a la posiciÛ zero en
 // l'estat en el que estava.
 // Post: La propera ordre pot trigar fins a 1.6ms
 
 void LcCursorOn(void);
-// Post: Encén el cursor
+// Post: EncÈn el cursor
 // Post: La propera ordre pot trigar fins a 40us
 
 void LcCursorOff(void);
 // Post: Apaga 0el cursor
 // Post: La propera ordre pot trigar fins a 40us
 
-void LcGotoXY(int Columna, int Fila);
+void LcGotoXY(char Columna, char Fila);
 // Pre : Columna entre 0 i 39, Fila entre 0 i 3
 // Post: Posiciona el cursor en aquestes coordenades
 // Post: La propera ordre pot trigar fins a 40us
 
 void LcPutChar(char c);
-// Post: Pinta C en l'actual poscició del cursor i incrementa
-// la seva posició. Si la columna arriba a 39, salta a 0 tot
-// incrementant la fila si el LCD és de dues files.
+// Post: Pinta C en l'actual posciciÛ del cursor i incrementa
+// la seva posiciÛ. Si la columna arriba a 39, salta a 0 tot
+// incrementant la fila si el LCD Ès de dues files.
 // Si es de 4 files, incrementa de fila en arribar a la columna 20
-// Així mateix, la fila 4 passa a la zero.
+// AixÌ mateix, la fila 4 passa a la zero.
 // En els LCDs d'una fila, quan la columna arriba a 39, torna
 // a zero. No s'incrementa mai la fila
 
 void LcPutString(char *s);
-// Post: Pinta l'string a apartir de la posició actual del cursor.
-// El criteri de coordenades és el mateix que a LcPutChar
+// Post: Pinta l'string a apartir de la posiciÛ actual del cursor.
+// El criteri de coordenades Ès el mateix que a LcPutChar
 // Post: Pot trigar fins a 40us pel nombre de chars de s a sortir de
 // la rutina
 
-void LcPrintf(int X, int Y, char *fmt, ... );
-// Pre : Columna entre 0 i 39, Fila entre 0 i 3
-// Post: rutina equivalent a la printf, però amb la diferència que el
-// resultat el pinta en el display a la fila i columna especificada
 
-void LcPutIntXY(int X, int Y, int v);
+
+
+#endif	/* LCTLCD_H */
+

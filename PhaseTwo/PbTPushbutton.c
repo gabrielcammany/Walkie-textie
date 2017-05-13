@@ -1,18 +1,16 @@
-
 #include "PbTPushbutton.h"
 #include "AuTAudio.h"
-#include "BNumero.h"
-#include "api.h"
+#include "SwTSwitch.h"
 
 
 
 static char estat,timer, temp;
 
 void PbInit(void){
-    TRISDbits.TRISD7=1;
-    TRISDbits.TRISD6=1;
-    CNPU2bits.CN16PUE = 1; //posso el pull UP
-    CNPU1bits.CN15PUE=1;
+    TRISAbits.TRISA3 = 1;
+    TRISAbits.TRISA2 = 1;
+    CNPU2bits.CN30PUE = 1;  //RA2
+    CNPU2bits.CN29PUE = 1;  //RA3
     estat = 0;
     timer = TiGetTimer();
 }
@@ -21,11 +19,11 @@ void PbInit(void){
 void MotorPulsador(){
     switch(estat){
         case 0:
-            if (getPB1() == 0){
+            if (PORTAbits.RA3 == 0){
                 TiResetTics(timer);
                 estat = 1;
             }
-            else if (getPB2() == 0){
+            else if (PORTAbits.RA2 == 0){
                 TiResetTics(timer);
                 estat = 5;
             }
@@ -33,18 +31,25 @@ void MotorPulsador(){
         case 1:
             //Espero rebots....
             if (TiGetTics(timer) >= 100){
-                if (getPB1() == 0) estat = 2;
+                if (PORTAbits.RA3 == 0) estat = 2;
                 else estat = 0;
             }
             break;
         case 2:
             //Han apretat el pulsador de - toca fer feina:
-            //Toca reduir la frequència
+            if (getSwitch1()== 0) {
+            //Toca reduir la frequencia
                 temp=getAudioPeriode();
                 if (temp == 10) setAudioPeriode(1);
                 else setAudioPeriode(++temp);
-            
-             estat = 3;
+            }
+            if (getSwitch2() == 0){
+                //toca reduïr el BL
+                temp = getBlDuty();
+                if (temp == 0) setBlDuty(PERIODBL);
+                else setBlDuty(temp -STEPBL);
+            }
+            estat = 3;
             break;
         case 3:
             //Espero a que desapretin...
@@ -55,7 +60,7 @@ void MotorPulsador(){
                 }
                 TiResetTics(timer);
             }
-            if (getPB1() == 1){
+            if (PORTAbits.RA3 == 1){
                 estat = 4;
                 TiResetTics(timer);
             }
@@ -68,19 +73,24 @@ void MotorPulsador(){
         case 5:
             //Espero rebots....
             if (TiGetTics(timer) >= 100){
-                if (getPB2() == 0) estat = 6;
+                if (PORTAbits.RA2 == 0) estat = 6;
                 else estat = 0;
             }
-
             break;
         case 6:
             //Han apretat el pulsador de + toca fer feina
+            if (getSwitch1()== 0) {
             //Toca reduir la frequencia
                 temp=getAudioPeriode();
                 if (temp == 1) setAudioPeriode(10);
                 else setAudioPeriode(--temp);
-           
-            
+            }
+            if (getSwitch2() == 0){
+                //reduïr el BL
+                temp = getBlDuty();
+                if (temp == PERIODBL) setBlDuty(0);
+                else setBlDuty(temp +STEPBL);
+            }
             estat = 7;
             break;
         case 7:
@@ -92,7 +102,7 @@ void MotorPulsador(){
                 }
                 TiResetTics(timer);
             }
-            if (getPB2() == 1){
+            if (PORTAbits.RA2 == 1){
                 estat = 4;
                 TiResetTics(timer);
             }
@@ -100,9 +110,9 @@ void MotorPulsador(){
     }
 }
 char getPB1(void){
-    return  (PORTDbits.RD6 == 1);
+    return  (PORTAbits.RA3 == 1);
 }
 
 char getPB2(void){
-    return (PORTDbits.RD7 == 1);
+    return (PORTAbits.RA2 == 1);
 }

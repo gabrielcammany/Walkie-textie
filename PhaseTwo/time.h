@@ -3,7 +3,7 @@
 // Barsalona, Novembre de 1995, Juan Perez & JM Ribes.
 // Desembre de 2001. FEC. Ajustat per al Fujitsu 90583
 // Març de 2010. FEC. Ajustat per al PIC24 (com passen els anys...)
-//
+// 
 
 
 #ifndef _TITTIMER_H_
@@ -13,7 +13,7 @@
 // Si anem justos de memoria, aquest define indica el
 // nombre de timers d'aquest TAD i es pot modificar sense
 // problemes.
-#define         TI_NUMTIMERS                    32
+#define         TI_NUMTIMERS                    25
 
 
 // El següent define marca la distància temporal màxima

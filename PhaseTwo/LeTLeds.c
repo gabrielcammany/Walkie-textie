@@ -1,12 +1,13 @@
 #include "LeTLeds.h"
 
+
+
 static unsigned char timerLed;
 static unsigned char estatLed;
 static unsigned char tempsOn;
 static unsigned int heartBeat;
 
 void LeInit(){
-
     SET_LED_DIR();
     LED_OFF();
     timerLed = TiGetTimer();
@@ -69,4 +70,3 @@ void MotorLed(){
             break;
     }
 }
-

@@ -1,14 +1,13 @@
 #include "AuTAudio.h"
-#include "TITTIMER.H"
-static char estat,periode;
-static int timerAudio;
+#include <xc.h>
+static char timerAudio, estat,periode;
 
 void AuInit(){
     SET_AUDIO_DIR();
     AUDIO_OFF();
+    timerAudio = TiGetTimer();
     estat = 0;
     periode = 1;
-    timerAudio= TiGetTimer();
 }
 
 char getAudioPeriode(void){
@@ -46,17 +45,14 @@ void MotorAudio(){
     }
 }
 
+
 char changeAudioStatus(){
     //Post Canvia l'estat d'audio
     if (estat == 2){
         //estic callat, toca parlar!
-         IFS0bits.T2IF = 0;
-	IEC0bits.T2IE = 1;
         estat = 0;
     }else{
         //Estic parlant, callo!
-        IFS0bits.T2IF = 0;
-	IEC0bits.T2IE = 0;
         estat = 2;
         AUDIO_OFF();
     }

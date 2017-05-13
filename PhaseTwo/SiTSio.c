@@ -19,15 +19,28 @@ static char* TreuTX(void);
 
 void SiInit(void){
 //Post: Inicialitza la SIO als pins RP2 (Tx) i RP4(Rx) i demana un timer (de moment passo d'interrupcions)
+    // Unlock registers
+    __builtin_write_OSCCONL(OSCCON & 0xBF);  //Datasheet dixit (pag 110)
+
+    RPOR1bits.RP2R= 3; //Taula 10-3 del datasheet (pag 109)
+
+    RPINR18bits.U1RXR= 4; //Vull el RP4 de input
+
+    //Lock registers
+    __builtin_write_OSCCONL(OSCCON | 0x40);  //Datasheet dixit (pag 110)
 
     //Configurem la SIO
 
-    U2MODE = 0x8000;
-    U2BRG = 25;
-    U2STAbits.UTXEN = 1;
+    U1BRG=103; //9600 bauds  
+    U1MODEbits.UARTEN = 1;
+    U1MODEbits.UEN=0; //Sense flow control
+    U1MODEbits.BRGH=0;
+    U1MODEbits.PDSEL = 0; //8 bits de dades i sense paratitat
+    U1MODEbits.STSEL = 0;  // 1 Stop bit;
+    U1STAbits.UTXEN = 1;
     estat = 0;
     // Activo les interrupcions
-    IEC1bits.U2RXIE = 1;
+    IEC0bits.U1RXIE = 1;
     QuantsTX = QuantsRX = IniciRx = IniciTx = FiRx = FiTx = 0;
 }
 
@@ -53,9 +66,9 @@ void MotorSIO(void){
                 estat = 0;
             break;
         case 3:
-            if (U2STAbits.TRMT != 0){
-                U2TXREG = *temporal++;
-                U2STAbits.UTXEN = 1;
+            if (U1STAbits.TRMT != 0){
+                U1TXREG = *temporal++;
+                U1STAbits.UTXEN = 1;
                 estat=2;
             }
             break;
@@ -65,16 +78,16 @@ void MotorSIO(void){
 
 
 void SiPuts(char *s) {
-    //Versi€ vintage
-	while(*s) SiSendChar(*s++);
+    //VersiÛ vintage
+	while(*s) SiSendChar(*s++); 
 }
 
-//Provo de fer un invent cooperatiu ja que si char *s »s molt llarg
+//Provo de fer un invent cooperatiu ja que si char *s Ès molt llarg
 //Amorro tots els motors cooperatius
 
 void SiPutsCooperatiu(char *s) {
-    //Pre: La referÀncia de char *s »s o b» un const char o b» puc garantir que
-    //     no es sobreescriur? fins que no l'hagi enviat...
+    //Pre: La referËncia de char *s Ès o bÈ un const char o bÈ puc garantir que
+    //     no es sobreescriur‡ fins que no l'hagi enviat...
     //Post: Encua *s a la cua de cadenes per enviar...
     PosaTX(s);
 }
@@ -83,21 +96,21 @@ void SiPutsCooperatiu(char *s) {
 
 int SiCharAvail(void) {
 // Pre: retorna el nombre de car?cters rebuts que no s'han recollit
-// amb la funci? GetChar encara
+// amb la funci€ GetChar encara
 	return QuantsRX;
 }
 
 char SiGetChar(void) {
-// Pre: SiCharAvail() ªs major que zero
-// Post: Treu i retorna el primer car?cter de la cua de recepci?.
+// Pre: SiCharAvail() »s major que zero
+// Post: Treu i retorna el primer car?cter de la cua de recepci€.
 	return TreuRX();
 }
 
 void SiSendChar(char c) {
 // Post: espera que el car?cter anterior s'hagi enviat i envia aquest
-	while(U2STAbits.TRMT == 0) ClrWdt();
-	U2TXREG = c;
-	U2STAbits.UTXEN = 1;
+	while(U1STAbits.TRMT == 0) ClrWdt();
+	U1TXREG = c;
+	U1STAbits.UTXEN = 1;
 }
 
 //
@@ -138,10 +151,10 @@ static char TreuRX(void) {
 	QuantsRX --;
 	return tmp;
 }
-void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void) {
-        IFS1bits.U2RXIF = 0;
-	if (U2STAbits.OERR == 1) U2STAbits.OERR = 0;
-	PosaRX(U2RXREG);
+void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void) {
+        IFS0bits.U1RXIF = 0;
+	if (U1STAbits.OERR == 1) U1STAbits.OERR = 0;
+	PosaRX(U1RXREG);
 }
 //
 //---------------------------End--PRIVADES----AREA-----------

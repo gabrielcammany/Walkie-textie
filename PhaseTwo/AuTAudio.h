@@ -7,14 +7,13 @@
 
 #ifndef AUTAUDIO_H
 #define	AUTAUDIO_H
-//#include "time.h"
-#include "api.h"
+#include "time.h"
 
 
 
-#define SET_AUDIO_DIR()     TRISBbits.TRISB14 = 0;
-#define AUDIO_ON()          LATBbits.LATB14=1;
-#define AUDIO_OFF()         LATBbits.LATB14=0;
+#define SET_AUDIO_DIR()     TRISAbits.TRISA1 = 0;
+#define AUDIO_ON()          LATAbits.LATA1=1;
+#define AUDIO_OFF()         LATAbits.LATA1=0;
 
 void AuInit(void);
 //Posa el port RA1 de sortida i demana un timer

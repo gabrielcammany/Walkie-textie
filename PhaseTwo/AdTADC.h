@@ -18,3 +18,4 @@ void AdInit(void);
 int AdGetMostra(void);
 //Post: Retorna la mostra convertida en 10 bits
 #endif	/* ADTADC_H */
+

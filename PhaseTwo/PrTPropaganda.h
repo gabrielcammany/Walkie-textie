@@ -15,12 +15,13 @@
 #ifndef PRTPROPAGANDA_H
 #define	PRTPROPAGANDA_H
 #include <xc.h>
+#include "BlTBacklight.h"
 #include "SiTSio.h"
 #include "PbTPushbutton.h"
 #include "AuTAudio.h"
 #include "LcTLCD.h"
 #include "AdTADC.h"
-#include "TITTIMER.h"
+#include "SwTSwitch.h"
 #include "TPWM.h"
 
 
@@ -46,5 +47,9 @@ void initMotorLCD(void);
 void MotorLCD(void);
 
 char getIDPos(char pos);
+
+int getVelocitat();
+
+
 #endif	/* PRTPROPAGANDA_H */
 

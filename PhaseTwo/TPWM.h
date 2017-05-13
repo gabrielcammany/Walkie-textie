@@ -11,12 +11,13 @@
 #define	TPWM_H
 #include <xc.h>
 #include "time.h"
-#include "api.h"
+#include "PrTPropaganda.h"
 
 void PwInit();
 //Pre: Requereix del TITITMER.c
 //Post: Demana un timer i posa la sortida del LED a 0
 void MotorPWM();
+char getTemps();
 
 
 #endif	/* LETLEDS_H */
