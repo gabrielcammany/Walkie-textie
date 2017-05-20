@@ -9,4 +9,5 @@ AuTAudio.h  \
 LcTLCD.h  \
  AdTADC.h  \
 SwTSwitch.h  \
-TPWM.h 
+TPWM.h  \
+TRF.h 

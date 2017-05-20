@@ -110,7 +110,7 @@ void MotorPulsador(){
     }
 }
 char getPB1(void){
-    return  (PORTAbits.RA3 == 1);
+    return  (PORTBbits.RB13 == 1);
 }
 
 char getPB2(void){

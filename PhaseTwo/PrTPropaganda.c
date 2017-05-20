@@ -3,9 +3,9 @@
 #define MAX_ID 3
 
 static int timestamp;
-static char timerPropaganda, estatPropaganda;
+static char timerPropaganda, estatPropaganda,timerCincSegons;
 static char temp[50], opcio;
-static char id[MAX_ID];
+static char id[MAX_ID_STRING],tempID[MAX_ID] ={'0','0','0'};
 
 void myItoa(int num){
     //Post: escriu el valor ascii de num a tmp;
@@ -20,21 +20,9 @@ void myItoa(int num){
     temp[2]+='0';
     temp[1]+='0';
     temp[0]+='0';
-
 }
+
 void Menu(void){
-    SiPutsCooperatiu("\r\nLes opcions de test son:\r\n\0");
-    SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("1-Visualitzacio del timestamp\r\n\0");
-    SiPutsCooperatiu("2-Visualitzacio dels micro-interruptors\r\n\0");
-    SiPutsCooperatiu("3-Visualitzacio dels pulsadors\r\n\0");
-    SiPutsCooperatiu("4-Mostrar intensitat del backlight\r\n\0");
-    SiPutsCooperatiu("5-Modificar intensitat del backlight\r\n\0");
-    SiPutsCooperatiu("6-Encendre/apagar altaveu\r\n\0");
-    SiPutsCooperatiu("7-Reset\r\n\n\0");
-    SiPutsCooperatiu("\r\n");
-    SiPutsCooperatiu("Per sortir de qualsevol opcio, prem ESC\r\n");
-    
     SiPutsCooperatiu("\r\nLes opcions de test son:\r\n\0");
     SiPutsCooperatiu("\r\n\0");
     SiPutsCooperatiu("1-Introduir un nou identificador\r\n\0");
@@ -46,8 +34,24 @@ void Menu(void){
     SiPutsCooperatiu("Per sortir de qualsevol opcio, prem ESC\r\n");
 }
 
-char getIDPos(char pos){
-    return id[0];
+char getIDPos(unsigned char pos){
+    return id[pos];
+}
+
+char* getID(){
+    return id;
+}
+
+void setIDPos(int pos, unsigned char value){
+    id[pos] = value;
+}
+
+char getTemps(int pos){
+    return tempID[pos];
+}
+
+char* getTemp(){
+    return temp;
 }
 
 void initPropaganda(void){
@@ -58,6 +62,17 @@ void initPropaganda(void){
     timestamp = 0;
     timerPropaganda= TiGetTimer();
     estatPropaganda = 0;
+    id[0] = ':';
+    id[1] = ':';
+    id[2] = ':';
+    id[3] = '0';
+    id[4] = '\n';
+    id[5] = '\0';
+     TRISBbits.TRISB13 = 1;
+}
+
+void startToCount(){
+    TiResetTics(timerCincSegons);
 }
 
 void MotorPropaganda(void){
@@ -82,81 +97,46 @@ void MotorPropaganda(void){
         case 1:
             //Introduir un nou identificador
             if (SiCharAvail() != 0){
-                switch(SiCharAvail()){
-                    case 1:
+                if(id[3] == '0'){
+                    if(id[0] == ':'){
                         id[0] = SiGetChar();
-                        id[1] = '0';
-                        id[2] = '0';
-                        break;
-                    case 2:
-                        id[0] = SiGetChar();
+                    }else if(id[1] == ':'){
                         id[1] = SiGetChar();
-                        id[2] = '0';
-                        break;
-                    case 3:
-                        id[0] = SiGetChar();
-                        id[1] = SiGetChar();
+                    }else if(id[2] == ':'){
                         id[2] = SiGetChar();
-                        break;
-                    default:    
-                        SiSendChar('\r');
-                        SiSendChar(SiCharAvail());
-                        break;
-                }
-            }
-            //Mostrar timestamp
-            /*
-            if (TiGetTics(timerPropaganda) > 1000){
-                if (++timestamp == 10000) timestamp=0;
-                myItoa(timestamp);
-                SiSendChar('\r');
-                SiPutsCooperatiu(temp);
-                TiResetTics(timerPropaganda);
-            }
-            if (SiCharAvail() != 0){
-                if (SiGetChar() == 27){
-                    Menu();
-                    estatPropaganda=0;
-                }
-            }*/
-            if (SiCharAvail() != 0){
-                if (SiGetChar() == 27){
-                    Menu();
-                    estatPropaganda=0;
+                    }else{
+                        if (SiGetChar() == 27){
+                            id[3] = '\r';
+                            SiPutsCooperatiu("Has introduit el ID: ");
+                            SiPutsCooperatiu(id);
+                            Menu();
+                            estatPropaganda=0;
+                            setCadena(3);
+                        }
+                    }
+                }else{
+                    id[3] = '0';
+                    id[0] = ':';
+                    id[1] = ':';
+                    id[2] = ':';
                 }
             }
             break;
 
         case 2:
-            SiSendChar('\r');
-            SiPutsCooperatiu("ID: \0");
+            SiPutsCooperatiu("ID: ");
             SiPutsCooperatiu(id);
-            //Visualització uInterruptors
-            /*
-            if (TiGetTics(timerPropaganda) > 1000){
-                TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
-                SiSendChar('\r');
-                SiPutsCooperatiu("SW1: \0");
-                SiSendChar(getSwitch1()+'0');
-                estatPropaganda = 21;
-            }*/
-            if (SiCharAvail() != 0){
-                if (SiGetChar() == 27){
-                    Menu();
-                    estatPropaganda=0;
-                }
-            }
+            Menu();
+            estatPropaganda=0;            
             break;
         case 3:
             //Trames identificades
             //Visualització pulsadors
-            if (TiGetTics(timerPropaganda) > 1000){
+            if (TiGetTics(timerPropaganda) > 500){
                 TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
                 SiSendChar('\r');
                 SiPutsCooperatiu("PB1: \0");
-                SiSendChar(getPB1()+'0');
+                SiSendChar(PORTBbits.RB13+'0');
                 estatPropaganda = 31;
             }
             if (SiCharAvail() != 0){
@@ -187,85 +167,11 @@ void MotorPropaganda(void){
             SiPutsCooperatiu("\n\rIntrodueix valor de la nova intensitat (0-4):\n\r");
             estatPropaganda = 51;
             break;
-        /*case 6:
-            SiPutsCooperatiu("\n\rPrem J per encendre o apagar l'altaveu \n\r");
-            if (getAudioStatus()) SiPutsCooperatiu("\rAltaveu ences! \0");
-                        else SiPutsCooperatiu("\rAltaveu apagat!\0");
-            estatPropaganda = 61;
+        default:
+            Menu();
+            estatPropaganda=0;
             break;
-
-        case 7:
-            __asm__ volatile ("reset");
-            break;*/
-        /*case 21:
-            SiPutsCooperatiu("\t\tSW2: \0");
-            SiSendChar(getSwitch2()+'0');
-            estatPropaganda= 2;
-            break;
-        case 31:
-            SiPutsCooperatiu("\t\tPB2: \0");
-            SiSendChar(getPB2()+'0');
-            estatPropaganda= 3;
-            break;
-        case 51:
-            if (TiGetTics(timerPropaganda) > 1000){
-                TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
-            }
-            if (SiCharAvail() != 0){
-                switch (SiGetChar()){
-                    case 27:
-                        Menu();
-                        estatPropaganda=0;
-                        break;
-                    case '0':
-                        SiPutsCooperatiu("\r000\0");
-                        setBlDuty(0);
-                        break;
-                    case '1':
-                        SiPutsCooperatiu("\r025\0");
-                        setBlDuty(PERIODBL/4);
-                        break;
-                    case '2':
-                        SiPutsCooperatiu("\r050\0");
-                        setBlDuty(PERIODBL/2);
-                        break;
-                    case '3':
-                        SiPutsCooperatiu("\r075\0");
-                        setBlDuty(PERIODBL*3/4);
-                        break;
-                    case '4':
-                        SiPutsCooperatiu("\r100\0");
-                        setBlDuty(PERIODBL);
-                        break;
-                }
-            }
-            break;
-        case 61:
-
-            if (TiGetTics(timerPropaganda) > 1000){
-                TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
-            }
-            if (SiCharAvail() != 0){
-                switch (SiGetChar()){
-                    case 27:
-                        Menu();
-                        estatPropaganda=0;
-                        break;
-                    case 'J':
-                        if (changeAudioStatus()) SiPutsCooperatiu("\rAltaveu ences! \0");
-                        else SiPutsCooperatiu("\rAltaveu apagat!\0");
-                        break;
-                    case 'j':
-                        if (changeAudioStatus()) SiPutsCooperatiu("\rAltaveu ences! \0");
-                        else SiPutsCooperatiu("\rAltaveu apagat!\0");
-                        break;
-                }
-            }
-            break;*/
     }
-
 }
 
 int getVelocitat(int mostra){
@@ -278,21 +184,26 @@ int getVelocitat(int mostra){
 
 #define     MAXCOLUMNES 16
 static char estatLCD = 0;
-const unsigned char cadena[]={"SDM 2013-14     "}; //Més val que tingui 16 caràcters...
-static unsigned char timerLCD, caracterInici, i,j;
-static unsigned int mostra;
+const unsigned char cadena[]=   {"Waiting for ID  "};
+const unsigned char cadenaID[]= {"ID set          "};
+const unsigned char cadenaNew[]={"New Message     "}; //Més val que tingui 16 caràcters...
+static unsigned char timerLCD, caracterInici,caracterIniciTrama, i,j,h,quina,melodia;
 static unsigned char segonaLinia[MAXCOLUMNES];
-
 
 void initMotorLCD(void){
     //Pre: El LCD està inicialitzat
     timerLCD = TiGetTimer();
+    timerCincSegons= TiGetTimer();
     caracterInici = 0;
+    caracterIniciTrama = 0;
     LcClear();
+    j=0;
+    quina = 1;
+    melodia = 0;
     //Hi ha caselles de la segona línia que sempre valdran el mateix, les preparo!
-    segonaLinia[0]='X';
-    segonaLinia[1]='/';
-    segonaLinia[2]='Y';
+    segonaLinia[0]=' ';
+    segonaLinia[1]=' ';
+    segonaLinia[2]='/';
     segonaLinia[5]=' ';
     segonaLinia[6]=' ';
     segonaLinia[7]=' ';
@@ -300,33 +211,81 @@ void initMotorLCD(void){
     segonaLinia[11]=' ';
 }
 
+char mostrarMissatge(){
+    if(getLength() > 0 && TiGetTics(timerCincSegons) >= 5000){
+        turnOffAudio();
+        return 1;
+    }else{
+        j = 0;
+        caracterIniciTrama = 0;
+        return 0;
+    }
+}
+
+void setCadena(unsigned char cadena){
+    quina = cadena;
+}
 
 void MotorLCD(void){
     switch (estatLCD){
         case 0:
-            LcPutChar(cadena[j++]);
-            if (j==16) j= 0;
-            if (i++ > MAXCOLUMNES) {
-                estatLCD = 1;
-                TiResetTics(timerLCD);
-                LcGotoXY(0,1);
+            if(TiGetTics(timerLCD) > getVelocitat(AdGetMostra())){
+                if(mostrarMissatge()){
+                    LcPutChar(getMessage()[(j)]);
+                    j++;
+                    if (j >= getLength()){
+                        j = 0;
+                    }
+                }else{
+                    if(quina == 1){
+                        LcPutChar(cadena[h]);
+                    }else if(quina == 2){
+                        seguentFrequencia();
+                        LcPutChar(cadenaNew[h]);
+                    }else if(quina == 3){
+                        LcPutChar(cadenaID[h]);
+                    }
+                    h++;
+                    if (h==16){
+                        h = 0;
+                    }
+                }
+                if (++i > MAXCOLUMNES) {
+                    estatLCD = 1;
+                    TiResetTics(timerLCD);
+                    LcGotoXY(0,1);
+                }
             }
             break;
-
         case 1: //Preparo el string
-            segonaLinia[3] = getSwitch1()+'0';
-            segonaLinia[4] = getSwitch2()+'0';
-            segonaLinia[9] = getPB1()+'0';
-            segonaLinia[10] = getPB2() + '0';
+            if(id[0] ==  ':'){
+                tempID[0] = (tempID[0]<'9' ? (tempID[0] + 1) : '0');
+                tempID[1] = (tempID[1]<'9' ? (tempID[1] + 1) : '0');
+                tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
+            }else{
+                if(tempID[0] != id[0]){
+                    tempID[0] = (tempID[0]<'9' ? (tempID[0] + 1) : '0');
+                }
+                if(tempID[1] != id[1]){
+                    tempID[1] = (tempID[1]<'9' ? (tempID[1] + 1) : '0');
+                }
+                 if(tempID[2] != id[2]){
+                    tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
+                }
+            }
+            segonaLinia[0]=getTramesPropies(1);
+            segonaLinia[1]=getTramesPropies(0);
+            segonaLinia[3]=getTramesTotals(1);
+            segonaLinia[4]=getTramesTotals(0);
+            segonaLinia[9] = ' ';
+            segonaLinia[10] = ' ';
             estatLCD= 2;
             break;
         case 2: //Aquí faig l'itoa, que deu trigar una bona estona el pobre...
-            mostra = AdGetMostra();
-            myItoa(mostra);
             segonaLinia[12]=' ';
-            segonaLinia[13] = getTemps();
-            segonaLinia[14] = getTemps();
-            segonaLinia[15] = getTemps();
+            segonaLinia[13] = tempID[0];
+            segonaLinia[14] = tempID[1];
+            segonaLinia[15] = tempID[2];
             estatLCD = 3;
             break;
         case 3:
@@ -351,13 +310,17 @@ void MotorLCD(void){
         case 5:
             if (TiGetTics(timerLCD)>= 250){
                 //Alerta, ja porto 50 ms. des de l'últim refresc
-                caracterInici++;
-                if (caracterInici==16)
-                    caracterInici=0;
+                if(getLength() > 0){
+                    caracterIniciTrama++;
+                    if (caracterIniciTrama>=getLength()){
+                        caracterIniciTrama=0;
+                    }
+                    j = caracterIniciTrama;
+                }
                 estatLCD = 0;
                 LcGotoXY(0,0);
-                j = caracterInici;
                 i=0;
+                h = 0;
             }
             break;
     }

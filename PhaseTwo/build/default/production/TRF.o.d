@@ -1,5 +1,5 @@
-build/default/production/TPWM.o:  \
-TPWM.c  \
+build/default/production/TRF.o:  \
+TRF.c  \
 TPWM.h  \
 time.h  \
 PrTPropaganda.h  \

@@ -23,10 +23,12 @@
 #include "AdTADC.h"
 #include "SwTSwitch.h"
 #include "TPWM.h"
+#include "TRF.h"
 
 
-#define PROPAGANDA_1 "\n\rPlaca LS69. Sistemes Digitals i uProcessadors\r\n\0"
-#define PROPAGANDA_2 "vCli v1.0. Programa de test\r\n\0"
+#define PROPAGANDA_1 "\n\rPlaca grup 779. Sistemes Digitals i uProcessadors\r\n\0"
+#define PROPAGANDA_2 "Menu de seleccio\r\n\0"
+#define MAX_ID_STRING 6
 
 
 void myItoa(int num);
@@ -46,10 +48,21 @@ void initMotorLCD(void);
 //Post: inicialitza el LCD per posar la marquesina a 0
 void MotorLCD(void);
 
-char getIDPos(char pos);
+char getIDPos(unsigned char pos);
+
+void setIDPos(int pos, unsigned char value);
+
+char getTemps();
 
 int getVelocitat();
 
+char* getTemp();
+
+char* getID();
+
+void setCadena(unsigned char);
+
+void startToCount();
 
 #endif	/* PRTPROPAGANDA_H */
 

@@ -1,4 +1,4 @@
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  1
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,695 +57,748 @@ Warning[205]: Found directive in column 1. (CONFIG)
   00000085            00036 FLAG_DESAT_MSG EQU 0x85
   00000086            00037 FLAG_BYTE_ENVIAT_MSG EQU 0x86
   00000082            00038 FLAG_ENVIAR_RF_MSG EQU 0x82 
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  2
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
   00000084            00039 FLAG_DESAR_SENSE_CONFIRMACIO_MSG EQU 0x84
-                      00040 
-  00000002            00041 ESTAT_LEDS_CIRCULAR EQU 0x02
-  00000001            00042 ESTAT_POLSADOR EQU 0x01
-  00000004            00043 ESTAT_BLINKING_10HZ EQU 0x04
-  00000008            00044 ESTAT_BLINKING_5HZ EQU 0x08
-                      00045 
-  00000080            00046 POSICIO_A_DESAR_RAM EQU 0x80
-  00000088            00047 END_BYTE EQU 0x88
-  0000000B            00048 MAX_LEDS EQU 0x0B
-                      00049  
-  000000CD            00050 VALOR_A_MULTIPLICAR EQU 0xCD ;205
-                      00051  
-  00000014            00052 TEMPS_100_MSEG EQU 0x14 ;20
-  00000028            00053 TEMPS_200_MSEG EQU 0x28 ;40
-  00000050            00054 TEMPS_400_MSEG EQU 0x50 ;80
-  00000034            00055 TEMPS_500_MSEG EQU 0x34 ;100 - 0x64
-  000000C8            00056 TEMPS_1000_MSEG EQU 0xC8 ;200
-                      00057  
-  00000004            00058 LED0 EQU 0x04
-  00000005            00059 LED1 EQU 0x05
-  00000006            00060 LED2 EQU 0x06
-  00000007            00061 LED3 EQU 0x07
-  00000000            00062 LED4 EQU 0x00
-  00000001            00063 LED5 EQU 0x01
-  00000002            00064 LED6 EQU 0x02
-  00000003            00065 LED7 EQU 0x03
-  00000004            00066 LED8 EQU 0x04
-  00000005            00067 LED9 EQU 0x05 
-                      00068  
-                      00069 ;*********************************
-                      00070 ; VECTORS DE RESET I INTERRUPCIï¿½ *
-                      00071 ;*********************************
-                      00072     ORG 0x000000
-000000                00073 RESET_VECTOR
-000000 EF?? F???      00074     goto MAIN           
-                      00075 
-                      00076     ORG 0x000008
-000008                00077 HI_INT_VECTOR
-000008 EF?? F???      00078     goto HIGH_INT       
-                      00079 
-                      00080     ORG 0x000018
-000018                00081 LOW_INT_VECTOR
-000018 0011           00082     retfie FAST 
-                      00083 
-                      00084 ;***********************************
-                      00085 ;* RUTINES DE SERVEI D'INTERRUPCIï¿½ *
-                      00086 ;***********************************
-                      00087     
-00001A                00088 HIGH_INT
-00001A EC?? F???      00089     call RESET_TIMER
-00001E 2A03           00090     incf TEMPS_UN,1,0
-000020 0011           00091     retfie FAST;2
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  3
+  000000E8            00040 FLAG_ID_PLACA EQU 0xE8
+                      00041 
+  00000002            00042 ESTAT_LEDS_CIRCULAR EQU 0x02
+  00000001            00043 ESTAT_POLSADOR EQU 0x01
+  00000004            00044 ESTAT_BLINKING_10HZ EQU 0x04
+  00000008            00045 ESTAT_BLINKING_5HZ EQU 0x08
+                      00046 
+  00000080            00047 POSICIO_A_DESAR_RAM EQU 0x80
+  00000088            00048 END_BYTE EQU 0x88
+  0000000B            00049 MAX_LEDS EQU 0x0B
+                      00050  
+  000000CD            00051 VALOR_A_MULTIPLICAR EQU 0xCD ;205
+                      00052  
+  00000014            00053 TEMPS_100_MSEG EQU 0x14 ;20
+  00000028            00054 TEMPS_200_MSEG EQU 0x28 ;40
+  00000050            00055 TEMPS_400_MSEG EQU 0x50 ;80
+  00000034            00056 TEMPS_500_MSEG EQU 0x34 ;100 - 0x64
+  000000C8            00057 TEMPS_1000_MSEG EQU 0xC8 ;200
+                      00058  
+  00000004            00059 LED0 EQU 0x04
+  00000005            00060 LED1 EQU 0x05
+  00000006            00061 LED2 EQU 0x06
+  00000007            00062 LED3 EQU 0x07
+  00000000            00063 LED4 EQU 0x00
+  00000001            00064 LED5 EQU 0x01
+  00000002            00065 LED6 EQU 0x02
+  00000003            00066 LED7 EQU 0x03
+  00000004            00067 LED8 EQU 0x04
+  00000005            00068 LED9 EQU 0x05 
+                      00069  
+                      00070 ;*********************************
+                      00071 ; VECTORS DE RESET I INTERRUPCIï¿½ *
+                      00072 ;*********************************
+                      00073     ORG 0x000000
+000000                00074 RESET_VECTOR
+000000 EF?? F???      00075     goto MAIN           
+                      00076 
+                      00077     ORG 0x000008
+000008                00078 HI_INT_VECTOR
+000008 EF?? F???      00079     goto HIGH_INT       
+                      00080 
+                      00081     ORG 0x000018
+000018                00082 LOW_INT_VECTOR
+000018 0011           00083     retfie FAST 
+                      00084 
+                      00085 ;***********************************
+                      00086 ;* RUTINES DE SERVEI D'INTERRUPCIï¿½ *
+                      00087 ;***********************************
+                      00088     
+00001A                00089 HIGH_INT
+00001A EC?? F???      00090     call RESET_TIMER
+00001E 2A03           00091     incf TEMPS_UN,1,0
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00092     
-                      00093 ;****************************
-                      00094 ;* MAIN I RESTA DE FUNCIONS *
-                      00095 ;****************************
-                      00096 
-                      00097     
-000022                00098 INIT_VARS
-000022 6A02           00099     clrf ESTAT,0
-000024 6A03           00100     clrf TEMPS_UN,0
-000026 6A11           00101     clrf COMPTA_BYTES_L,0
-000028 6A12           00102     clrf COMPTA_BYTES_H,0
-00002A 6A05           00103     clrf LEDS,0  
-00002C 6A06           00104     clrf RESULTAT_DIVISIO,0
-00002E 6A07           00105     clrf INDEX,0  
-000030 6A10           00106     clrf AUXILIAR,0   
-000032 6A13           00107     clrf RESTANT,0 
-000034 6A03           00108     clrf TEMPS_UN,0
-000036 6A81           00109     clrf PORTB,0
-000038 6A83           00110     clrf PORTD,0
-00003A 0012           00111     return;2
-                      00112     
-00003C                00113 INIT_SIO
-                      00114     ;1001 0000 - 0x90
-00003C 0E90           00115     movlw 0x90
-00003E 6EAB           00116     movwf RCSTA,0
-                      00117     ;0010 0110 - 0x26
-000040 0E26           00118     movlw 0x26
-000042 6EAC           00119     movwf TXSTA,0
-000044 0E81           00120     movlw 0x81
-000046 6EAF           00121     movwf SPBRG,0
-000048 6AB0           00122     clrf SPBRGH,0
-00004A 6AB8           00123     clrf BAUDCON, 0
-00004C 0012           00124     return
-                      00125     
-00004E                00126 INIT_PORTS
-                      00127     ;clrf TRISA, 0
-00004E 8694           00128     bsf TRISC, 3, 0     ;Polsador Carrega
-000050 8894           00129     bsf TRISC, 4, 0     ;Polsador RF
-000052 9A94           00130     bcf TRISC, 5, 0     ;Bit RF
-000054 8E94           00131     bsf TRISC, 7, 0     ;RX Eusart
-000056 8C94           00132     bsf TRISC, 6, 0     ;TX Eusart
-                      00133     
-000058 9895           00134     bcf TRISD, 4, 0     ;LED0
-00005A 9A95           00135     bcf TRISD, 5, 0     ;LED1
-00005C 9C95           00136     bcf TRISD, 6, 0     ;LED2
-00005E 9E95           00137     bcf TRISD, 7, 0     ;LED3
-                      00138     
-000060 9093           00139     bcf TRISB, 0, 0     ;LED4
-000062 9293           00140     bcf TRISB, 1, 0     ;LED5
-000064 9493           00141     bcf TRISB, 2, 0     ;LED6
-000066 9693           00142     bcf TRISB, 3, 0     ;LED7
-000068 9893           00143     bcf TRISB, 4, 0     ;LED8
-00006A 9A93           00144     bcf TRISB, 5, 0     ;LED9
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  4
+000020 0011           00092     retfie FAST;2
+                      00093     
+                      00094 ;****************************
+                      00095 ;* MAIN I RESTA DE FUNCIONS *
+                      00096 ;****************************
+                      00097 
+                      00098     
+000022                00099 INIT_VARS
+000022 6A02           00100     clrf ESTAT,0
+000024 6A03           00101     clrf TEMPS_UN,0
+000026 6A11           00102     clrf COMPTA_BYTES_L,0
+000028 6A12           00103     clrf COMPTA_BYTES_H,0
+00002A 6A05           00104     clrf LEDS,0  
+00002C 6A06           00105     clrf RESULTAT_DIVISIO,0
+00002E 6A07           00106     clrf INDEX,0  
+000030 6A10           00107     clrf AUXILIAR,0   
+000032 6A13           00108     clrf RESTANT,0 
+000034 6A03           00109     clrf TEMPS_UN,0
+000036 6A81           00110     clrf PORTB,0
+000038 6A83           00111     clrf PORTD,0
+00003A 0012           00112     return;2
+                      00113     
+00003C                00114 INIT_SIO
+                      00115     ;1001 0000 - 0x90
+00003C 0E90           00116     movlw 0x90
+00003E 6EAB           00117     movwf RCSTA,0
+                      00118     ;0010 0110 - 0x26
+000040 0E26           00119     movlw 0x26
+000042 6EAC           00120     movwf TXSTA,0
+000044 0E81           00121     movlw 0x81
+000046 6EAF           00122     movwf SPBRG,0
+000048 6AB0           00123     clrf SPBRGH,0
+00004A 6AB8           00124     clrf BAUDCON, 0
+00004C 0012           00125     return
+                      00126     
+00004E                00127 INIT_PORTS
+                      00128     ;clrf TRISA, 0
+00004E 8694           00129     bsf TRISC, 3, 0     ;Polsador Carrega
+000050 8894           00130     bsf TRISC, 4, 0     ;Polsador RF
+000052 9A94           00131     bcf TRISC, 5, 0     ;Bit RF
+000054 8E94           00132     bsf TRISC, 7, 0     ;RX Eusart
+000056 8C94           00133     bsf TRISC, 6, 0     ;TX Eusart
+                      00134     
+000058 9895           00135     bcf TRISD, 4, 0     ;LED0
+00005A 9A95           00136     bcf TRISD, 5, 0     ;LED1
+00005C 9C95           00137     bcf TRISD, 6, 0     ;LED2
+00005E 9E95           00138     bcf TRISD, 7, 0     ;LED3
+                      00139     
+000060 9093           00140     bcf TRISB, 0, 0     ;LED4
+000062 9293           00141     bcf TRISB, 1, 0     ;LED5
+000064 9493           00142     bcf TRISB, 2, 0     ;LED6
+000066 9693           00143     bcf TRISB, 3, 0     ;LED7
+000068 9893           00144     bcf TRISB, 4, 0     ;LED8
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00006C 0012           00145     return
-                      00146     
-00006E                00147 INIT_TIMER
-                      00148     ;10001000
-                      00149     ;88
-00006E 0E88           00150     movlw 0x88
-000070 6ED5           00151     movwf T0CON,0
-000072 9ED0           00152     bcf RCON, IPEN, 0
-                      00153     
-                      00154     ;10100000
-                      00155     ;E0
-000074 0EE0           00156     movlw 0xE0
-000076 6EF2           00157     movwf INTCON, 0
-                      00158     
-000078 EC?? F???      00159     call RESET_TIMER
-00007C 0012           00160     return
-                      00161     
-00007E                00162 RESET_TIMER
-                      00163     ;CF
-                      00164     ;3A
-00007E 0E3C           00165     movlw 0x3C
-000080 6ED7           00166     movwf TMR0H, 0
-                      00167     ;30
-                      00168     ;98
-000082 0EA6           00169     movlw 0xA6
-000084 6ED6           00170     movwf TMR0L, 0
-000086 94F2           00171     bcf INTCON, TMR0IF, 0
-000088 0012           00172     return
-                      00173     
-                      00174 ;********
-                      00175 ;* MAIN *
-                      00176 ;******** 
-                      00177 
-                      00178     
-00008A                00179 MAIN
-00008A EC?? F???      00180     call INIT_VARS
-00008E EC?? F???      00181     call INIT_PORTS
-000092 EC?? F???      00182     call INIT_SIO
-000096 EC?? F???      00183     call INIT_TIMER
-                      00184     
-00009A                00185 LOOP
-00009A BA9E           00186     btfsc PIR1,RCIF,0
-00009C EC?? F???      00187     call REBUT
-                      00188     
-0000A0 B682           00189     btfsc PORTC,3,0
-0000A2 EC?? F???      00190     call POLS_CARREGA_MISSATGE
-                      00191     
-0000A6 B882           00192     btfsc PORTC,4,0
-0000A8 EC?? F???      00193     call POLS_ENVIAR_RF
-                      00194     
-0000AC B202           00195     btfsc ESTAT, 1,0
-0000AE EC?? F???      00196     call LEDS_CIRCULAR
-                      00197     
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  5
+00006A 9A93           00145     bcf TRISB, 5, 0     ;LED9
+00006C 0012           00146     return
+                      00147     
+00006E                00148 INIT_TIMER
+                      00149     ;10001000
+                      00150     ;88
+00006E 0E88           00151     movlw 0x88
+000070 6ED5           00152     movwf T0CON,0
+000072 9ED0           00153     bcf RCON, IPEN, 0
+                      00154     
+                      00155     ;10100000
+                      00156     ;E0
+000074 0EE0           00157     movlw 0xE0
+000076 6EF2           00158     movwf INTCON, 0
+                      00159     
+000078 EC?? F???      00160     call RESET_TIMER
+00007C 0012           00161     return
+                      00162     
+00007E                00163 RESET_TIMER
+                      00164     ;CF
+                      00165     ;3A
+00007E 0E3C           00166     movlw 0x3C
+000080 6ED7           00167     movwf TMR0H, 0
+                      00168     ;30
+                      00169     ;98
+000082 0EA6           00170     movlw 0xA6
+000084 6ED6           00171     movwf TMR0L, 0
+000086 94F2           00172     bcf INTCON, TMR0IF, 0
+000088 0012           00173     return
+                      00174     
+                      00175 ;********
+                      00176 ;* MAIN *
+                      00177 ;******** 
+                      00178 
+                      00179     
+00008A                00180 MAIN
+00008A EC?? F???      00181     call INIT_VARS
+00008E EC?? F???      00182     call INIT_PORTS
+000092 EC?? F???      00183     call INIT_SIO
+000096 EC?? F???      00184     call INIT_TIMER
+                      00185     
+00009A                00186 LOOP
+00009A BA9E           00187     btfsc PIR1,RCIF,0
+00009C EC?? F???      00188     call REBUT
+                      00189     
+0000A0 B682           00190     btfsc PORTC,3,0
+0000A2 EC?? F???      00191     call POLS_CARREGA_MISSATGE
+                      00192     
+0000A6 B882           00193     btfsc PORTC,4,0
+0000A8 EC?? F???      00194     call POLS_ENVIAR_RF
+                      00195     
+0000AC B202           00196     btfsc ESTAT, 1,0
+0000AE EC?? F???      00197     call LEDS_CIRCULAR
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0000B2 B002           00198     btfsc ESTAT, 0,0
-0000B4 EC?? F???      00199     call ESPERA_POLSADOR
-                      00200     
-0000B8 B402           00201     btfsc ESTAT, 2,0
-0000BA EC?? F???      00202     call BLINKING_10HZ
-                      00203     
-0000BE B602           00204     btfsc ESTAT, 3,0
-0000C0 EC?? F???      00205     call BLINKING_5HZ
-                      00206     
-0000C4 EF?? F???      00207     goto LOOP
-                      00208 
-                      00209 ;**************** - BLOC RF - ****************************
-                      00210     
-0000C8                00211 ENVIAR_RF
-0000C8 0E00           00212     movlw 0x00
-0000CA 6411           00213     cpfsgt COMPTA_BYTES_L, 0
-0000CC EF?? F???      00214     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
-0000D0 EC?? F???      00215     call ENVIAR_CONFIRMACIO_RF
-0000D4 EF?? F???      00216     goto ENVIAR
-                      00217    
-0000D8                00218 ENVIAR_RF_SENSE_CONFIRMACIO
-0000D8 0E00           00219     movlw 0x00
-0000DA 6411           00220     cpfsgt COMPTA_BYTES_L, 0
-0000DC EF?? F???      00221     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
-                      00222     
-0000E0                00223 ENVIAR
-0000E0 EC?? F???      00224     call DIVIDIR_10
-0000E4 6A8A           00225     clrf LATB, 0
-0000E6 6A8C           00226     clrf LATD, 0
-0000E8 6A05           00227     clrf LEDS, 0
-0000EA 6A02           00228     clrf ESTAT, 0
-0000EC 6A09           00229     clrf ENVIAT,0
-0000EE 6A10           00230     clrf AUXILIAR,0
-0000F0 6A07           00231     clrf INDEX,0
-0000F2 6AEA           00232     clrf FSR0H,0
-0000F4 6A13           00233     clrf RESTANT,0
-0000F6 2A05           00234     incf LEDS, 1, 0 
-0000F8 B012           00235     btfsc COMPTA_BYTES_H,0,0
-0000FA 8002           00236     bsf ESTAT,0,0
-0000FC C011 F013      00237     movff COMPTA_BYTES_L,RESTANT
-000100 0E80           00238     movlw POSICIO_A_DESAR_RAM
-000102 6EE9           00239     movwf FSR0L, 0
-                      00240 
-000104                00241 BUCLE_RESTANT_ENVIAR_RF
-000104 0E00           00242     movlw 0x00
-000106 6413           00243     cpfsgt RESTANT,0
-000108 EF?? F???      00244     goto PRE_FINAL_RF
-00010C CFEE F010      00245     movff POSTINC0, AUXILIAR
-000110 6A03           00246     clrf TEMPS_UN,0
+                      00198     
+0000B2 B002           00199     btfsc ESTAT, 0,0
+0000B4 EC?? F???      00200     call ESPERA_POLSADOR
+                      00201     
+0000B8 B402           00202     btfsc ESTAT, 2,0
+0000BA EC?? F???      00203     call BLINKING_10HZ
+                      00204     
+0000BE B602           00205     btfsc ESTAT, 3,0
+0000C0 EC?? F???      00206     call BLINKING_5HZ
+                      00207     
+0000C4 EF?? F???      00208     goto LOOP
+                      00209 
+                      00210 ;**************** - BLOC RF - ****************************
+                      00211     
+                      00212     
+                      00213     
+0000C8                00214 ENVIAR_RF
+0000C8 0E00           00215     movlw 0x00
+0000CA 6411           00216     cpfsgt COMPTA_BYTES_L, 0
+0000CC EF?? F???      00217     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
+0000D0 EC?? F???      00218     call ENVIAR_CONFIRMACIO_RF
+0000D4 6A09           00219     clrf ENVIAT,0
+0000D6 EF?? F???      00220     goto ESPERA_CANAL_ZERO
+0000DA 6A03           00221     clrf TEMPS_UN,0
+                      00222    
+0000DC                00223 ENVIAR_RF_SENSE_CONFIRMACIO
+0000DC 0E00           00224     movlw 0x00
+0000DE 6411           00225     cpfsgt COMPTA_BYTES_L, 0
+0000E0 EF?? F???      00226     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
+0000E4 6A03           00227     clrf TEMPS_UN,0
+0000E6 6A09           00228     clrf ENVIAT,0
+0000E8 EF?? F???      00229     goto ESPERA_CANAL_ZERO
+                      00230     
+0000EC                00231 NETEJA_RF
+0000EC B003           00232     btfsc TEMPS_UN, 0,0 
+0000EE EF?? F???      00233     goto SET_PRIMERA_PART ;Primers 5 mseg
+0000F2 B203           00234     btfsc TEMPS_UN, 1,0 
+0000F4 EF?? F???      00235     goto SET_SEGONA_PART ;Segon 5 mseg
+0000F8 EF?? F???      00236     goto NETEJA_RF
+                      00237     
+0000FC                00238 SET_PRIMERA_PART
+0000FC 8A8B           00239     bsf LATC, 5, 0
+0000FE EF?? F???      00240     goto NETEJA_RF
+                      00241     
+000102                00242 SET_SEGONA_PART
+000102 9A8B           00243     bcf LATC, 5, 0
+000104 2A09           00244     incf ENVIAT,1,0
+000106 6A03           00245     clrf TEMPS_UN,0
+000108 EF?? F???      00246     goto ESPERA_CANAL_ZERO
                       00247     
-000112                00248 BUCLE_ENVIAR_8_BITS ;Ens quedarem aqui fins que no hem enviat 8 bits
-000112 0E08           00249     movlw 0x08 
-000114 6009           00250     cpfslt ENVIAT,0
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  6
+00010C                00248 ESPERA_CANAL_ZERO
+00010C 0E0A           00249     movlw 0x0A
+00010E 6409           00250     cpfsgt ENVIAT,0
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000116 EF?? F???      00251     goto FINAL_BUCLE_ENVIAR ;Incrementarem index
-00011A B003           00252     btfsc TEMPS_UN, 0,0 
-00011C EF?? F???      00253     goto ENVIAR_BIT_PRIMERA_MEITAT ;Primers 5 mseg
-000120 B203           00254     btfsc TEMPS_UN, 1,0 
-000122 EF?? F???      00255     goto ENVIAR_BIT_SEGONA_MEITAT ;Segon 5 mseg
-000126 EF?? F???      00256     goto BUCLE_ENVIAR_8_BITS ;Tornem al inici del bucle   
-                      00257     
-00012A                00258 FINAL_BUCLE_ENVIAR 
-00012A 2A07           00259     incf INDEX, 1,0
-00012C 6A09           00260     clrf ENVIAT,0
-00012E 0613           00261     decf RESTANT,1,0
-000130 5006           00262     movf RESULTAT_DIVISIO,0,0
-000132 6007           00263     cpfslt INDEX,0
-000134 EC?? F???      00264     call ACTIVA_LEDS_RF
-000138 EF?? F???      00265     goto BUCLE_RESTANT_ENVIAR_RF ;Tornem al seguent 10 percent
-                      00266     
-00013C                00267 ACTIVA_LEDS_RF
-00013C 2A05           00268     incf LEDS,1,0
-00013E EC?? F???      00269     call ACTIVAR_LEDS_PROCES
-000142 6A07           00270     clrf INDEX, 0
-000144 0012           00271     return
-                      00272 
-000146                00273 ENVIAR_BIT_PRIMERA_MEITAT
-000146 B010           00274     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la primera part a 0
-000148 9A8B           00275     bcf LATC, 5, 0
-00014A A010           00276     btfss AUXILIAR,0,0 ;Si el primer es 0 fiquem la primera part a 1 
-00014C 8A8B           00277     bsf LATC, 5, 0
-00014E EF?? F???      00278     goto BUCLE_ENVIAR_8_BITS
-                      00279     
-000152                00280 ENVIAR_BIT_SEGONA_MEITAT
-000152 B010           00281     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la segona part a 1
-000154 8A8B           00282     bsf LATC, 5, 0
-000156 A010           00283     btfss AUXILIAR,0,0 ;Si el primer es 1 fiquem la segona part a 0
-000158 9A8B           00284     bcf LATC, 5, 0
-00015A 2A09           00285     incf ENVIAT,1,0
-00015C 4210           00286     rrncf AUXILIAR,1,0
-00015E 6A03           00287     clrf TEMPS_UN,0
-000160 EF?? F???      00288     goto BUCLE_ENVIAR_8_BITS
-                      00289 
-000164                00290 PRE_FINAL_RF
-000164 A002           00291     btfss ESTAT,0,0
-000166 EF?? F???      00292     goto FINAL_RF
-00016A 6813           00293     setf RESTANT,0
-00016C 6A02           00294     clrf ESTAT,0
-00016E EF?? F???      00295     goto BUCLE_RESTANT_ENVIAR_RF
-                      00296     
-                      00297     
-000172                00298 FINAL_RF
-000172 0E0B           00299     movlw MAX_LEDS
-000174 6205           00300     cpfseq LEDS,0
-000176 EC?? F???      00301     call ACTIVA_LEDS_RF
-00017A 0E04           00302     movlw ESTAT_BLINKING_10HZ 
-00017C 6E02           00303     movwf ESTAT,0
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  7
+000110 EF?? F???      00251     goto NETEJA_RF
+000114 6A03           00252     clrf TEMPS_UN,0
+000116 EF?? F???      00253     goto TEMPS_10
+                      00254     
+00011A                00255 TEMPS_10
+00011A 0E02           00256     movlw 0x02
+00011C 6003           00257     cpfslt TEMPS_UN,0
+00011E EF?? F???      00258     goto ENVIAR
+000122 9A8B           00259     bcf LATC, 5, 0
+000124 EF?? F???      00260     goto TEMPS_10
+                      00261     
+                      00262     
+000128                00263 ENVIAR
+000128 0E03           00264     movlw 0x03
+00012A 5E11           00265     SUBWF COMPTA_BYTES_L,1,0
+00012C EC?? F???      00266     call DIVIDIR_10
+000130 0E03           00267     movlw 0x03
+000132 2611           00268     addwf COMPTA_BYTES_L,1,0
+000134 6A8A           00269     clrf LATB, 0
+000136 6A8C           00270     clrf LATD, 0
+000138 6A05           00271     clrf LEDS, 0
+00013A 6A02           00272     clrf ESTAT, 0
+00013C 6A09           00273     clrf ENVIAT,0
+00013E 6A10           00274     clrf AUXILIAR,0
+000140 6A07           00275     clrf INDEX,0
+000142 6AEA           00276     clrf FSR0H,0
+000144 6A13           00277     clrf RESTANT,0
+000146 2A05           00278     incf LEDS, 1, 0 
+000148 B012           00279     btfsc COMPTA_BYTES_H,0,0
+00014A 8002           00280     bsf ESTAT,0,0
+00014C C011 F013      00281     movff COMPTA_BYTES_L,RESTANT
+000150 0E80           00282     movlw POSICIO_A_DESAR_RAM
+000152 6EE9           00283     movwf FSR0L, 0
+                      00284 
+000154                00285 BUCLE_RESTANT_ENVIAR_RF
+000154 0E00           00286     movlw 0x00
+000156 6413           00287     cpfsgt RESTANT,0
+000158 EF?? F???      00288     goto PRE_FINAL_RF
+00015C CFEE F010      00289     movff POSTINC0, AUXILIAR
+000160 6A03           00290     clrf TEMPS_UN,0
+                      00291     
+000162                00292 BUCLE_ENVIAR_8_BITS ;Ens quedarem aqui fins que no hem enviat 8 bits
+000162 0E08           00293     movlw 0x08 
+000164 6009           00294     cpfslt ENVIAT,0
+000166 EF?? F???      00295     goto FINAL_BUCLE_ENVIAR ;Incrementarem index
+00016A B003           00296     btfsc TEMPS_UN, 0,0 
+00016C EF?? F???      00297     goto ENVIAR_BIT_PRIMERA_MEITAT ;Primers 5 mseg
+000170 B203           00298     btfsc TEMPS_UN, 1,0 
+000172 EF?? F???      00299     goto ENVIAR_BIT_SEGONA_MEITAT ;Segon 5 mseg
+000176 EF?? F???      00300     goto BUCLE_ENVIAR_8_BITS ;Tornem al inici del bucle   
+                      00301     
+00017A                00302 FINAL_BUCLE_ENVIAR 
+00017A 2A07           00303     incf INDEX, 1,0
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00017E A003           00304     btfss TEMPS_UN,0,0
-000180 EF?? F???      00305     goto $-2
-000184 9A8B           00306     bcf LATC,5,0
-000186 6A03           00307     clrf TEMPS_UN,0
-000188 0012           00308     return
-                      00309     
+00017C 6A09           00304     clrf ENVIAT,0
+00017E 0613           00305     decf RESTANT,1,0
+000180 5006           00306     movf RESULTAT_DIVISIO,0,0
+000182 6007           00307     cpfslt INDEX,0
+000184 EC?? F???      00308     call ACTIVA_LEDS_RF
+000188 EF?? F???      00309     goto BUCLE_RESTANT_ENVIAR_RF ;Tornem al seguent 10 percent
                       00310     
-                      00311 ;***********************************************************   
-                      00312     
-                      00313     
-                      00314 ;**************** - BLOC DESAR - ****************************
-                      00315         
-00018A                00316 DESA
-00018A EC?? F???      00317     call ENVIAR_CONFIRMACIO_DESAR
-                      00318 
-00018E                00319 DESA_SENSE_CONFIRMACIO ;Quan ens apreten el boto no necessitem enviar al pc la confirmacio
-00018E 6A11           00320     clrf COMPTA_BYTES_L,0
-000190 6A12           00321     clrf COMPTA_BYTES_H,0
-000192 6A02           00322     clrf ESTAT,0
-000194 6AEA           00323     clrf FSR0H,0        
-000196 0E80           00324     movlw POSICIO_A_DESAR_RAM
-000198 6EE9           00325     movwf FSR0L, 0
-                      00326     
-00019A                00327 BUCLE_DESAR
-00019A AA9E           00328     btfss PIR1,RCIF,0
-00019C EF?? F???      00329         goto BUCLE_DESAR ;Mentres no valgui 1 el bit RCIF que ens indica que hi ha un byte ens esperem
-0001A0 0E88           00330     movlw END_BYTE 
-0001A2 60AE           00331     cpfslt RCREG, 0 ;Si rebem el byte de final del ordinador sortim, no el desem
-0001A4 EF?? F???      00332         goto RETORNA_DESAR 
-0001A8 CFAE FFEE      00333     movff RCREG, POSTINC0 ;Movem el caracter a la posicio de la ram corresponent
-0001AC 2A11           00334     incf COMPTA_BYTES_L,1,0 ;Incrementem en numero de bytes rebut
-0001AE B0D8           00335     btfsc STATUS,C,0
-0001B0 EC?? F???      00336     call RESTART_COMPTA
-0001B4 EC?? F???      00337     call ENVIAR_CONFIRMACIO_DESAT ;Confirmarem al ordinador que ho hem desat
-0001B8 EF?? F???      00338     goto BUCLE_DESAR ;Esperem una nova dada
-                      00339     
-0001BC                00340 RETORNA_DESAR
-0001BC 0E08           00341     movlw ESTAT_BLINKING_5HZ 
-0001BE 6E02           00342     movwf ESTAT,0
-0001C0 6A03           00343     clrf TEMPS_UN,0
-0001C2 0012           00344     return
-                      00345 
-0001C4                00346 RESTART_COMPTA
-0001C4 2A12           00347     incf COMPTA_BYTES_H,1,0
-0001C6 6A11           00348     clrf COMPTA_BYTES_L,0
-0001C8 0012           00349     return
-                      00350     
-                      00351     
-                      00352 ;***********************************************************    
+00018C                00311 ENVIAR_BIT_PRIMERA_MEITAT
+00018C B010           00312     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la primera part a 0
+00018E 9A8B           00313     bcf LATC, 5, 0
+000190 A010           00314     btfss AUXILIAR,0,0 ;Si el primer es 0 fiquem la primera part a 1 
+000192 8A8B           00315     bsf LATC, 5, 0
+000194 EF?? F???      00316     goto BUCLE_ENVIAR_8_BITS
+                      00317     
+000198                00318 ENVIAR_BIT_SEGONA_MEITAT
+000198 B010           00319     btfsc AUXILIAR,0,0 ;Mirem si el primer bit es 0, si ho es fiquem la segona part a 1
+00019A 8A8B           00320     bsf LATC, 5, 0
+00019C A010           00321     btfss AUXILIAR,0,0 ;Si el primer es 1 fiquem la segona part a 0
+00019E 9A8B           00322     bcf LATC, 5, 0
+0001A0 2A09           00323     incf ENVIAT,1,0
+0001A2 4210           00324     rrncf AUXILIAR,1,0
+0001A4 6A03           00325     clrf TEMPS_UN,0
+0001A6 EF?? F???      00326     goto BUCLE_ENVIAR_8_BITS
+                      00327 
+0001AA                00328 ACTIVA_LEDS_RF
+0001AA 2A05           00329     incf LEDS,1,0
+0001AC EC?? F???      00330     call ACTIVAR_LEDS_PROCES
+0001B0 6A07           00331     clrf INDEX, 0
+0001B2 0012           00332     return
+                      00333 
+0001B4                00334 PRE_FINAL_RF
+0001B4 A002           00335     btfss ESTAT,0,0
+0001B6 EF?? F???      00336     goto FINAL_RF
+0001BA 6813           00337     setf RESTANT,0
+0001BC 6A02           00338     clrf ESTAT,0
+0001BE EF?? F???      00339     goto BUCLE_RESTANT_ENVIAR_RF
+                      00340     
+0001C2                00341 FINAL_RF
+0001C2 0E0B           00342     movlw MAX_LEDS
+0001C4 6205           00343     cpfseq LEDS,0
+0001C6 EC?? F???      00344     call ACTIVA_LEDS_RF
+0001CA 0E04           00345     movlw ESTAT_BLINKING_10HZ 
+0001CC 6E02           00346     movwf ESTAT,0
+0001CE A003           00347     btfss TEMPS_UN,0,0
+0001D0 EF?? F???      00348     goto $-2
+0001D4 9A8B           00349     bcf LATC,5,0
+0001D6 6A03           00350     clrf TEMPS_UN,0
+0001D8 0012           00351     return
+                      00352     
                       00353     
-                      00354 
-                      00355 ;*********** - BLOC COMUNICACIO PC - *****************
+                      00354 ;***********************************************************   
+                      00355     
                       00356     
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  8
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0001CA                00357 ENVIAR_CONFIRMACIO_RF 
-0001CA 0E82           00358     movlw FLAG_ENVIAR_RF_MSG
-0001CC 6EAD           00359     movwf TXREG,0
-0001CE EC?? F???      00360     call ESPERA
-0001D2 0012           00361     return
-                      00362     
-0001D4                00363 ENVIAR_CONFIRMACIO_DESAT
-0001D4 0E85           00364     movlw FLAG_DESAT_MSG
-0001D6 6EAD           00365     movwf TXREG,0
-0001D8 EC?? F???      00366     call ESPERA
-0001DC 0012           00367     return 
-                      00368     
-0001DE                00369 ENVIAR_CONFIRMACIO_DESAR
-0001DE 0E81           00370     movlw FLAG_DESAR_MSG
-0001E0 6EAD           00371     movwf TXREG,0
-0001E2 EC?? F???      00372     call ESPERA
-0001E6 0012           00373     return
-                      00374     
-0001E8                00375 ENVIAR_END_BYTE
-0001E8 0E88           00376     movlw END_BYTE
-0001EA 6EAD           00377     movwf TXREG,0
-0001EC EC?? F???      00378     call ESPERA
-0001F0 0012           00379     return
+                      00357 ;**************** - BLOC DESAR - ****************************
+                      00358         
+0001DA                00359 DESA
+0001DA EC?? F???      00360     call ENVIAR_CONFIRMACIO_DESAR
+                      00361 
+0001DE                00362 DESA_SENSE_CONFIRMACIO ;Quan ens apreten el boto no necessitem enviar al pc la confirmacio
+0001DE 6A11           00363     clrf COMPTA_BYTES_L,0
+0001E0 6A12           00364     clrf COMPTA_BYTES_H,0
+0001E2 6A02           00365     clrf ESTAT,0
+0001E4 6AEA           00366     clrf FSR0H,0        
+0001E6 0E80           00367     movlw POSICIO_A_DESAR_RAM
+0001E8 6EE9           00368     movwf FSR0L, 0
+                      00369     
+0001EA                00370 BUCLE_DESAR
+0001EA AA9E           00371     btfss PIR1,RCIF,0
+0001EC EF?? F???      00372         goto BUCLE_DESAR ;Mentres no valgui 1 el bit RCIF que ens indica que hi ha un byte ens esperem
+0001F0 0E88           00373     movlw END_BYTE 
+0001F2 62AE           00374     cpfseq RCREG, 0 ;Si rebem el byte de final del ordinador sortim, no el desem
+0001F4 EF?? F???      00375         goto FINAL_BUCLE 
+0001F8 0E08           00376     movlw ESTAT_BLINKING_5HZ 
+0001FA 6E02           00377     movwf ESTAT,0
+0001FC 6A03           00378     clrf TEMPS_UN,0
+0001FE 0012           00379     return
                       00380     
-0001F2                00381 ESPERA
-0001F2 A2AC           00382     btfss TXSTA,TRMT,0
-0001F4 EF?? F???      00383     goto ESPERA
-0001F8 0012           00384     return
-                      00385     
-0001FA                00386 ENVIAR_PETICIO_DESAR
-0001FA 0E84           00387     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG
-0001FC 6EAD           00388     movwf TXREG,0
-0001FE EC?? F???      00389     call ESPERA
-000202 6A03           00390     clrf TEMPS_UN,0
-000204 0E01           00391     movlw ESTAT_POLSADOR
-000206 6E02           00392     movwf ESTAT,0
-000208 0012           00393     return
+000200                00381 FINAL_BUCLE
+000200 CFAE FFEE      00382     movff RCREG, POSTINC0 ;Movem el caracter a la posicio de la ram corresponent
+000204 2A11           00383     incf COMPTA_BYTES_L,1,0 ;Incrementem en numero de bytes rebut
+000206 B0D8           00384     btfsc STATUS,C,0
+000208 EC?? F???      00385     call RESTART_COMPTA
+00020C EC?? F???      00386     call ENVIAR_CONFIRMACIO_DESAT ;Confirmarem al ordinador que ho hem desat
+000210 EF?? F???      00387     goto BUCLE_DESAR ;Esperem una nova dada
+                      00388     
+000214                00389 RESTART_COMPTA
+000214 2A12           00390     incf COMPTA_BYTES_H,1,0
+000216 6A11           00391     clrf COMPTA_BYTES_L,0
+000218 0012           00392     return
+                      00393     
                       00394     
-00020A                00395 REBUT
-00020A AEAE           00396     btfss RCREG, 7,0 ;Qualsevol byte rebut que tingui aquest bit a 1 es refereix a una resposta del pc
-00020C 0012           00397     return ;Si rebem un byte i no esta activat no hauriem dentrar aqui
-00020E 0E81           00398     movlw FLAG_DESAR_MSG ;Valor del RCREG per enviar per RF
-000210 64AE           00399     cpfsgt RCREG,0 ;Si es mes gran no desara el missatge
-000212 EF?? F???      00400     goto DESA ;Desem els bytes
-000216 0E82           00401     movlw FLAG_ENVIAR_RF_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
-000218 64AE           00402     cpfsgt RCREG,0
-00021A EF?? F???      00403     goto ENVIAR_RF ;Enviar dades per RF
-00021E 0E84           00404     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
-000220 64AE           00405     cpfsgt RCREG,0
-000222 EF?? F???      00406     goto DESA_SENSE_CONFIRMACIO ;Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
-000226 0012           00407     return
-                      00408  
-                      00409     
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE  9
+                      00395 ;***********************************************************    
+                      00396     
+                      00397 
+                      00398 ;*********** - BLOC COMUNICACIO PC - *****************
+                      00399     
+00021A                00400 ENVIAR_CONFIRMACIO_RF 
+00021A 0E82           00401     movlw FLAG_ENVIAR_RF_MSG
+00021C 6EAD           00402     movwf TXREG,0
+00021E EC?? F???      00403     call ESPERA
+000222 0012           00404     return
+                      00405     
+000224                00406 ENVIAR_CONFIRMACIO_DESAT
+000224 0E85           00407     movlw FLAG_DESAT_MSG
+000226 6EAD           00408     movwf TXREG,0
+000228 EC?? F???      00409     call ESPERA
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00410 ;***********************************************************    
-                      00411 
-                      00412 
-                      00413 ;***************** - BLOC DIVIDIR - ************************
-                      00414     
-000228                00415 DIVIDIR_10
-000228 6A06           00416     clrf RESULTAT_DIVISIO,0
-00022A 0ECD           00417     movlw VALOR_A_MULTIPLICAR
-00022C 0211           00418     mulwf COMPTA_BYTES_L,0
-00022E B012           00419     btfsc COMPTA_BYTES_H,0,0
-000230 EC?? F???      00420     call SUMA_PART_ALTA
-000234 CFF4 F006      00421     movff PRODH, RESULTAT_DIVISIO
-000238 4206           00422     rrncf RESULTAT_DIVISIO,1,0
-00023A 4206           00423     rrncf RESULTAT_DIVISIO,1,0
-00023C 4206           00424     rrncf RESULTAT_DIVISIO,1,0
-00023E 0E1F           00425     movlw 0x1F ;Assegurarnos que els bits que hem afegit son 0
-000240 1606           00426     andwf RESULTAT_DIVISIO,1,0
-000242 0E00           00427     movlw 0x00
-000244 6406           00428     cpfsgt RESULTAT_DIVISIO,0
-000246 2A06           00429     incf RESULTAT_DIVISIO,1,0
-000248 0012           00430     return
-                      00431     
-00024A                00432 SUMA_PART_ALTA
-00024A 0ECC           00433     movlw 0xCC
-00024C 26F4           00434     addwf PRODH,1,0
-00024E 0E33           00435     movlw 0x33
-000250 26F3           00436     addwf PRODL,1,0
-000252 0012           00437     return
-                      00438     
-                      00439 ;***********************************************************  
-                      00440     
-                      00441 
-                      00442 ;***************** - BLOC LEDS - ***************************
-                      00443     
-                      00444 
-000254                00445 ACTIVACIO_LEDS_CIRCULAR
-000254 0E02           00446     movlw ESTAT_LEDS_CIRCULAR
-000256 6E02           00447     movwf ESTAT,0
-000258 6A8A           00448     clrf LATB,0
-00025A 6A8C           00449     clrf LATD,0
-00025C 6A03           00450     clrf TEMPS_UN,0
-00025E 6A07           00451     clrf INDEX,0
-000260 6A10           00452     clrf AUXILIAR,0
-000262 888C           00453     bsf LATD, LED0, 0 ;Activem el primer bit del LATB
-000264 0012           00454     return
-                      00455     
-                      00456                 ;*******************
-                      00457     
-000266                00458 LEDS_CIRCULAR
-000266 0E34           00459    movlw TEMPS_500_MSEG
-000268 6003           00460    cpfslt TEMPS_UN,0
-00026A EF?? F???      00461    goto ACTIVAR_LEDS_CIRCULAR
-00026E 0012           00462    return
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 10
+00022C 0012           00410     return 
+                      00411     
+00022E                00412 ENVIAR_CONFIRMACIO_DESAR
+00022E 0E81           00413     movlw FLAG_DESAR_MSG
+000230 6EAD           00414     movwf TXREG,0
+000232 EC?? F???      00415     call ESPERA
+000236 0012           00416     return
+                      00417     
+000238                00418 ENVIAR_END_BYTE
+000238 0E88           00419     movlw END_BYTE
+00023A 6EAD           00420     movwf TXREG,0
+00023C EC?? F???      00421     call ESPERA
+000240 0012           00422     return
+                      00423     
+000242                00424 ESPERA
+000242 A2AC           00425     btfss TXSTA,TRMT,0
+000244 EF?? F???      00426     goto ESPERA
+000248 0012           00427     return
+                      00428     
+00024A                00429 ENVIAR_PETICIO_DESAR
+00024A 0E84           00430     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG
+00024C 6EAD           00431     movwf TXREG,0
+00024E EC?? F???      00432     call ESPERA
+000252 6A03           00433     clrf TEMPS_UN,0
+000254 0E01           00434     movlw ESTAT_POLSADOR
+000256 6E02           00435     movwf ESTAT,0
+000258 0012           00436     return
+                      00437     
+00025A                00438 REBUT
+00025A AEAE           00439     btfss RCREG, 7,0 ;Qualsevol byte rebut que tingui aquest bit a 1 es refereix a una resposta del pc
+00025C 0012           00440     return ;Si rebem un byte i no esta activat no hauriem dentrar aqui
+00025E 0E81           00441     movlw FLAG_DESAR_MSG ;Valor del RCREG per enviar per RF
+000260 64AE           00442     cpfsgt RCREG,0 ;Si es mes gran no desara el missatge
+000262 EF?? F???      00443     goto DESA ;Desem els bytes
+000266 0E82           00444     movlw FLAG_ENVIAR_RF_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
+000268 64AE           00445     cpfsgt RCREG,0
+00026A EF?? F???      00446     goto ENVIAR_RF ;Enviar dades per RF
+00026E 0E84           00447     movlw FLAG_DESAR_SENSE_CONFIRMACIO_MSG ;Valor del RCREG com a confirmacio del PC per enviar dades
+000270 64AE           00448     cpfsgt RCREG,0
+000272 EF?? F???      00449     goto DESA_SENSE_CONFIRMACIO ;Desar dades sense enviar confirmacio al PC ja que ja l'hem rebut
+000276 0012           00450     return
+                      00451     
+                      00452     
+                      00453     
+                      00454     
+                      00455  
+                      00456     
+                      00457 ;***********************************************************    
+                      00458 
+                      00459 
+                      00460 ;***************** - BLOC DIVIDIR - ************************
+                      00461     
+000278                00462 DIVIDIR_10
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00463  
-000270                00464 ACTIVAR_LEDS_CIRCULAR
-000270 6A03           00465    clrf TEMPS_UN,0
-000272 A007           00466    btfss INDEX,0,0 ;Comprovem si estem dreta o no
-000274 EF?? F???      00467    goto LEDS_CIRCULAR_ESQUERRA
-                      00468    
-000278                00469 LEDS_CIRCULAR_DRETA
-000278 0E00           00470    movlw 0x00
-00027A 648C           00471    cpfsgt LATD,0 ;Comprovem que latd no estigui a 0 
-00027C EF?? F???      00472    goto LEDS_CIRCULAR_DRETA_LATB ;Si ho esta hem de canviar de registre
-000280 328C           00473    rrcf LATD,1,0 ;Rotem el LATD cap a la dreta
-000282 9E8C           00474    bcf LATD, LED3, 0
-000284 B68C           00475    btfsc LATD, 3,0 ;Si ja tenim carry del primer registre hem danar al seguent
-000286 EF?? F???      00476    goto LEDS_CIRCULAR_DRETA_ESQUERRA
-00028A 0012           00477    return
-                      00478 
-00028C                00479 LEDS_CIRCULAR_DRETA_LATB
-00028C 328A           00480     rrcf LATB,1,0 
-00028E 9A8A           00481     bcf LATB,LED9,0
-000290 B0D8           00482     btfsc STATUS, C,0 ;Si ja hem arribat al final ja no podem anar mes cap a la dreta
-000292 EF?? F???      00483     goto LEDS_CIRCULAR_DRETA_SEGONA_PART  
-000296 0012           00484     return ;Tornem al loop principal
+000278 6A06           00463     clrf RESULTAT_DIVISIO,0
+00027A 0ECD           00464     movlw VALOR_A_MULTIPLICAR
+00027C 0211           00465     mulwf COMPTA_BYTES_L,0
+00027E B012           00466     btfsc COMPTA_BYTES_H,0,0
+000280 EC?? F???      00467     call SUMA_PART_ALTA
+000284 CFF4 F006      00468     movff PRODH, RESULTAT_DIVISIO
+000288 4206           00469     rrncf RESULTAT_DIVISIO,1,0
+00028A 4206           00470     rrncf RESULTAT_DIVISIO,1,0
+00028C 4206           00471     rrncf RESULTAT_DIVISIO,1,0
+00028E 0E1F           00472     movlw 0x1F ;Assegurarnos que els bits que hem afegit son 0
+000290 1606           00473     andwf RESULTAT_DIVISIO,1,0
+000292 0E00           00474     movlw 0x00
+000294 6406           00475     cpfsgt RESULTAT_DIVISIO,0
+000296 2A06           00476     incf RESULTAT_DIVISIO,1,0
+000298 0012           00477     return
+                      00478     
+00029A                00479 SUMA_PART_ALTA
+00029A 0ECC           00480     movlw 0xCC
+00029C 26F4           00481     addwf PRODH,1,0
+00029E 0E33           00482     movlw 0x33
+0002A0 26F3           00483     addwf PRODL,1,0
+0002A2 0012           00484     return
                       00485     
-000298                00486 LEDS_CIRCULAR_DRETA_ESQUERRA
-000298 6A07           00487     clrf INDEX,0 ;Borrem index per decidir que anirem cap a lesquerra
-00029A 6A8C           00488     clrf LATD, 0 
-00029C 888C           00489     bsf LATD,LED0,0
-00029E 0012           00490     return ;Tornem al bucle principal
-                      00491    
-0002A0                00492 LEDS_CIRCULAR_DRETA_SEGONA_PART
-0002A0 8E8C           00493    bsf LATD, LED3, 0
-0002A2 6A8A           00494    clrf LATB,0
-0002A4 0012           00495    return    
-                      00496     
-0002A6                00497 LEDS_CIRCULAR_ESQUERRA
-0002A6 0E00           00498    movlw 0x00
-0002A8 648C           00499    cpfsgt LATD,0
-0002AA EF?? F???      00500    goto LEDS_CIRCULAR_ESQUERRA_LATB
-0002AE 368C           00501    rlcf LATD,1,0
-0002B0 968C           00502    bcf LATD, 3, 0
-0002B2 B0D8           00503    btfsc STATUS, C,0
-0002B4 EF?? F???      00504    goto LEDS_CIRCULAR_ESQ_SEGONA_PART
-0002B8 0012           00505    return
-                      00506    
-0002BA                00507 LEDS_CIRCULAR_ESQUERRA_DRETA
-0002BA 8007           00508     bsf INDEX,0,0 ;Ativem index per decidir que anirem cap a la dreta
-0002BC 328A           00509     rrcf LATB,1,0
-0002BE 6A8C           00510     clrf LATD,0
-0002C0 0012           00511     return ;Tornem al bucle principal
-                      00512    
-0002C2                00513 LEDS_CIRCULAR_ESQUERRA_LATB
-0002C2 368A           00514    rlcf LATB,1,0
-0002C4 908A           00515    bcf LATB,LED4,0
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 11
+                      00486 ;***********************************************************  
+                      00487     
+                      00488 
+                      00489 ;***************** - BLOC LEDS - ***************************
+                      00490     
+                      00491 
+0002A4                00492 ACTIVACIO_LEDS_CIRCULAR
+0002A4 0E02           00493     movlw ESTAT_LEDS_CIRCULAR
+0002A6 6E02           00494     movwf ESTAT,0
+0002A8 6A8A           00495     clrf LATB,0
+0002AA 6A8C           00496     clrf LATD,0
+0002AC 6A03           00497     clrf TEMPS_UN,0
+0002AE 6A07           00498     clrf INDEX,0
+0002B0 6A10           00499     clrf AUXILIAR,0
+0002B2 888C           00500     bsf LATD, LED0, 0 ;Activem el primer bit del LATB
+0002B4 0012           00501     return
+                      00502     
+                      00503                 ;*******************
+                      00504     
+0002B6                00505 LEDS_CIRCULAR
+0002B6 0E34           00506    movlw TEMPS_500_MSEG
+0002B8 6003           00507    cpfslt TEMPS_UN,0
+0002BA EF?? F???      00508    goto ACTIVAR_LEDS_CIRCULAR
+0002BE 0012           00509    return
+                      00510  
+0002C0                00511 ACTIVAR_LEDS_CIRCULAR
+0002C0 6A03           00512    clrf TEMPS_UN,0
+0002C2 A007           00513    btfss INDEX,0,0 ;Comprovem si estem dreta o no
+0002C4 EF?? F???      00514    goto LEDS_CIRCULAR_ESQUERRA
+                      00515    
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 11
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0002C6 BC8A           00516    btfsc LATB,6,0
-0002C8 EF?? F???      00517    goto LEDS_CIRCULAR_ESQUERRA_DRETA
-0002CC 0012           00518    return
-                      00519    
-0002CE                00520 LEDS_CIRCULAR_ESQ_SEGONA_PART
-0002CE 808A           00521    bsf LATB, LED4,0
-0002D0 6A8C           00522    clrf LATD,0
-0002D2 0012           00523    return
-                      00524    
-                      00525                 ;*******************
-                      00526    
-0002D4                00527 BLINKING_10HZ
-0002D4 0E14           00528     movlw TEMPS_100_MSEG
-0002D6 6203           00529     cpfseq TEMPS_UN,0 ;Si estem als 100 no els encendrem
-0002D8 EF?? F???      00530     goto COMPROVA_APAGAR_10HZ ;En cas de estar per sota o sobre entrarem aqui
-0002DC EF?? F???      00531     goto ENCENDRE_LEDS
-0002E0 0012           00532     return
-                      00533    
-0002E2                00534 COMPROVA_APAGAR_10HZ
-0002E2 0E28           00535     movlw TEMPS_200_MSEG
-0002E4 6003           00536     cpfslt TEMPS_UN,0 ;Si estem en menys de 200 no farem res, sino els apagarem
-0002E6 EF?? F???      00537     goto APAGAR_LEDS
-0002EA 0012           00538     return
-                      00539     
-0002EC                00540 BLINKING_5HZ
-0002EC 0E28           00541     movlw TEMPS_200_MSEG
-0002EE 6203           00542     cpfseq TEMPS_UN,0 ;Si encara no estem als 200 mseg no els encendrem
-0002F0 EF?? F???      00543     goto COMPROVA_APAGAR_5HZ ;Si estem per sobre o sota entrarem aqui
-0002F4 EF?? F???      00544     goto ENCENDRE_LEDS
-0002F8 0012           00545     return
-                      00546 
-0002FA                00547 COMPROVA_APAGAR_5HZ
-0002FA 0E50           00548     movlw TEMPS_400_MSEG
-0002FC 6003           00549     cpfslt TEMPS_UN,0 ;En cas de arribar ja als 400 els apagarem
-0002FE EF?? F???      00550     goto APAGAR_LEDS
-000302 0012           00551     return
-                      00552   
-000304                00553 ENCENDRE_LEDS
-000304 688A           00554     setf LATB,0
-000306 688C           00555     setf LATD,0
-000308 0012           00556     return
-                      00557     
-00030A                00558 APAGAR_LEDS
-00030A 6A03           00559     clrf TEMPS_UN,0
-00030C 6A8A           00560     clrf LATB,0
-00030E 6A8C           00561     clrf LATD,0
-000310 0012           00562     return
-                      00563     
-                      00564                 ;******************* 
-                      00565 
-000312                00566 ACTIVAR_LEDS_PROCES    
-000312 0E01           00567     movlw 0x01
-000314 6005           00568     cpfslt LEDS,0
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 12
+0002C8                00516 LEDS_CIRCULAR_DRETA
+0002C8 0E00           00517    movlw 0x00
+0002CA 648C           00518    cpfsgt LATD,0 ;Comprovem que latd no estigui a 0 
+0002CC EF?? F???      00519    goto LEDS_CIRCULAR_DRETA_LATB ;Si ho esta hem de canviar de registre
+0002D0 328C           00520    rrcf LATD,1,0 ;Rotem el LATD cap a la dreta
+0002D2 9E8C           00521    bcf LATD, LED3, 0
+0002D4 B68C           00522    btfsc LATD, 3,0 ;Si ja tenim carry del primer registre hem danar al seguent
+0002D6 EF?? F???      00523    goto LEDS_CIRCULAR_DRETA_ESQUERRA
+0002DA 0012           00524    return
+                      00525 
+0002DC                00526 LEDS_CIRCULAR_DRETA_LATB
+0002DC 328A           00527     rrcf LATB,1,0 
+0002DE 9A8A           00528     bcf LATB,LED9,0
+0002E0 B0D8           00529     btfsc STATUS, C,0 ;Si ja hem arribat al final ja no podem anar mes cap a la dreta
+0002E2 EF?? F???      00530     goto LEDS_CIRCULAR_DRETA_SEGONA_PART  
+0002E6 0012           00531     return ;Tornem al loop principal
+                      00532     
+0002E8                00533 LEDS_CIRCULAR_DRETA_ESQUERRA
+0002E8 6A07           00534     clrf INDEX,0 ;Borrem index per decidir que anirem cap a lesquerra
+0002EA 6A8C           00535     clrf LATD, 0 
+0002EC 888C           00536     bsf LATD,LED0,0
+0002EE 0012           00537     return ;Tornem al bucle principal
+                      00538    
+0002F0                00539 LEDS_CIRCULAR_DRETA_SEGONA_PART
+0002F0 8E8C           00540    bsf LATD, LED3, 0
+0002F2 6A8A           00541    clrf LATB,0
+0002F4 0012           00542    return    
+                      00543     
+0002F6                00544 LEDS_CIRCULAR_ESQUERRA
+0002F6 0E00           00545    movlw 0x00
+0002F8 648C           00546    cpfsgt LATD,0
+0002FA EF?? F???      00547    goto LEDS_CIRCULAR_ESQUERRA_LATB
+0002FE 368C           00548    rlcf LATD,1,0
+000300 968C           00549    bcf LATD, 3, 0
+000302 B0D8           00550    btfsc STATUS, C,0
+000304 EF?? F???      00551    goto LEDS_CIRCULAR_ESQ_SEGONA_PART
+000308 0012           00552    return
+                      00553    
+00030A                00554 LEDS_CIRCULAR_ESQUERRA_DRETA
+00030A 8007           00555     bsf INDEX,0,0 ;Ativem index per decidir que anirem cap a la dreta
+00030C 328A           00556     rrcf LATB,1,0
+00030E 6A8C           00557     clrf LATD,0
+000310 0012           00558     return ;Tornem al bucle principal
+                      00559    
+000312                00560 LEDS_CIRCULAR_ESQUERRA_LATB
+000312 368A           00561    rlcf LATB,1,0
+000314 908A           00562    bcf LATB,LED4,0
+000316 BC8A           00563    btfsc LATB,6,0
+000318 EF?? F???      00564    goto LEDS_CIRCULAR_ESQUERRA_DRETA
+00031C 0012           00565    return
+                      00566    
+00031E                00567 LEDS_CIRCULAR_ESQ_SEGONA_PART
+00031E 808A           00568    bsf LATB, LED4,0
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 12
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000316 EF?? F???      00569     goto LEDS_PROCES_MAJOR_1
-00031A 888C           00570     bsf LATD, LED0, 0
-00031C 0012           00571     return
-                      00572 
-00031E                00573 LEDS_PROCES_MAJOR_1
-00031E BE8C           00574     btfsc LATD, LED3,0
-000320 EF?? F???      00575     goto LEDS_PROCES_LATB
-000324 468C           00576     rlncf LATD, 1,0
-000326 888C           00577     bsf LATD, LED0, 0
-000328 0012           00578     return 
-                      00579 
-00032A                00580 LEDS_PROCES_LATB
-00032A A08A           00581     btfss LATB, LED4,0
-00032C EF?? F???      00582     goto LEDS_PROCES_LATB_INICI
-000330 468A           00583     rlncf LATB, 1,0
-000332 808A           00584     bsf LATB, LED4, 0
-000334 0012           00585     return
+000320 6A8C           00569    clrf LATD,0
+000322 0012           00570    return
+                      00571    
+                      00572                 ;*******************
+                      00573    
+000324                00574 BLINKING_10HZ
+000324 0E14           00575     movlw TEMPS_100_MSEG
+000326 6203           00576     cpfseq TEMPS_UN,0 ;Si estem als 100 no els encendrem
+000328 EF?? F???      00577     goto COMPROVA_APAGAR_10HZ ;En cas de estar per sota o sobre entrarem aqui
+00032C EF?? F???      00578     goto ENCENDRE_LEDS
+000330 0012           00579     return
+                      00580    
+000332                00581 COMPROVA_APAGAR_10HZ
+000332 0E28           00582     movlw TEMPS_200_MSEG
+000334 6003           00583     cpfslt TEMPS_UN,0 ;Si estem en menys de 200 no farem res, sino els apagarem
+000336 EF?? F???      00584     goto APAGAR_LEDS
+00033A 0012           00585     return
                       00586     
-000336                00587 LEDS_PROCES_LATB_INICI
-000336 808A           00588     bsf LATB, LED4, 0
-000338 0012           00589     return
-                      00590     
-                      00591 ;***********************************************************  
-                      00592     
-                      00593 ;***************** - BLOC POLSADORS - ***************************
-                      00594     
-00033A                00595 POLS_CARREGA_MISSATGE
-00033A 6A8A           00596     clrf LATB,0
-00033C 6A8C           00597     clrf LATD,0
-00033E 6A03           00598     clrf TEMPS_UN,0
-000340 EC?? F???      00599     call ESPERA_16MS
-000344 EC?? F???      00600     call ESPERA_BAIXAR_3
-000348 EF?? F???      00601     goto ENVIAR_PETICIO_DESAR
-00034C 0012           00602     return
-                      00603     
-00034E                00604 ESPERA_BAIXAR_3
-00034E B682           00605     btfsc PORTC,3,0
-000350 EF?? F???      00606     goto $-2
-000354 0012           00607     return
-                      00608     
-000356                00609 ESPERA_BAIXAR_4
-000356 B882           00610     btfsc PORTC,4,0
-000358 EF?? F???      00611     goto $-2
-00035C 0012           00612     return
-                      00613     
-00035E                00614 POLS_ENVIAR_RF
-00035E 6A8A           00615     clrf LATB,0
-000360 6A8C           00616     clrf LATD,0
-000362 EC?? F???      00617     call ESPERA_16MS
-000366 EC?? F???      00618     call ESPERA_BAIXAR_4
-00036A 6A03           00619     clrf TEMPS_UN,0
-00036C EF?? F???      00620     goto ENVIAR_RF_SENSE_CONFIRMACIO;
-000370 0012           00621     return
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 13
+00033C                00587 BLINKING_5HZ
+00033C 0E28           00588     movlw TEMPS_200_MSEG
+00033E 6203           00589     cpfseq TEMPS_UN,0 ;Si encara no estem als 200 mseg no els encendrem
+000340 EF?? F???      00590     goto COMPROVA_APAGAR_5HZ ;Si estem per sobre o sota entrarem aqui
+000344 EF?? F???      00591     goto ENCENDRE_LEDS
+000348 0012           00592     return
+                      00593 
+00034A                00594 COMPROVA_APAGAR_5HZ
+00034A 0E50           00595     movlw TEMPS_400_MSEG
+00034C 6003           00596     cpfslt TEMPS_UN,0 ;En cas de arribar ja als 400 els apagarem
+00034E EF?? F???      00597     goto APAGAR_LEDS
+000352 0012           00598     return
+                      00599   
+000354                00600 ENCENDRE_LEDS
+000354 688A           00601     setf LATB,0
+000356 688C           00602     setf LATD,0
+000358 0012           00603     return
+                      00604     
+00035A                00605 APAGAR_LEDS
+00035A 6A03           00606     clrf TEMPS_UN,0
+00035C 6A8A           00607     clrf LATB,0
+00035E 6A8C           00608     clrf LATD,0
+000360 0012           00609     return
+                      00610     
+                      00611                 ;******************* 
+                      00612 
+000362                00613 ACTIVAR_LEDS_PROCES    
+000362 0E01           00614     movlw 0x01
+000364 6005           00615     cpfslt LEDS,0
+000366 EF?? F???      00616     goto LEDS_PROCES_MAJOR_1
+00036A 888C           00617     bsf LATD, LED0, 0
+00036C 0012           00618     return
+                      00619 
+00036E                00620 LEDS_PROCES_MAJOR_1
+00036E BE8C           00621     btfsc LATD, LED3,0
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 13
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00622     
-000372                00623 ESPERA_16MS
-000372 0E08           00624     movlw 0x08
-000374 6203           00625     cpfseq TEMPS_UN,0
-000376 EF?? F???      00626     goto $-2
-00037A 0012           00627     return
-                      00628 
-00037C                00629 ESPERA_POLSADOR
-00037C 6A8A           00630     clrf LATB,0
-00037E 6A8C           00631     clrf LATD,0
-000380 0EC8           00632     movlw TEMPS_1000_MSEG
-000382 6403           00633     cpfsgt TEMPS_UN,0
-000384 0012           00634     return
-000386 EF?? F???      00635     goto COMPROVACIO_10_SEG
-                      00636     ;return
+000370 EF?? F???      00622     goto LEDS_PROCES_LATB
+000374 468C           00623     rlncf LATD, 1,0
+000376 888C           00624     bsf LATD, LED0, 0
+000378 0012           00625     return 
+                      00626 
+00037A                00627 LEDS_PROCES_LATB
+00037A A08A           00628     btfss LATB, LED4,0
+00037C EF?? F???      00629     goto LEDS_PROCES_LATB_INICI
+000380 468A           00630     rlncf LATB, 1,0
+000382 808A           00631     bsf LATB, LED4, 0
+000384 0012           00632     return
+                      00633     
+000386                00634 LEDS_PROCES_LATB_INICI
+000386 808A           00635     bsf LATB, LED4, 0
+000388 0012           00636     return
                       00637     
-00038A                00638 COMPROVACIO_10_SEG
-00038A 2A10           00639     incf AUXILIAR,1,0
-00038C 0E09           00640     movlw 0x09 ;50 ja que 50*200 son 10k
-00038E 6410           00641     cpfsgt AUXILIAR,0 ;Si encara no hem arribat a 50 encara ens hem desperar
-000390 EF?? F???      00642     goto RETORNA_POLSADOR
-000394 EF?? F???      00643     goto ACTIVACIO_LEDS_CIRCULAR
-                      00644     ;return
-                      00645 
-000398                00646 RETORNA_POLSADOR
-000398 6A03           00647     clrf TEMPS_UN,0
-00039A 0012           00648     return
-                      00649     
-                      00650 ;***********************************************************  
-                      00651 ;*******
-                      00652 ;* END *
-                      00653 ;*******    
-                      00654     END
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 14
+                      00638 ;***********************************************************  
+                      00639     
+                      00640 ;***************** - BLOC POLSADORS - ***************************
+                      00641     
+00038A                00642 POLS_CARREGA_MISSATGE
+00038A 6A8A           00643     clrf LATB,0
+00038C 6A8C           00644     clrf LATD,0
+00038E 6A03           00645     clrf TEMPS_UN,0
+000390 EC?? F???      00646     call ESPERA_16MS
+000394 EC?? F???      00647     call ESPERA_BAIXAR_3
+000398 EF?? F???      00648     goto ENVIAR_PETICIO_DESAR
+00039C 0012           00649     return
+                      00650     
+00039E                00651 ESPERA_BAIXAR_3
+00039E B682           00652     btfsc PORTC,3,0
+0003A0 EF?? F???      00653     goto $-2
+0003A4 0012           00654     return
+                      00655     
+0003A6                00656 ESPERA_BAIXAR_4
+0003A6 B882           00657     btfsc PORTC,4,0
+0003A8 EF?? F???      00658     goto $-2
+0003AC 0012           00659     return
+                      00660     
+0003AE                00661 POLS_ENVIAR_RF
+0003AE 6A8A           00662     clrf LATB,0
+0003B0 6A8C           00663     clrf LATD,0
+0003B2 EC?? F???      00664     call ESPERA_16MS
+0003B6 EC?? F???      00665     call ESPERA_BAIXAR_4
+0003BA 6A03           00666     clrf TEMPS_UN,0
+0003BC EF?? F???      00667     goto ENVIAR_RF_SENSE_CONFIRMACIO;
+0003C0 0012           00668     return
+                      00669     
+0003C2                00670 ESPERA_16MS
+0003C2 0E08           00671     movlw 0x08
+0003C4 6203           00672     cpfseq TEMPS_UN,0
+0003C6 EF?? F???      00673     goto $-2
+0003CA 0012           00674     return
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00675 
+0003CC                00676 ESPERA_POLSADOR
+0003CC 6A8A           00677     clrf LATB,0
+0003CE 6A8C           00678     clrf LATD,0
+0003D0 0EC8           00679     movlw TEMPS_1000_MSEG
+0003D2 6403           00680     cpfsgt TEMPS_UN,0
+0003D4 0012           00681     return
+0003D6 EF?? F???      00682     goto COMPROVACIO_10_SEG
+                      00683     ;return
+                      00684     
+0003DA                00685 COMPROVACIO_10_SEG
+0003DA 2A10           00686     incf AUXILIAR,1,0
+0003DC 0E09           00687     movlw 0x09 ;50 ja que 50*200 son 10k
+0003DE 6410           00688     cpfsgt AUXILIAR,0 ;Si encara no hem arribat a 50 encara ens hem desperar
+0003E0 EF?? F???      00689     goto RETORNA_POLSADOR
+0003E4 EF?? F???      00690     goto ACTIVACIO_LEDS_CIRCULAR
+                      00691     ;return
+                      00692 
+0003E8                00693 RETORNA_POLSADOR
+0003E8 6A03           00694     clrf TEMPS_UN,0
+0003EA 0012           00695     return
+                      00696     
+                      00697 ;***********************************************************  
+                      00698 ;*******
+                      00699 ;* END *
+                      00700 ;*******    
+                      00701     END
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 15
 
 
 SYMBOL TABLE
@@ -761,10 +814,10 @@ ACKSTAT                           00000006
 ACQT0                             00000003
 ACQT1                             00000004
 ACQT2                             00000005
-ACTIVACIO_LEDS_CIRCULAR           00000254
-ACTIVAR_LEDS_CIRCULAR             00000270
-ACTIVAR_LEDS_PROCES               00000312
-ACTIVA_LEDS_RF                    0000013C
+ACTIVACIO_LEDS_CIRCULAR           000002A4
+ACTIVAR_LEDS_CIRCULAR             000002C0
+ACTIVAR_LEDS_PROCES               00000362
+ACTIVA_LEDS_RF                    000001AA
 ADCON0                            00000FC2
 ADCON1                            00000FC1
 ADCON2                            00000FC0
@@ -799,12 +852,12 @@ AN6                               00000001
 AN7                               00000002
 AN8                               00000002
 AN9                               00000003
-APAGAR_LEDS                       0000030A
+APAGAR_LEDS                       0000035A
 AUXILIAR                          00000010
 BANKED                            00000001
 BAUDCON                           00000FB8
 BAUDCTL                           00000FB8
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 15
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 16
 
 
 SYMBOL TABLE
@@ -816,15 +869,15 @@ BCLIP                             00000003
 BF                                00000000
 BGST                              00000005
 BIT_RESPOSTA_PC                   00000008
-BLINKING_10HZ                     000002D4
-BLINKING_5HZ                      000002EC
+BLINKING_10HZ                     00000324
+BLINKING_5HZ                      0000033C
 BOR                               00000000
 BRG16                             00000003
 BRGH                              00000002
 BSR                               00000FE0
-BUCLE_DESAR                       0000019A
-BUCLE_ENVIAR_8_BITS               00000112
-BUCLE_RESTANT_ENVIAR_RF           00000104
+BUCLE_DESAR                       000001EA
+BUCLE_ENVIAR_8_BITS               00000162
+BUCLE_RESTANT_ENVIAR_RF           00000154
 C                                 00000000
 C1INV                             00000004
 C1N                               00000000
@@ -863,7 +916,7 @@ CCPR1                             00000FBE
 CCPR1H                            00000FBF
 CCPR1L                            00000FBE
 CCPR2                             00000FBB
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 16
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 17
 
 
 SYMBOL TABLE
@@ -889,9 +942,9 @@ CMCON                             00000FB4
 CMIE                              00000006
 CMIF                              00000006
 CMIP                              00000006
-COMPROVACIO_10_SEG                0000038A
-COMPROVA_APAGAR_10HZ              000002E2
-COMPROVA_APAGAR_5HZ               000002FA
+COMPROVACIO_10_SEG                000003DA
+COMPROVA_APAGAR_10HZ              00000332
+COMPROVA_APAGAR_5HZ               0000034A
 COMPTA_BYTES_H                    00000012
 COMPTA_BYTES_L                    00000011
 CREN                              00000004
@@ -918,11 +971,11 @@ DDRB                              TRISB
 DDRC                              TRISC
 DDRD                              TRISD
 DDRE                              TRISE
-DESA                              0000018A
-DESA_SENSE_CONFIRMACIO            0000018E
-DIVIDIR_10                        00000228
+DESA                              000001DA
+DESA_SENSE_CONFIRMACIO            000001DE
+DIVIDIR_10                        00000278
 DONE                              00000001
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 17
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 18
 
 
 SYMBOL TABLE
@@ -945,24 +998,25 @@ EEIE                              00000004
 EEIF                              00000004
 EEIP                              00000004
 EEPGD                             00000007
-ENCENDRE_LEDS                     00000304
+ENCENDRE_LEDS                     00000354
 END_BYTE                          00000088
-ENVIAR                            000000E0
-ENVIAR_BIT_PRIMERA_MEITAT         00000146
-ENVIAR_BIT_SEGONA_MEITAT          00000152
-ENVIAR_CONFIRMACIO_DESAR          000001DE
-ENVIAR_CONFIRMACIO_DESAT          000001D4
-ENVIAR_CONFIRMACIO_RF             000001CA
-ENVIAR_END_BYTE                   000001E8
-ENVIAR_PETICIO_DESAR              000001FA
+ENVIAR                            00000128
+ENVIAR_BIT_PRIMERA_MEITAT         0000018C
+ENVIAR_BIT_SEGONA_MEITAT          00000198
+ENVIAR_CONFIRMACIO_DESAR          0000022E
+ENVIAR_CONFIRMACIO_DESAT          00000224
+ENVIAR_CONFIRMACIO_RF             0000021A
+ENVIAR_END_BYTE                   00000238
+ENVIAR_PETICIO_DESAR              0000024A
 ENVIAR_RF                         000000C8
-ENVIAR_RF_SENSE_CONFIRMACIO       000000D8
+ENVIAR_RF_SENSE_CONFIRMACIO       000000DC
 ENVIAT                            00000009
-ESPERA                            000001F2
-ESPERA_16MS                       00000372
-ESPERA_BAIXAR_3                   0000034E
-ESPERA_BAIXAR_4                   00000356
-ESPERA_POLSADOR                   0000037C
+ESPERA                            00000242
+ESPERA_16MS                       000003C2
+ESPERA_BAIXAR_3                   0000039E
+ESPERA_BAIXAR_4                   000003A6
+ESPERA_CANAL_ZERO                 0000010C
+ESPERA_POLSADOR                   000003CC
 ESTAT                             00000002
 ESTAT_BLINKING_10HZ               00000004
 ESTAT_BLINKING_5HZ                00000008
@@ -970,23 +1024,25 @@ ESTAT_LEDS_CIRCULAR               00000002
 ESTAT_POLSADOR                    00000001
 FAST                              00000001
 FERR                              00000002
-FINAL_BUCLE_ENVIAR                0000012A
-FINAL_RF                          00000172
+FINAL_BUCLE                       00000200
+FINAL_BUCLE_ENVIAR                0000017A
+FINAL_RF                          000001C2
 FLAG_BYTE_ENVIAT_MSG              00000086
 FLAG_DESAR_MSG                    00000081
 FLAG_DESAR_SENSE_CONFIRMACIO_MSG  00000084
 FLAG_DESAT_MSG                    00000085
 FLAG_ENVIAR_RF_MSG                00000082
+FLAG_ID_PLACA                     000000E8
 FLT0                              00000000
-FLTS                              00000002
-FREE                              00000004
-FSR0                              00000000
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 18
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+FLTS                              00000002
+FREE                              00000004
+FSR0                              00000000
 FSR0H                             00000FEA
 FSR0L                             00000FE9
 FSR1                              00000001
@@ -1037,15 +1093,15 @@ INT1F                             00000000
 INT1IE                            00000003
 INT1IF                            00000000
 INT1IP                            00000006
-INT1P                             00000006
-INT2                              00000002
-INT2E                             00000004
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 19
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+INT1P                             00000006
+INT2                              00000002
+INT2E                             00000004
 INT2F                             00000001
 INT2IE                            00000004
 INT2IF                            00000001
@@ -1096,15 +1152,15 @@ LATC3                             00000003
 LATC4                             00000004
 LATC5                             00000005
 LATC6                             00000006
-LATC7                             00000007
-LATD                              00000F8C
-LATD0                             00000000
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 20
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+LATC7                             00000007
+LATD                              00000F8C
+LATD0                             00000000
 LATD1                             00000001
 LATD2                             00000002
 LATD3                             00000003
@@ -1127,18 +1183,18 @@ LED7                              00000003
 LED8                              00000004
 LED9                              00000005
 LEDS                              00000005
-LEDS_CIRCULAR                     00000266
-LEDS_CIRCULAR_DRETA               00000278
-LEDS_CIRCULAR_DRETA_ESQUERRA      00000298
-LEDS_CIRCULAR_DRETA_LATB          0000028C
-LEDS_CIRCULAR_DRETA_SEGONA_PART   000002A0
-LEDS_CIRCULAR_ESQUERRA            000002A6
-LEDS_CIRCULAR_ESQUERRA_DRETA      000002BA
-LEDS_CIRCULAR_ESQUERRA_LATB       000002C2
-LEDS_CIRCULAR_ESQ_SEGONA_PART     000002CE
-LEDS_PROCES_LATB                  0000032A
-LEDS_PROCES_LATB_INICI            00000336
-LEDS_PROCES_MAJOR_1               0000031E
+LEDS_CIRCULAR                     000002B6
+LEDS_CIRCULAR_DRETA               000002C8
+LEDS_CIRCULAR_DRETA_ESQUERRA      000002E8
+LEDS_CIRCULAR_DRETA_LATB          000002DC
+LEDS_CIRCULAR_DRETA_SEGONA_PART   000002F0
+LEDS_CIRCULAR_ESQUERRA            000002F6
+LEDS_CIRCULAR_ESQUERRA_DRETA      0000030A
+LEDS_CIRCULAR_ESQUERRA_LATB       00000312
+LEDS_CIRCULAR_ESQ_SEGONA_PART     0000031E
+LEDS_PROCES_LATB                  0000037A
+LEDS_PROCES_LATB_INICI            00000386
+LEDS_PROCES_MAJOR_1               0000036E
 LOOP                              0000009A
 LOW_INT_VECTOR                    00000018
 LVDCON                            00000FD2
@@ -1155,15 +1211,16 @@ LVV1                              00000001
 LVV2                              00000002
 LVV3                              00000003
 MAIN                              0000008A
-MAX_LEDS                          0000000B
-MCLR                              00000003
-N                                 00000004
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 21
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+MAX_LEDS                          0000000B
+MCLR                              00000003
+N                                 00000004
+NETEJA_RF                         000000EC
 NOT_A                             00000005
 NOT_ADDRESS                       00000005
 NOT_BOR                           00000000
@@ -1213,16 +1270,16 @@ PDC0                              00000000
 PDC1                              00000001
 PDC2                              00000002
 PDC3                              00000003
-PDC4                              00000004
-PDC5                              00000005
-PDC6                              00000006
-PEIE                              00000006
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 22
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
 PEIE_GIEL                         00000006
 PEN                               00000002
 PGC                               00000006
@@ -1237,8 +1294,8 @@ PLUSW0                            00000FEB
 PLUSW1                            00000FE3
 PLUSW2                            00000FDB
 POLS_CARREGA                      00000005
-POLS_CARREGA_MISSATGE             0000033A
-POLS_ENVIAR_RF                    0000035E
+POLS_CARREGA_MISSATGE             0000038A
+POLS_ENVIAR_RF                    000003AE
 POLS_ENVIA_RF                     00000004
 POR                               00000001
 PORTA                             00000F80
@@ -1257,7 +1314,7 @@ PR2                               00000FCB
 PREINC0                           00000FEC
 PREINC1                           00000FE4
 PREINC2                           00000FDC
-PRE_FINAL_RF                      00000164
+PRE_FINAL_RF                      000001B4
 PROD                              00000FF3
 PRODH                             00000FF4
 PRODL                             00000FF3
@@ -1272,16 +1329,16 @@ PSP5                              00000005
 PSP6                              00000006
 PSP7                              00000007
 PSPIE                             00000007
-PSPIF                             00000007
-PSPIP                             00000007
-PSPMODE                           00000004
-PSSAC0                            00000002
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 23
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSPIF                             00000007
+PSPIP                             00000007
+PSPMODE                           00000004
+PSSAC0                            00000002
 PSSAC1                            00000003
 PSSBD0                            00000000
 PSSBD1                            00000001
@@ -1331,27 +1388,26 @@ RD16                              00000007
 RD2                               00000002
 RD3                               00000003
 RD4                               00000004
-RD5                               00000005
-RD6                               00000006
-RD7                               00000007
-RE0                               00000000
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 24
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
 RE1                               00000001
 RE2                               00000002
 RE3                               00000003
-REBUT                             0000020A
+REBUT                             0000025A
 RESET_TIMER                       0000007E
 RESET_VECTOR                      00000000
 RESTANT                           00000013
-RESTART_COMPTA                    000001C4
+RESTART_COMPTA                    00000214
 RESULTAT_DIVISIO                  00000006
-RETORNA_DESAR                     000001BC
-RETORNA_POLSADOR                  00000398
+RETORNA_POLSADOR                  000003E8
 RI                                00000004
 RSEN                              00000001
 RX                                00000007
@@ -1372,6 +1428,8 @@ SDI                               00000004
 SDO                               00000005
 SEN                               00000000
 SENDB                             00000003
+SET_PRIMERA_PART                  000000FC
+SET_SEGONA_PART                   00000102
 SMP                               00000007
 SP0                               00000000
 SP1                               00000001
@@ -1389,17 +1447,17 @@ SSPCON2                           00000FC5
 SSPEN                             00000005
 SSPIE                             00000003
 SSPIF                             00000003
-SSPIP                             00000003
-SSPM0                             00000000
-SSPM1                             00000001
-SSPM2                             00000002
-SSPM3                             00000003
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 25
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSPIP                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
 SSPOV                             00000006
 SSPSTAT                           00000FC7
 STATUS                            00000FD8
@@ -1407,7 +1465,7 @@ STKFUL                            00000007
 STKOVF                            00000007
 STKPTR                            00000FFC
 STKUNF                            00000006
-SUMA_PART_ALTA                    0000024A
+SUMA_PART_ALTA                    0000029A
 SWDTE                             00000000
 SWDTEN                            00000000
 SYNC                              00000004
@@ -1448,17 +1506,18 @@ T3SYNC                            00000002
 TABLAT                            00000FF5
 TBLPTR                            00000FF6
 TBLPTRH                           00000FF7
-TBLPTRL                           00000FF6
-TBLPTRU                           00000FF8
-TEMPS_1000_MSEG                   000000C8
-TEMPS_100_MSEG                    00000014
-TEMPS_200_MSEG                    00000028
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 26
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TBLPTRL                           00000FF6
+TBLPTRU                           00000FF8
+TEMPS_10                          0000011A
+TEMPS_1000_MSEG                   000000C8
+TEMPS_100_MSEG                    00000014
+TEMPS_200_MSEG                    00000028
 TEMPS_400_MSEG                    00000050
 TEMPS_500_MSEG                    00000034
 TEMPS_UN                          00000003
@@ -1506,18 +1565,18 @@ TRISA2                            00000002
 TRISA3                            00000003
 TRISA4                            00000004
 TRISA5                            00000005
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TRISA6                            00000006
 TRISA7                            00000007
 TRISB                             00000F93
 TRISB0                            00000000
 TRISB1                            00000001
 TRISB2                            00000002
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 27
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 TRISB3                            00000003
 TRISB4                            00000004
 TRISB5                            00000005
@@ -1565,18 +1624,18 @@ UA                                00000001
 VALOR_A_MULTIPLICAR               000000CD
 VCFG0                             00000004
 VCFG1                             00000005
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 VDIRMAG                           00000007
 VPP                               00000003
 VREFM                             00000002
 VREFP                             00000003
 W                                 00000000
 WCOL                              00000007
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 28
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 WDTCON                            00000FD1
 WR                                00000001
 WREG                              00000FE8
@@ -1584,10 +1643,10 @@ WREN                              00000002
 WRERR                             00000003
 WUE                               00000001
 Z                                 00000002
-_.org_2_0180                      00000180
-_.org_2_0350                      00000350
-_.org_2_0358                      00000358
-_.org_2_0376                      00000376
+_.org_2_01D0                      000001D0
+_.org_2_03A0                      000003A0
+_.org_2_03A8                      000003A8
+_.org_2_03C6                      000003C6
 _BBSIZ_BB1K_4L                    000000FF
 _BBSIZ_BB256_4L                   000000CF
 _BBSIZ_BB512_4L                   000000DF
@@ -1624,18 +1683,18 @@ _DEBUG_OFF_4L                     000000FF
 _DEBUG_ON_4L                      0000007F
 _DEVID1                           003FFFFE
 _DEVID2                           003FFFFF
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _EBTR0_OFF_7L                     000000FF
 _EBTR0_ON_7L                      000000FE
 _EBTR1_OFF_7L                     000000FF
 _EBTR1_ON_7L                      000000FD
 _EBTRB_OFF_7H                     000000FF
 _EBTRB_ON_7H                      000000BF
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 29
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _FCMEN_OFF_1H                     000000BF
 _FCMEN_ON_1H                      000000FF
 _IDLOC0                           00200000
@@ -1683,18 +1742,18 @@ _WDTPS_32_2H                      000000EB
 _WDTPS_4096_2H                    000000F9
 _WDTPS_4_2H                       000000E5
 _WDTPS_512_2H                     000000F3
+MPASM 5.72                          MAIN.ASM   5-20-2017  11:10:10         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _WDTPS_64_2H                      000000ED
 _WDTPS_8192_2H                    000000FB
 _WDTPS_8_2H                       000000E7
 _WDT_OFF_2H                       000000FE
 _WDT_ON_2H                        000000FF
 _WRT0_OFF_6L                      000000FF
-MPASM 5.72                          MAIN.ASM   5-10-2017  18:53:51         PAGE 30
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _WRT0_ON_6L                       000000FE
 _WRT1_OFF_6L                      000000FF
 _WRT1_ON_6L                       000000FD

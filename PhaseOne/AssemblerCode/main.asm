@@ -37,6 +37,7 @@ FLAG_DESAT_MSG EQU 0x85
 FLAG_BYTE_ENVIAT_MSG EQU 0x86
 FLAG_ENVIAR_RF_MSG EQU 0x82 
 FLAG_DESAR_SENSE_CONFIRMACIO_MSG EQU 0x84
+FLAG_ID_PLACA EQU 0xE8
 
 ESTAT_LEDS_CIRCULAR EQU 0x02
 ESTAT_POLSADOR EQU 0x01
@@ -208,20 +209,63 @@ LOOP
 
 ;**************** - BLOC RF - ****************************
     
+    
+    
 ENVIAR_RF
     movlw 0x00
     cpfsgt COMPTA_BYTES_L, 0
     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
     call ENVIAR_CONFIRMACIO_RF
-    goto ENVIAR
+    clrf ENVIAT,0
+    goto ESPERA_CANAL_ZERO
+    clrf TEMPS_UN,0
    
 ENVIAR_RF_SENSE_CONFIRMACIO
     movlw 0x00
     cpfsgt COMPTA_BYTES_L, 0
     goto ACTIVACIO_LEDS_CIRCULAR ;Activar leds circular
+    clrf TEMPS_UN,0
+    clrf ENVIAT,0
+    goto ESPERA_CANAL_ZERO
+    
+NETEJA_RF
+    btfsc TEMPS_UN, 0,0 
+    goto SET_PRIMERA_PART ;Primers 5 mseg
+    btfsc TEMPS_UN, 1,0 
+    goto SET_SEGONA_PART ;Segon 5 mseg
+    goto NETEJA_RF
+    
+SET_PRIMERA_PART
+    bsf LATC, 5, 0
+    goto NETEJA_RF
+    
+SET_SEGONA_PART
+    bcf LATC, 5, 0
+    incf ENVIAT,1,0
+    clrf TEMPS_UN,0
+    goto ESPERA_CANAL_ZERO
+    
+ESPERA_CANAL_ZERO
+    movlw 0x0A
+    cpfsgt ENVIAT,0
+    goto NETEJA_RF
+    clrf TEMPS_UN,0
+    goto TEMPS_10
+    
+TEMPS_10
+    movlw 0x02
+    cpfslt TEMPS_UN,0
+    goto ENVIAR
+    bcf LATC, 5, 0
+    goto TEMPS_10
+    
     
 ENVIAR
+    movlw 0x03
+    SUBWF COMPTA_BYTES_L,1,0
     call DIVIDIR_10
+    movlw 0x03
+    addwf COMPTA_BYTES_L,1,0
     clrf LATB, 0
     clrf LATD, 0
     clrf LEDS, 0
@@ -327,8 +371,14 @@ BUCLE_DESAR
     btfss PIR1,RCIF,0
 	goto BUCLE_DESAR ;Mentres no valgui 1 el bit RCIF que ens indica que hi ha un byte ens esperem
     movlw END_BYTE 
-    cpfslt RCREG, 0 ;Si rebem el byte de final del ordinador sortim, no el desem
-	goto RETORNA_DESAR 
+    cpfseq RCREG, 0 ;Si rebem el byte de final del ordinador sortim, no el desem
+	goto FINAL_BUCLE 
+    movlw ESTAT_BLINKING_5HZ 
+    movwf ESTAT,0
+    clrf TEMPS_UN,0
+    return
+    
+FINAL_BUCLE
     movff RCREG, POSTINC0 ;Movem el caracter a la posicio de la ram corresponent
     incf COMPTA_BYTES_L,1,0 ;Incrementem en numero de bytes rebut
     btfsc STATUS,C,0
@@ -336,12 +386,6 @@ BUCLE_DESAR
     call ENVIAR_CONFIRMACIO_DESAT ;Confirmarem al ordinador que ho hem desat
     goto BUCLE_DESAR ;Esperem una nova dada
     
-RETORNA_DESAR
-    movlw ESTAT_BLINKING_5HZ 
-    movwf ESTAT,0
-    clrf TEMPS_UN,0
-    return
-
 RESTART_COMPTA
     incf COMPTA_BYTES_H,1,0
     clrf COMPTA_BYTES_L,0

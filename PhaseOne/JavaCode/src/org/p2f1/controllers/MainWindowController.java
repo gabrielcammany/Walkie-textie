@@ -18,10 +18,16 @@ public class MainWindowController implements ActionListener{
 	private SerialPort sp = null;
 	private PortThread portThread = null;
     private final byte end_byte = (byte) (Integer.parseInt("88",16));
+    private final byte start_byte_rf = (byte) (Integer.parseInt("40",16));
+    private final byte end_byte_rf = (byte) (Integer.parseInt("40",16));
     private final byte flag_desar_msg = (byte) (Integer.parseInt("81",16));
     private final byte flag_enviar_rf_msg = (byte) (Integer.parseInt("82",16));
     private final byte flag = (byte) (Integer.parseInt("84",16));
-	
+    private final byte primer_byte_part_ID = (byte) (Integer.parseInt("37",16));
+    private final byte segon_byte_part_ID = (byte) (Integer.parseInt("37",16));
+    private final byte tercer_byte_part_ID = (byte) (Integer.parseInt("39",16));
+    private final byte espai_byte_part_ID = (byte) (Integer.parseInt("20",16));
+
 	public MainWindowController(MainWindowView view, MainWindowModel model){
 		try{
 			this.sp = new SerialPort();	
@@ -46,8 +52,6 @@ public class MainWindowController implements ActionListener{
                         //TODO Afegir el codi per enviar per RF
                         try {
                             sp.writeByte(flag_enviar_rf_msg);
-
-
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
@@ -57,7 +61,6 @@ public class MainWindowController implements ActionListener{
                         portThread.setEscolta(false);
                         enviar(false);
                         break;
-
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -85,6 +88,29 @@ public class MainWindowController implements ActionListener{
                         resposta = sp.readByte();
                     }
                 }
+
+                //Part de id RF
+                sp.writeByte(start_byte_rf);
+                resposta = sp.readByte();
+                while(resposta == 0){
+                    resposta = sp.readByte();
+                }
+                sp.writeByte(primer_byte_part_ID);
+                resposta = sp.readByte();
+                while(resposta == 0){
+                    resposta = sp.readByte();
+                }
+                sp.writeByte(segon_byte_part_ID);
+                resposta = sp.readByte();
+                while(resposta == 0){
+                    resposta = sp.readByte();
+                }
+                sp.writeByte(tercer_byte_part_ID);
+                resposta = sp.readByte();
+                while(resposta == 0){
+                    resposta = sp.readByte();
+                }
+
                 for (byte value:utf8Bytes) {
                     sp.writeByte(value);
                     resposta = sp.readByte();
@@ -92,6 +118,12 @@ public class MainWindowController implements ActionListener{
                         resposta = sp.readByte();
                     }
                 }
+                sp.writeByte(end_byte_rf);
+                resposta = sp.readByte();
+                while(resposta == 0){
+                    resposta = sp.readByte();
+                }
+                System.out.print(" Done Send!\n");
                 sp.writeByte(end_byte);
                 System.out.print(" Done!\n");
 
@@ -107,8 +139,6 @@ public class MainWindowController implements ActionListener{
 
     public void start(){
         try {
-            //System.out.print(view.getPort()+"\n");
-            System.out.print(view.getBaudRate() +"\n");
             sp.openPort(view.getPort(),19200);
             portThread.setPort(sp);
             portThread.run();
@@ -119,8 +149,6 @@ public class MainWindowController implements ActionListener{
 
     public void restart() {
         try {
-            //System.out.print(view.getPort()+"\n");
-            System.out.print(view.getBaudRate() +"\n");
             sp.closePort();
             sp.openPort(view.getPort(),19200);
             portThread.setPort(sp);

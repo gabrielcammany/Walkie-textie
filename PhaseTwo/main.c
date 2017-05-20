@@ -21,6 +21,7 @@
 #include "BlTBacklight.h"
 #include "SiTSio.h"
 #include "PrTPropaganda.h"
+#include "TRF.h"
 /*
  * 
  */
@@ -70,7 +71,8 @@ int main(void){
     LcInit(2,16);
     AuInit();
     SwInit();
-    PbInit();
+    //PbInit();
+    RFInit();
     AdInit();
     BlInit();
     SiInit();
@@ -83,8 +85,11 @@ int main(void){
     initPropaganda();
     while(1){
         
-        MotorPWM();
-        MotorPulsador();
+        MotorPWM(0);
+        MotorPWM(1);
+        MotorPWM(2);
+        MotorRF();
+        //MotorPulsador();
         BlMotor();
         MotorLed();
         MotorLCD();

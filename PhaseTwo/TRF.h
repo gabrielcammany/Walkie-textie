@@ -7,18 +7,29 @@
  * Created on 25 de enero de 2014, 23:02
  */
 
-#ifndef TPWM_H
-#define	TPWM_H
+#ifndef TRF_H
+#define	TRF_H
 #include <xc.h>
 #include "time.h"
 #include "PrTPropaganda.h"
+#include "AuTAudio.h"
 
-void PwInit();
+void RFInit();
 //Pre: Requereix del TITITMER.c
 //Post: Demana un timer i posa la sortida del LED a 0
-void MotorPWM(int);
-char getTemps();
+void MotorRF();
 
+char valuePos(char);
+
+char getTramesTotals(unsigned char pos);
+
+char getTramesPropies(unsigned char pos);
+
+char* getMessage();
+
+int getLength();
+
+char getSincro();
 
 #endif	/* LETLEDS_H */
 
