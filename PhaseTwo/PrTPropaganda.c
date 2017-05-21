@@ -59,32 +59,9 @@ void MotorPropaganda(void){
             //Introduir un nou identificador
             if (SiCharAvail() != 0){
                 if(id[3] == '0'){
-                    if(id[0] == ':'){
-                        setIDPos(0,SiGetChar());
-                        tempReturn[0] = getIDPos(0);
-                        SiPutsCooperatiu(tempReturn);
-                    }else if(id[1] == ':'){
-                        setIDPos(1,SiGetChar());
-                        tempReturn[0] = getIDPos(1);
-                        SiPutsCooperatiu(tempReturn);
-                    }else if(id[2] == ':'){
-                        setIDPos(2,SiGetChar());
-                        tempReturn[0] = getIDPos(2);
-                        SiPutsCooperatiu(tempReturn);
-                    }else{
-                        if (SiGetChar() == 27){
-                            id[3] = '\r';
-                            SiPutsCooperatiu("Has introduit el ID: ");
-                            SiPutsCooperatiu(id);
-                            Menu();
-                            estatPropaganda=0;
-                            setCadena(1);
-                        }else{
-                            SiPutsCooperatiu("Ja has introduit el ID!");
-                            SiPutsCooperatiu(" Prem ESC per tornar al Menu!");
-                            SiPutsCooperatiu("\r\n");
-                        }
-                    }
+                    setIDPos(0,SiGetChar());
+                    SiPutsCooperatiu(getIDPos(0));
+                    estatPropaganda=18; 
                 }else{
                     id[3] = '0';
                     id[0] = ':';
@@ -97,29 +74,56 @@ void MotorPropaganda(void){
         case 2:
             SiPutsCooperatiu("ID: ");
             SiPutsCooperatiu(id);
-            Menu();
-            estatPropaganda=0;            
+            estatPropaganda=50;            
             break;
         case 3:
             SiPutsCooperatiu("Trames identificades: ");
             SiPutsCooperatiu(getTramesTotals());
-            SiPutsCooperatiu("\r\n\0");
-            Menu();
-            estatPropaganda=0;    
+            estatPropaganda=50;    
             break;
         case 4:
             SiPutsCooperatiu("Trames rebudes: ");
             SiPutsCooperatiu(getTramesPropies());
-            SiPutsCooperatiu("\r\n\0");
-            Menu();
-            estatPropaganda=0;    
+            estatPropaganda=50;    
             break;
         case 5:
             SiPutsCooperatiu("L'ultim missatge rebut es: ");
             SiPutsCooperatiu((char*)getMessage());
+            estatPropaganda=50;    
+            break;
+        case 18:
+            if (SiCharAvail() != 0){
+                setIDPos(1,SiGetChar());
+                SiPutsCooperatiu(getIDPos(1));
+                estatPropaganda=7;  
+            }
+            break;
+        case 19:
+            if (SiCharAvail() != 0){
+                setIDPos(2,SiGetChar());
+                SiPutsCooperatiu(getIDPos(2));
+                estatPropaganda=0;
+            }
+            break;
+        case 20:
+            if(SiCharAvail() != 0){
+                if (SiGetChar() == 27){
+                    id[3] = '\r';
+                    SiPutsCooperatiu("Has introduit el ID: ");
+                    SiPutsCooperatiu(id);
+                    setCadena(1);
+                    estatPropaganda=50;
+                }else{
+                    SiPutsCooperatiu("Ja has introduit el ID!");
+                    SiPutsCooperatiu(" Prem ESC per tornar al Menu!");
+                    SiPutsCooperatiu("\r\n");
+                }
+            }
+            break;
+        case 50:
             SiPutsCooperatiu("\r\n\0");
             Menu();
-            estatPropaganda=0;    
+            estatPropaganda=0;
             break;
         default:
             Menu();
