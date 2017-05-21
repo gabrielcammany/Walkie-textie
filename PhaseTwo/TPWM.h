@@ -17,8 +17,6 @@ void PwInit();
 //Pre: Requereix del TITITMER.c
 //Post: Demana un timer i posa la sortida del LED a 0
 void MotorPWM(int);
-char getTemps();
-
 
 #endif	/* LETLEDS_H */
 

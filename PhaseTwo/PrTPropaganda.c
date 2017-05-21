@@ -1,26 +1,9 @@
 #include "PrTPropaganda.h"
 
-#define MAX_ID 3
-
-static int timestamp;
-static char timerPropaganda, estatPropaganda,timerCincSegons;
-static char temp[50], opcio;
-static char id[MAX_ID_STRING],tempID[MAX_ID] ={'0','0','0'};
-
-void myItoa(int num){
-    //Post: escriu el valor ascii de num a tmp;
-    temp[0] = (char)(num/1000);
-    num = num - (temp[0]*1000);
-    temp[1] = (char)(num /100);
-    num = num - (temp[1]*100);
-    temp[2] = (char) (num /10);
-    num = num - (temp[2]*10);
-    temp[3] = num+'0';
-    temp[4] = '\0';
-    temp[2]+='0';
-    temp[1]+='0';
-    temp[0]+='0';
-}
+static char timerPropaganda, estatPropaganda;
+static char opcio;
+static char id[MAX_ID + EXTRA_ID_STRING],tempID[MAX_ID] ={'0','0','0'},
+        tempReturn[MAX_ID] ={'0','\r','\0'};
 
 void Menu(void){
     SiPutsCooperatiu("\r\nLes opcions de test son:\r\n\0");
@@ -34,32 +17,11 @@ void Menu(void){
     SiPutsCooperatiu("Per sortir de qualsevol opcio, prem ESC\r\n");
 }
 
-char getIDPos(unsigned char pos){
-    return id[pos];
-}
-
-char* getID(){
-    return id;
-}
-
-void setIDPos(int pos, unsigned char value){
-    id[pos] = value;
-}
-
-char getTemps(int pos){
-    return tempID[pos];
-}
-
-char* getTemp(){
-    return temp;
-}
-
 void initPropaganda(void){
     //Pre: La sio està inicialitzada
     SiPutsCooperatiu(PROPAGANDA_1);
     SiPutsCooperatiu(PROPAGANDA_2);
     Menu();
-    timestamp = 0;
     timerPropaganda= TiGetTimer();
     estatPropaganda = 0;
     id[0] = ':';
@@ -68,11 +30,14 @@ void initPropaganda(void){
     id[3] = '0';
     id[4] = '\n';
     id[5] = '\0';
-     TRISBbits.TRISB13 = 1;
 }
 
-void startToCount(){
-    TiResetTics(timerCincSegons);
+char getIDPos(unsigned char pos){
+    return id[pos];
+}
+
+void setIDPos(int pos, unsigned char value){
+    id[pos] = value;
 }
 
 void MotorPropaganda(void){
@@ -89,21 +54,23 @@ void MotorPropaganda(void){
                     SiSendChar(opcio);
                 }
             }
-            if (TiGetTics(timerPropaganda) > 1000){
-                TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
-            }
             break;
         case 1:
             //Introduir un nou identificador
             if (SiCharAvail() != 0){
                 if(id[3] == '0'){
                     if(id[0] == ':'){
-                        id[0] = SiGetChar();
+                        setIDPos(0,SiGetChar());
+                        tempReturn[0] = getIDPos(0);
+                        SiPutsCooperatiu(tempReturn);
                     }else if(id[1] == ':'){
-                        id[1] = SiGetChar();
+                        setIDPos(1,SiGetChar());
+                        tempReturn[0] = getIDPos(1);
+                        SiPutsCooperatiu(tempReturn);
                     }else if(id[2] == ':'){
-                        id[2] = SiGetChar();
+                        setIDPos(2,SiGetChar());
+                        tempReturn[0] = getIDPos(2);
+                        SiPutsCooperatiu(tempReturn);
                     }else{
                         if (SiGetChar() == 27){
                             id[3] = '\r';
@@ -111,7 +78,11 @@ void MotorPropaganda(void){
                             SiPutsCooperatiu(id);
                             Menu();
                             estatPropaganda=0;
-                            setCadena(3);
+                            setCadena(1);
+                        }else{
+                            SiPutsCooperatiu("Ja has introduit el ID!");
+                            SiPutsCooperatiu(" Prem ESC per tornar al Menu!");
+                            SiPutsCooperatiu("\r\n");
                         }
                     }
                 }else{
@@ -130,42 +101,25 @@ void MotorPropaganda(void){
             estatPropaganda=0;            
             break;
         case 3:
-            //Trames identificades
-            //Visualització pulsadors
-            if (TiGetTics(timerPropaganda) > 500){
-                TiResetTics(timerPropaganda);
-                SiSendChar('\r');
-                SiPutsCooperatiu("PB1: \0");
-                SiSendChar(PORTBbits.RB13+'0');
-                estatPropaganda = 31;
-            }
-            if (SiCharAvail() != 0){
-                if (SiGetChar() == 27){
-                    Menu();
-                    estatPropaganda=0;
-                }
-            }
+            SiPutsCooperatiu("Trames identificades: ");
+            SiPutsCooperatiu(getTramesTotals());
+            SiPutsCooperatiu("\r\n\0");
+            Menu();
+            estatPropaganda=0;    
             break;
         case 4:
-            if (TiGetTics(timerPropaganda) > 1000){
-                TiResetTics(timerPropaganda);
-                if (++timestamp == 10000) timestamp=0;
-                SiSendChar('\r');
-                myItoa(getBlDuty()*5);
-                SiSendChar(temp[1]);
-                SiSendChar(temp[2]);
-                SiSendChar(temp[3]);
-            }
-            if (SiCharAvail() != 0){
-                if (SiGetChar() == 27){
-                    Menu();
-                    estatPropaganda=0;
-                }
-            }
+            SiPutsCooperatiu("Trames rebudes: ");
+            SiPutsCooperatiu(getTramesPropies());
+            SiPutsCooperatiu("\r\n\0");
+            Menu();
+            estatPropaganda=0;    
             break;
         case 5:
-            SiPutsCooperatiu("\n\rIntrodueix valor de la nova intensitat (0-4):\n\r");
-            estatPropaganda = 51;
+            SiPutsCooperatiu("L'ultim missatge rebut es: ");
+            SiPutsCooperatiu((char*)getMessage());
+            SiPutsCooperatiu("\r\n\0");
+            Menu();
+            estatPropaganda=0;    
             break;
         default:
             Menu();
@@ -174,33 +128,23 @@ void MotorPropaganda(void){
     }
 }
 
-int getVelocitat(int mostra){
-    return (((1.75)*(mostra))+200);
-    /*
-     * Haurem d'agafar la mostra i utilizar una ecuacio de la recta per obtenir el temps, 1.75*x+200
-     */
-}
-
-
 #define     MAXCOLUMNES 16
 static char estatLCD = 0;
-const unsigned char cadena[]=   {"Waiting for ID  "};
-const unsigned char cadenaID[]= {"ID set          "};
-const unsigned char cadenaNew[]={"New Message     "}; //Més val que tingui 16 caràcters...
-static unsigned char timerLCD, caracterInici,caracterIniciTrama, i,j,h,quina,melodia;
+const char cadena[MAXCADENES][MAXCOLUMNES] = 
+{{"Waiting for ID  "},{"ID set          "},{"New Message     "}};
+static unsigned char timerLCD, caracterIniciTrama, i,j,h,quina,timerCincSegons;
 static unsigned char segonaLinia[MAXCOLUMNES];
 
 void initMotorLCD(void){
     //Pre: El LCD està inicialitzat
     timerLCD = TiGetTimer();
     timerCincSegons= TiGetTimer();
-    caracterInici = 0;
     caracterIniciTrama = 0;
     LcClear();
-    j=0;
-    quina = 1;
-    melodia = 0;
-    //Hi ha caselles de la segona línia que sempre valdran el mateix, les preparo!
+    j = 0;
+    h = 0;
+    i = 0;
+    quina = 0;
     segonaLinia[0]=' ';
     segonaLinia[1]=' ';
     segonaLinia[2]='/';
@@ -208,10 +152,19 @@ void initMotorLCD(void){
     segonaLinia[6]=' ';
     segonaLinia[7]=' ';
     segonaLinia[8]=' ';
+    segonaLinia[9] = ' ';
+    segonaLinia[10] = ' ';
     segonaLinia[11]=' ';
+    segonaLinia[12]=' ';
 }
 
-char mostrarMissatge(){
+void startToCount(){
+    TiResetTics(timerCincSegons);
+}
+
+unsigned char mostrarMissatge(){
+    //Pre: Timer dels cinc segons demanat
+    //Post: retorna 1 si es pot mostrar el missatge 0 altrament
     if(getLength() > 0 && TiGetTics(timerCincSegons) >= 5000){
         turnOffAudio();
         return 1;
@@ -222,9 +175,17 @@ char mostrarMissatge(){
     }
 }
 
-void setCadena(unsigned char cadena){
-    quina = cadena;
+int getVelocitat(int mostra){
+    //Pre: Ad inicialitzat
+    //Post: Retorna el temps de refresh del LCD a partir de l'entrada analogica
+    return (((1.75)*(mostra))+200);
+    /*
+     * Haurem d'agafar la mostra i utilizar una 
+     * equacio de la recta per obtenir el temps, 1.75*x+200
+     */
 }
+
+
 
 void MotorLCD(void){
     switch (estatLCD){
@@ -237,16 +198,9 @@ void MotorLCD(void){
                         j = 0;
                     }
                 }else{
-                    if(quina == 1){
-                        LcPutChar(cadena[h]);
-                    }else if(quina == 2){
-                        seguentFrequencia();
-                        LcPutChar(cadenaNew[h]);
-                    }else if(quina == 3){
-                        LcPutChar(cadenaID[h]);
-                    }
+                    LcPutChar(cadena[quina][h]);
                     h++;
-                    if (h==16){
+                    if (h==MAXCOLUMNES){
                         h = 0;
                     }
                 }
@@ -273,16 +227,13 @@ void MotorLCD(void){
                     tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
                 }
             }
-            segonaLinia[0]=getTramesPropies(1);
-            segonaLinia[1]=getTramesPropies(0);
-            segonaLinia[3]=getTramesTotals(1);
-            segonaLinia[4]=getTramesTotals(0);
-            segonaLinia[9] = ' ';
-            segonaLinia[10] = ' ';
             estatLCD= 2;
             break;
-        case 2: //Aquí faig l'itoa, que deu trigar una bona estona el pobre...
-            segonaLinia[12]=' ';
+        case 2:
+            segonaLinia[0]=getTramesPropies()[1];
+            segonaLinia[1]=getTramesPropies()[0];
+            segonaLinia[3]=getTramesTotals()[1];
+            segonaLinia[4]=getTramesTotals()[0];
             segonaLinia[13] = tempID[0];
             segonaLinia[14] = tempID[1];
             segonaLinia[15] = tempID[2];
@@ -306,7 +257,6 @@ void MotorLCD(void){
                 TiResetTics(timerLCD);
             }
             break;
-                
         case 5:
             if (TiGetTics(timerLCD)>= 250){
                 //Alerta, ja porto 50 ms. des de l'últim refresc
@@ -324,6 +274,9 @@ void MotorLCD(void){
             }
             break;
     }
+}
+void setCadena(unsigned char seleccio){
+    quina = seleccio;
 }
 
 /*

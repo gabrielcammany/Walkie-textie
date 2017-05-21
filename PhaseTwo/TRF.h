@@ -19,17 +19,22 @@ void RFInit();
 //Post: Demana un timer i posa la sortida del LED a 0
 void MotorRF();
 
-char valuePos(char);
+char* getTramesTotals();
+//Pre: -
+//Post: Retorna el numero de trames totals
 
-char getTramesTotals(unsigned char pos);
+char* getTramesPropies();
+//Pre: -
+//Post: Retorna el numero de trames propies
 
-char getTramesPropies(unsigned char pos);
-
-char* getMessage();
+unsigned char* getMessage();
+//Pre: -
+//Post: Retorna el missatge que hi ha actualment
 
 int getLength();
+//Pre: -
+//Post: Retorna la mida del missatge tenim desat
 
-char getSincro();
 
 #endif	/* LETLEDS_H */
 

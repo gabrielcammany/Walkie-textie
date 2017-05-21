@@ -10,7 +10,7 @@
 #define MAX_ID 3
 static char estatPWM;
 static char timerPWM, temps;
-static unsigned char PWM[MAX_ID];
+static char PWM[MAX_ID];
 
 void PwInit(){
     timerPWM = TiGetTimer();

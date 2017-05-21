@@ -28,12 +28,10 @@
 
 #define PROPAGANDA_1 "\n\rPlaca grup 779. Sistemes Digitals i uProcessadors\r\n\0"
 #define PROPAGANDA_2 "Menu de seleccio\r\n\0"
-#define MAX_ID_STRING 6
+#define MAX_ID 3
+#define EXTRA_ID_STRING 3
+#define MAXCADENES 3
 
-
-void myItoa(int num);
-//Pre: 0<= num <= 9999
-//Post: deixa a temp[3..0] el num en ASCII
 void Menu(void);
 //Pre: La SIO està inicialitzada
 //Post: Pinta el menu pel canal sèrie
@@ -43,26 +41,23 @@ void initPropaganda(void);
 //Post: Inicialitza el timestamp i pinta la propaganda per la SIO
 
 void MotorPropaganda(void);
+
 void initMotorLCD(void);
 //Pre: el LCD està inicialitzat
 //Post: inicialitza el LCD per posar la marquesina a 0
 void MotorLCD(void);
 
 char getIDPos(unsigned char pos);
+//Pre: 0 <= pos < MAX_ID_STRING
+//Post: Retorna el digit del ID que es demani
 
-void setIDPos(int pos, unsigned char value);
-
-char getTemps();
-
-int getVelocitat();
-
-char* getTemp();
-
-char* getID();
-
-void setCadena(unsigned char);
+void setCadena(unsigned char seleccio);
+//Pre: 0 <= seleccio < MAXCADENES
+//Post: Retorna el digit del ID que es demani
 
 void startToCount();
+//Pre: Timer dels cinc segons demanat
+//Post: ResetTics del timer cinc segons
 
 #endif	/* PRTPROPAGANDA_H */
 

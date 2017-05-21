@@ -7,33 +7,66 @@
 
 #include "TPWM.h"
 
-#define MAX_BUFFER 8
-#define MAX_MESSAGE 316
-#define END_BYTE 0x40
-#define START_BYTE 0x40
-#define IN PORTBbits.RB13
-static unsigned estatRF,input,tramaRebudaPropia[2] = {'0','0'}, 
-        tramaRebudaTotals[2] = {'0','0'};
+#define EXTRA_SPACES            16
+#define MAX_MESSAGE             (300 + EXTRA_SPACES)
+#define MAX_DIGITS_RECIEVED     2
+#define END_BYTE                0x40
+#define START_BYTE              0x40
+#define IN                      PORTBbits.RB13
+
+static char estatRF,input,tramaRebudaPropia[MAX_DIGITS_RECIEVED] = {'0','0'}, 
+        tramaRebudaTotals[MAX_DIGITS_RECIEVED] = {'0','0'};
 static char timerRF, sincronized;
 static int caracter, totalBytesMessage;
 static unsigned char pos;
-static unsigned char missatge[MAX_MESSAGE],inValue,id_trama[3];
+static unsigned char missatge[MAX_MESSAGE],inValue,id_trama[MAX_ID];
 
-void RFInit(){
-    timerRF = TiGetTimer();
-    estatRF = 0;
-    TRISBbits.TRISB13 = 0;
-    sincronized = 0;
-    pos = 0;
-    totalBytesMessage = 0;
-    id_trama[0] = ':';
-    id_trama[1] = ':';
-    id_trama[2] = ':';
-    for(caracter = 0;caracter<16;caracter++){
+void afegeixEspais(){
+    //Post: Afageix EXTRA_SPACES al principi del missatge
+    for(caracter = 0;caracter<EXTRA_SPACES;caracter++){
         missatge[caracter] = ' ';
     }
 }
 
+void inicializaID(){
+    //Post: Afageix EXTRA_SPACES al principi del missatge
+    for(caracter = 0;caracter<MAX_ID;caracter++){
+        id_trama[caracter] = ':';
+    }
+}
+
+void RFInit(){
+    TRISBbits.TRISB13 = 0;
+    timerRF = TiGetTimer();
+    
+    estatRF = 0;
+    sincronized = 0;
+    pos = 0;
+    totalBytesMessage = 0;
+    inicializaID();
+    afegeixEspais();
+}
+
+void incrementa(char *comptador){
+    //Pre: comptador ha de tenir valors entre '0' <= comptador[MAX_DIGITS_RECIEVED] <= '9' 
+    //Post: Incrementa el contingut
+    if(comptador[0] == '9'){
+       comptador[0] = '0'; 
+       comptador[1]++;
+    }else{
+        comptador[0]++;
+    }
+}
+
+void addBit(char input){
+    //Post: Afegeix un 1 i rota cap a la dreta, en el MSB, en cas de 
+    //que input valgui 1 o rota cap a la dreta altrament
+    if(input == 1){
+        inValue = (inValue >> 1) & 0x7F ;;
+    }else{
+        inValue = ((inValue | 0x80) >> 1) & 0x7F ;
+    }
+}
 
 
 void MotorRF () {
@@ -85,7 +118,7 @@ void MotorRF () {
             if(pos<7){
                 estatRF = 3;
                 pos++;
-                addBit();
+                addBit(input);
 				TiResetTics(timerRF);
             }else{
                 if (sincronized == 1){
@@ -107,7 +140,7 @@ void MotorRF () {
         }
         inValue = 0;
         pos = 0;
-        addBit();
+        addBit(input);
         TiResetTics(timerRF);
 		break;
     case 6:
@@ -135,7 +168,7 @@ void MotorRF () {
         }
         inValue = 0;
         pos = 0;
-        addBit();
+        addBit(input);
         TiResetTics(timerRF);
 		break;
     case 7:
@@ -151,39 +184,18 @@ void MotorRF () {
     }
 }
 
-void incrementa(char *comptador){
-    if(comptador[0] == '9'){
-       comptador[0] = '0'; 
-       comptador[1]++;
-    }else{
-        comptador[0]++;
-    }
+char* getTramesTotals(){
+    return tramaRebudaTotals;
 }
 
-void addBit(){
-    if(input == 1){
-        inValue = (inValue >> 1) & 0x7F ;;
-    }else{
-        inValue = ((inValue | 0x80) >> 1) & 0x7F ;
-    }
+char* getTramesPropies(){
+    return tramaRebudaPropia;
 }
 
-char getTramesTotals(unsigned char pos){
-    return tramaRebudaTotals[pos];
-}
-
-char getTramesPropies(unsigned char pos){
-    return tramaRebudaPropia[pos];
-}
-
-char* getMessage(){
+unsigned char* getMessage(){
     return missatge;
 }
 
 int getLength(){
     return totalBytesMessage;
-}
-
-char getSincro(){
-    return sincronized;
 }
