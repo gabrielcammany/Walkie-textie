@@ -2,8 +2,7 @@
 
 static char timerPropaganda, estatPropaganda;
 static char opcio;
-static char id[MAX_ID + EXTRA_ID_STRING],tempID[MAX_ID] ={'0','0','0'},
-        tempReturn[MAX_ID] ={'0','\r','\0'};
+static char id[MAX_ID + EXTRA_ID_STRING],tempID[MAX_ID] ={'0','0','0'};
 
 void Menu(void){
     SiPutsCooperatiu("\r\nLes opcions de test son:\r\n\0");
@@ -60,7 +59,7 @@ void MotorPropaganda(void){
             if (SiCharAvail() != 0){
                 if(id[3] == '0'){
                     setIDPos(0,SiGetChar());
-                    SiPutsCooperatiu(getIDPos(0));
+                    SiSendChar(getIDPos(0));
                     estatPropaganda=18; 
                 }else{
                     id[3] = '0';
@@ -94,14 +93,14 @@ void MotorPropaganda(void){
         case 18:
             if (SiCharAvail() != 0){
                 setIDPos(1,SiGetChar());
-                SiPutsCooperatiu(getIDPos(1));
+                SiSendChar(getIDPos(1));
                 estatPropaganda=7;  
             }
             break;
         case 19:
             if (SiCharAvail() != 0){
                 setIDPos(2,SiGetChar());
-                SiPutsCooperatiu(getIDPos(2));
+                SiSendChar(getIDPos(2));
                 estatPropaganda=0;
             }
             break;
@@ -189,61 +188,93 @@ int getVelocitat(int mostra){
      */
 }
 
+void incrementaIDs(){
+    //Post: Incrementa el ID que esta per pantalla si no hi ha cap afegit, en cas
+    //contrari, incrementa fins arribar al numero
+    if(id[0] ==  ':'){
+        tempID[0] = (tempID[0]<'9' ? (tempID[0] + 1) : '0');
+        tempID[1] = (tempID[1]<'9' ? (tempID[1] + 1) : '0');
+        tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
+    }else{
+        if(tempID[0] != id[0]){
+            tempID[0] = (tempID[0]<'9' ? (tempID[0] + 1) : '0');
+        }
+        if(tempID[1] != id[1]){
+            tempID[1] = (tempID[1]<'9' ? (tempID[1] + 1) : '0');
+        }
+         if(tempID[2] != id[2]){
+            tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
+        }
+    }
+}
 
+void actualitzaTramesLCD(){
+    //Post: Actualiza les columnes 0,1,3,4 del LCD amb les dades de 
+    //trames propies i totals
+    segonaLinia[0]=getTramesPropies()[1];
+    segonaLinia[1]=getTramesPropies()[0];
+    segonaLinia[3]=getTramesTotals()[1];
+    segonaLinia[4]=getTramesTotals()[0];
+}
+
+void actualitzaIDLCD(){
+    //Post: Actualiza les columnes 13,14,15 del LCD amb el ID actual desat en
+    //tempID
+    segonaLinia[13] = tempID[0];
+    segonaLinia[14] = tempID[1];
+    segonaLinia[15] = tempID[2];
+}
+
+void rotaMissatge(){
+    //Post: Rota el missatge que surt per pantalla ficant un offset a la j
+    caracterIniciTrama++;
+    if (caracterIniciTrama>=getLength()){
+        caracterIniciTrama=0;
+    }
+    j = caracterIniciTrama;
+}
 
 void MotorLCD(void){
     switch (estatLCD){
         case 0:
             if(TiGetTics(timerLCD) > getVelocitat(AdGetMostra())){
                 if(mostrarMissatge()){
-                    LcPutChar(getMessage()[(j)]);
-                    j++;
-                    if (j >= getLength()){
-                        j = 0;
-                    }
-                }else{
-                    LcPutChar(cadena[quina][h]);
-                    h++;
-                    if (h==MAXCOLUMNES){
-                        h = 0;
-                    }
-                }
-                if (++i > MAXCOLUMNES) {
                     estatLCD = 1;
-                    TiResetTics(timerLCD);
-                    LcGotoXY(0,1);
+                }else{
+                    estatLCD = 2;
                 }
             }
             break;
-        case 1: //Preparo el string
-            if(id[0] ==  ':'){
-                tempID[0] = (tempID[0]<'9' ? (tempID[0] + 1) : '0');
-                tempID[1] = (tempID[1]<'9' ? (tempID[1] + 1) : '0');
-                tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
-            }else{
-                if(tempID[0] != id[0]){
-                    tempID[0] = (tempID[0]<'9' ? (tempID[0] + 1) : '0');
-                }
-                if(tempID[1] != id[1]){
-                    tempID[1] = (tempID[1]<'9' ? (tempID[1] + 1) : '0');
-                }
-                 if(tempID[2] != id[2]){
-                    tempID[2] = (tempID[2]<'9' ? (tempID[2] + 1) : '0');
-                }
-            }
-            estatLCD= 2;
-            break;
-        case 2:
-            segonaLinia[0]=getTramesPropies()[1];
-            segonaLinia[1]=getTramesPropies()[0];
-            segonaLinia[3]=getTramesTotals()[1];
-            segonaLinia[4]=getTramesTotals()[0];
-            segonaLinia[13] = tempID[0];
-            segonaLinia[14] = tempID[1];
-            segonaLinia[15] = tempID[2];
+        case 1:
+            LcPutChar(getMessage()[(j)]);
+            j++;
+            if (j >= getLength()) j = 0;
             estatLCD = 3;
             break;
+        case 2:
+            LcPutChar(cadena[quina][h]);
+            h++;
+            if (h==MAXCOLUMNES) h = 0;
+            estatLCD = 3;
         case 3:
+            if (++i > MAXCOLUMNES) {
+                estatLCD = 4;
+                TiResetTics(timerLCD);
+                LcGotoXY(0,1);
+            }else{
+                estatLCD = 0;
+            }
+            break;
+        case 4: //Preparo el string
+            incrementaIDs()
+            estatLCD= 5;
+            break;
+        case 5:
+            actualitzaTramesLCD();
+            actualitzaIDLCD();
+            estatLCD = 6;
+            break;
+        case 6:
             if (TiGetTics(timerLCD)>50){
                 //Observo que si estresso molt al LCD arriba un punt que alguna
                 //vegada pinta malament un caràcter. Deu tenir una cua interna?
@@ -251,26 +282,20 @@ void MotorLCD(void){
                 //Cap problema, donem 50 ms. de calma entre ràfega i ràfega i gas
                 TiResetTics(timerLCD);
                 i=0;
-                estatLCD = 4;
+                estatLCD = 7;
             }
             break;
-        case 4:
+        case 7:
             LcPutChar(segonaLinia[i++]);
             if (i > MAXCOLUMNES) {
-                estatLCD = 5;
+                estatLCD = 8;
                 TiResetTics(timerLCD);
             }
             break;
-        case 5:
+        case 8:
             if (TiGetTics(timerLCD)>= 250){
                 //Alerta, ja porto 50 ms. des de l'últim refresc
-                if(getLength() > 0){
-                    caracterIniciTrama++;
-                    if (caracterIniciTrama>=getLength()){
-                        caracterIniciTrama=0;
-                    }
-                    j = caracterIniciTrama;
-                }
+                if(getLength() > 0)rotaMissatge();
                 estatLCD = 0;
                 LcGotoXY(0,0);
                 i=0;

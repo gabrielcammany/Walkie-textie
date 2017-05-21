@@ -69,6 +69,34 @@ void addBit(char input){
 }
 
 
+void fiTramaPropia(){
+    //Post: Incrementa les variables de trames, Comenca a comptar
+    //els 5 segons, canvia el missatge del LCD i fa el calcul del periode del altaveu
+    //finalment encent el altaveu
+    incrementa(tramaRebudaPropia);
+    incrementa(tramaRebudaTotals);
+    startToCount();
+    setCadena(2);
+    totalBytesMessage = caracter;
+    setAudioPeriode((caracter)/30);
+    changeAudioStatus();
+}
+
+void exitStateInstructions(){
+    //Post: Reseteja les variables inValue i pos. Afegeix el
+    //bit i fa el resettics
+    inValue = 0;
+    pos = 0;
+    addBit(input);
+    TiResetTics(timerRF);
+}
+
+char comprovaID(){
+    //Post: Retorna 1 en cas de que el id de la trama sigui el mateix que 
+    //el ID que ha introduit l'usuari, 0 altrament.
+    return (getIDPos(0) == id_trama[0] && getIDPos(1) == id_trama[1] && getIDPos(2) == id_trama[2]);
+}
+
 void MotorRF () {
 	switch(estatRF) {
 	case 0:
@@ -89,18 +117,14 @@ void MotorRF () {
 		break;
 	case 2:
 		if(IN == 1){
-            if(TiGetTics(timerRF) < 5){
+            if(TiGetTics(timerRF) < 14){
                 estatRF = 0;
             }else{
-                if(TiGetTics(timerRF) < 14){
-                    estatRF = 0;
-                }else{
-                    inValue = 0;
-                    pos = 0;
-                    TiResetTics(timerRF);
-                    estatRF = 3;
-                    caracter = 0;
-                }
+                inValue = 0;
+                pos = 0;
+                TiResetTics(timerRF);
+                estatRF = 3;
+                caracter = 0;
             }
         }
 		break;
@@ -132,54 +156,47 @@ void MotorRF () {
     case 5:
         if(inValue == END_BYTE){
             sincronized = 0;
-            estatRF = 7;
+            estatRF = 8;
         }else{
             missatge[caracter] = inValue;
             caracter++;
             estatRF = 3;
         }
-        inValue = 0;
-        pos = 0;
-        addBit(input);
-        TiResetTics(timerRF);
+        exitStateInstructions();
 		break;
     case 6:
         if(inValue == START_BYTE){
             sincronized = 2;
             estatRF = 3;
             caracter = 0;
+            exitStateInstructions();
         }else{
             if (caracter < 3 ){
                 id_trama[caracter] = inValue;
                 caracter++;
                 estatRF = 3;
+                exitStateInstructions();
             }else{
-                if(getIDPos(0) == id_trama[0] && getIDPos(1) == id_trama[1] && getIDPos(2) == id_trama[2]){
-                    sincronized = 1;
-                    estatRF = 3;
-                    caracter = 16;
-                    missatge[caracter] = inValue;
-                    caracter++;
-                }else{
-                    estatRF = 0;
-                    incrementa(tramaRebudaTotals);
-                }
+                estatRF = 7;
             }
         }
-        inValue = 0;
-        pos = 0;
-        addBit(input);
-        TiResetTics(timerRF);
 		break;
     case 7:
-        incrementa(tramaRebudaPropia);
-        incrementa(tramaRebudaTotals);
+        if(comprovaID()){
+            sincronized = 1;
+            estatRF = 3;
+            caracter = 16;
+            missatge[caracter] = inValue;
+            caracter++;
+        }else{
+            estatRF = 0;
+            incrementa(tramaRebudaTotals);
+        }
+        exitStateInstructions();
+        break;
+    case 8:
+        fiTramaPropia();
         estatRF = 0;
-        startToCount();
-        setCadena(2);
-        totalBytesMessage = caracter;
-        setAudioPeriode((caracter)/30);
-        changeAudioStatus();
         break;
     }
 }
