@@ -94,7 +94,7 @@ void MotorPropaganda(void){
             if (SiCharAvail() != 0){
                 setIDPos(1,SiGetChar());
                 SiSendChar(getIDPos(1));
-                estatPropaganda=7;  
+                estatPropaganda=19;  
             }
             break;
         case 19:
@@ -266,7 +266,7 @@ void MotorLCD(void){
             }
             break;
         case 4: //Preparo el string
-            incrementaIDs()
+            incrementaIDs();
             estatLCD= 5;
             break;
         case 5:
