@@ -33,8 +33,7 @@ void MotorPWM (int quin) {
 	case 1:
 		temps = '9' - (TiGetTics(timerPWM) >> 1);
 		if(TiGetTics(timerPWM)>=20){
-			PWM[quin] = ((PWM[quin] != getIDPos(quin)) ? (PWM[quin] = PWM[quin] + 1) : PWM[quin]);
-			if(quin == ((MAX_ID)-1))estatPWM = 0;
+            estatPWM = 2;
 		}else{
             switch (quin){
                 case 0:
@@ -49,6 +48,11 @@ void MotorPWM (int quin) {
             }
 		}
 		break;
+    case 2:
+        PWM[quin] = ((PWM[quin] != getIDPos(quin)) ? (PWM[quin] + 1) : PWM[quin]);
+        if(quin == ((MAX_ID)-1))
+        estatPWM = 0;
+		break;    
 	}
 }
 

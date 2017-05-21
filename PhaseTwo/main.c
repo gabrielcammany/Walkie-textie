@@ -67,14 +67,10 @@ void initCPU(){
 int main(void){
     initCPU();
     TiInit();
-    LeInit();
     LcInit(2,16);
     AuInit();
-    SwInit();
-    //PbInit();
     RFInit();
     AdInit();
-    BlInit();
     SiInit();
     PwInit();
     LcClear();
@@ -89,9 +85,6 @@ int main(void){
         MotorPWM(1);
         MotorPWM(2);
         MotorRF();
-        //MotorPulsador();
-        BlMotor();
-        MotorLed();
         MotorLCD();
         MotorAudio();
         MotorPropaganda();

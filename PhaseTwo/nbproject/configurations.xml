@@ -5,13 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>time.h</itemPath>
-      <itemPath>LeTLeds.h</itemPath>
       <itemPath>LcTLCD.h</itemPath>
       <itemPath>AuTAudio.h</itemPath>
-      <itemPath>SwTSwitch.h</itemPath>
-      <itemPath>PbTPushbutton.h</itemPath>
       <itemPath>AdTADC.h</itemPath>
-      <itemPath>BlTBacklight.h</itemPath>
       <itemPath>SiTSio.h</itemPath>
       <itemPath>PrTPropaganda.h</itemPath>
       <itemPath>TPWM.h</itemPath>
@@ -26,13 +22,9 @@
                    projectFiles="true">
       <itemPath>main.c</itemPath>
       <itemPath>time.c</itemPath>
-      <itemPath>LeTLeds.c</itemPath>
       <itemPath>LcTLCD.c</itemPath>
       <itemPath>AuTAudio.c</itemPath>
-      <itemPath>SwTSwitch.c</itemPath>
-      <itemPath>PbTPushbutton.c</itemPath>
       <itemPath>AdTADC.c</itemPath>
-      <itemPath>BlTBacklight.c</itemPath>
       <itemPath>SiTSio.c</itemPath>
       <itemPath>PrTPropaganda.c</itemPath>
       <itemPath>TPWM.c</itemPath>
