@@ -1,20 +1,20 @@
 Microchip Technology Inc, v1.31 (A)
 
 Tool Name:
-  /opt/microchip/xc16/v1.31/bin/bin/../bin/elf-ld
+  c:\program files (x86)\microchip\xc16\v1.31\bin\bin\..\bin/elf-ld.exe
 
 Command:
   -p24FJ32GA002 \
   -o \
   dist/default/production/PhaseTwo.production.elf \
-  -L/opt/microchip/xc16/v1.31/bin/bin/.. \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../lib \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../support/PIC24E/gld \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../support/PIC24F/gld \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../support/PIC24H/gld \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../support/dsPIC30F/gld \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../support/dsPIC33E/gld \
-  -L/opt/microchip/xc16/v1.31/bin/bin/../../support/dsPIC33F/gld \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/.. \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../support/PIC24E/gld \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../support/PIC24F/gld \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../support/PIC24H/gld \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../support/dsPIC30F/gld \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../support/dsPIC33E/gld \
+  -Lc:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../support/dsPIC33F/gld \
   build/default/production/main.o \
   build/default/production/time.o \
   build/default/production/LcTLCD.o \
@@ -51,32 +51,32 @@ Command:
 Optional library libpPIC24Fxxx.a not found
 Archive member included because of file (symbol)
 
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
                               (__resetPRI)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o) (__data_init_standard)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(crt_start_mode_normal.eo)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o) (__data_init_standard)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(crt_start_mode_normal.eo)
                               (__crt_start_mode_normal)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(addsf3.eo)
                               build/default/production/PrTPropaganda.o (___addsf3)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fixsfsi.eo)
                               build/default/production/PrTPropaganda.o (_(float, int, long long, short, float, short, int))
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatsisf.eo)
                               build/default/production/PrTPropaganda.o (___floatsisf)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fpack.eo)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(addsf3.eo) (__fpack)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(funpack.eo)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fixsfsi.eo) (__funpack)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(funpack2.eo)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(addsf3.eo) (__funpack2)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(futil.eo)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(addsf3.eo) (__fPropagateNaN)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fpack.eo)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(addsf3.eo) (__fpack)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(funpack.eo)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fixsfsi.eo) (__funpack)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(funpack2.eo)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(addsf3.eo) (__funpack2)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(futil.eo)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(addsf3.eo) (__fPropagateNaN)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(mulsf3.eo)
                               build/default/production/PrTPropaganda.o (___mulsf3)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatsisf.eo) (___floatdisf)
-/opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
-                              /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatdisf.eo) (___floatundisf)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatdisf.eo)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatsisf.eo) (___floatdisf)
+c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatundisf.eo)
+                              c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatdisf.eo) (___floatundisf)
 
 
 xc16-ld 1.31 (A)
@@ -87,11 +87,11 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x35e           0x50d  (1293)
 .const                       0x55e               0x212           0x31b  (795)
-.text                        0x770              0x139c          0x1d6a  (7530)
-.dinit                      0x1b0c                0x68            0x9c  (156)
-.text                       0x1b74                0x4a            0x6f  (111)
+.text                        0x770              0x13a6          0x1d79  (7545)
+.dinit                      0x1b16                0x68            0x9c  (156)
+.text                       0x1b7e                0x4a            0x6f  (111)
 
-                 Total program memory used (bytes):         0x269d  (9885) 29%
+                 Total program memory used (bytes):         0x26ac  (9900) 29%
 
 
 Ivt Memory  [Origin = 0x4, Length = 0xfc]
@@ -137,8 +137,8 @@ External Symbols in Program Memory (by address):
 
                   0x000200                  __resetPRI
                   0x00023c                  __psv_init
-                  0x000252                  __data_init
                   0x000252                  __data_init_standard
+                  0x000252                  __data_init
                   0x0002c8                  __DefaultInterrupt
                   0x0002ce                  ___subsf3
                   0x0002d0                  ___addsf3
@@ -206,33 +206,34 @@ External Symbols in Program Memory (by address):
                   0x00164a                  _SiSendChar
                   0x001708                  __U1RXInterrupt
                   0x001734                  _PwInit
-                  0x00175a                  _MotorPWM
-                  0x00189c                  _TimerInit
-                  0x0018a2                  __T1Interrupt
-                  0x0018fa                  _TiInit
-                  0x00192a                  _TiGetTimer
-                  0x001960                  _TiResetTics
-                  0x001974                  _TiGetTics
-                  0x001990                  _TiCloseTimer
-                  0x0019a4                  _TiEnd
-                  0x0019aa                  _AuInit
-                  0x0019c0                  _getAudioPeriode
-                  0x0019c8                  _setAudioPeriode
-                  0x0019ee                  _turnOffAudio
-                  0x0019f8                  _getAudioStatus
-                  0x001a0a                  _MotorAudio
-                  0x001a68                  _changeAudioStatus
-                  0x001a88                  _seguentFrequencia
-                  0x001a9e                  _AdInit
-                  0x001b04                  _AdGetMostra
-                  0x001b74                  _initCPU
-                  0x001b7e                  _main
+                  0x00175a                  _incrementaPWM
+                  0x00178a                  _MotorPWM
+                  0x0018a6                  _TimerInit
+                  0x0018ac                  __T1Interrupt
+                  0x001904                  _TiInit
+                  0x001934                  _TiGetTimer
+                  0x00196a                  _TiResetTics
+                  0x00197e                  _TiGetTics
+                  0x00199a                  _TiCloseTimer
+                  0x0019ae                  _TiEnd
+                  0x0019b4                  _AuInit
+                  0x0019ca                  _getAudioPeriode
+                  0x0019d2                  _setAudioPeriode
+                  0x0019f8                  _turnOffAudio
+                  0x001a02                  _getAudioStatus
+                  0x001a14                  _MotorAudio
+                  0x001a72                  _changeAudioStatus
+                  0x001a92                  _seguentFrequencia
+                  0x001aa8                  _AdInit
+                  0x001b0e                  _AdGetMostra
+                  0x001b7e                  _initCPU
+                  0x001b88                  _main
 
 External Symbols in Program Memory (by name):
 
-                  0x001b04                  _AdGetMostra
-                  0x001a9e                  _AdInit
-                  0x0019aa                  _AuInit
+                  0x001b0e                  _AdGetMostra
+                  0x001aa8                  _AdInit
+                  0x0019b4                  _AuInit
                   0x001068                  _CantaData
                   0x000fca                  _CantaIR
                   0x000ee4                  _CantaPartAlta
@@ -248,9 +249,9 @@ External Symbols in Program Memory (by name):
                   0x000e2e                  _LcPutChar
                   0x000eac                  _LcPutString
                   0x000770                  _Menu
-                  0x001a0a                  _MotorAudio
+                  0x001a14                  _MotorAudio
                   0x000b8c                  _MotorLCD
-                  0x00175a                  _MotorPWM
+                  0x00178a                  _MotorPWM
                   0x0007f6                  _MotorPropaganda
                   0x00135e                  _MotorRF
                   0x0015a4                  _MotorSIO
@@ -262,16 +263,16 @@ External Symbols in Program Memory (by name):
                   0x001612                  _SiPuts
                   0x00162c                  _SiPutsCooperatiu
                   0x00164a                  _SiSendChar
-                  0x001990                  _TiCloseTimer
-                  0x0019a4                  _TiEnd
-                  0x001974                  _TiGetTics
-                  0x00192a                  _TiGetTimer
-                  0x0018fa                  _TiInit
-                  0x001960                  _TiResetTics
-                  0x00189c                  _TimerInit
+                  0x00199a                  _TiCloseTimer
+                  0x0019ae                  _TiEnd
+                  0x00197e                  _TiGetTics
+                  0x001934                  _TiGetTimer
+                  0x001904                  _TiInit
+                  0x00196a                  _TiResetTics
+                  0x0018a6                  _TimerInit
                   0x001106                  _WaitForBusy
                   0x0002c8                  __DefaultInterrupt
-                  0x0018a2                  __T1Interrupt
+                  0x0018ac                  __T1Interrupt
                   0x001708                  __U1RXInterrupt
                   0x0002d0                  ___addsf3
                   0x00038a                  ___fixsfsi
@@ -295,12 +296,12 @@ External Symbols in Program Memory (by name):
                   0x0012bc                  _addBit
                   0x00123a                  _afegeixEspais
                   0x000733                  _cadena
-                  0x001a68                  _changeAudioStatus
+                  0x001a72                  _changeAudioStatus
                   0x001320                  _comprovaID
                   0x00130e                  _exitStateInstructions
                   0x0012e6                  _fiTramaPropia
-                  0x0019c0                  _getAudioPeriode
-                  0x0019f8                  _getAudioStatus
+                  0x0019ca                  _getAudioPeriode
+                  0x001a02                  _getAudioStatus
                   0x0007d6                  _getIDPos
                   0x001528                  _getLength
                   0x001520                  _getMessage
@@ -309,19 +310,20 @@ External Symbols in Program Memory (by name):
                   0x000a32                  _getVelocitat
                   0x001290                  _incrementa
                   0x000a50                  _incrementaIDs
+                  0x00175a                  _incrementaPWM
                   0x001258                  _inicializaID
-                  0x001b74                  _initCPU
+                  0x001b7e                  _initCPU
                   0x0009a6                  _initMotorLCD
                   0x00079a                  _initPropaganda
-                  0x001b7e                  _main
+                  0x001b88                  _main
                   0x000a10                  _mostrarMissatge
                   0x000b6c                  _rotaMissatge
-                  0x001a88                  _seguentFrequencia
-                  0x0019c8                  _setAudioPeriode
+                  0x001a92                  _seguentFrequencia
+                  0x0019d2                  _setAudioPeriode
                   0x000ccc                  _setCadena
                   0x0007e4                  _setIDPos
                   0x000a06                  _startToCount
-                  0x0019ee                  _turnOffAudio
+                  0x0019f8                  _turnOffAudio
 
 Memory Configuration
 
@@ -349,7 +351,7 @@ LOAD build/default/production/TPWM.o
 LOAD build/default/production/TRF.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD pPIC24Fxxx
-LOAD /opt/microchip/xc16/v1.31/bin/bin/../../lib/libfx-elf.a
+LOAD c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libfx-elf.a
                     0x57fc                  __CONFIG2 = 0x57fc
                     0x57fe                  __CONFIG1 = 0x57fe
                     0x0001                  __NO_HANDLES = 0x1
@@ -368,13 +370,13 @@ LOAD /opt/microchip/xc16/v1.31/bin/bin/../../lib/libfx-elf.a
 
 .text             0x000200        0x35e
  *(.init)
- .init            0x000200         0x4c /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
-                  0x000200                  __reset
+ .init            0x000200         0x4c c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
                   0x000200                  __resetPRI
+                  0x000200                  __reset
                   0x00023c                  __psv_init
- .init            0x00024c         0x7c /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
-                  0x000252                  __data_init
+ .init            0x00024c         0x7c c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
                   0x000252                  __data_init_standard
+                  0x000252                  __data_init
  *(.user_init)
  *(.handle)
  *(.isr*)
@@ -385,40 +387,40 @@ LOAD /opt/microchip/xc16/v1.31/bin/bin/../../lib/libfx-elf.a
  *(.libdsp)
  *(.lib*)
  .libpic30_crt_start_mode
-                  0x0002cc          0x2 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(crt_start_mode_normal.eo)
-                  0x0002cc                  __crt_start_mode_normal
+                  0x0002cc          0x2 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(crt_start_mode_normal.eo)
                   0x0002cc                  __crt_start_mode
- .libm.subsf3     0x0002ce         0xbc /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                  0x0002cc                  __crt_start_mode_normal
+ .libm.subsf3     0x0002ce         0xbc c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(addsf3.eo)
                   0x0002ce                  ___subsf3
                   0x0002d0                  ___addsf3
- .libm.fixsfsi    0x00038a         0x42 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+ .libm.fixsfsi    0x00038a         0x42 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fixsfsi.eo)
                   0x00038a                  _(float, int, long long, short, float, short, int)
  .libm.floatsisf
-                  0x0003cc          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                  0x0003cc          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatsisf.eo)
                   0x0003cc                  ___floatsisf
- .libm.fpack      0x0003d2         0x4c /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fpack.eo)
+ .libm.fpack      0x0003d2         0x4c c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fpack.eo)
                   0x0003d2                  __fpack
- .libm.funpack    0x00041e         0x2a /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(funpack.eo)
+ .libm.funpack    0x00041e         0x2a c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(funpack.eo)
                   0x00041e                  __funpack
  .libm.funpack2
-                  0x000448         0x10 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                  0x000448         0x10 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(funpack2.eo)
                   0x000448                  __funpack2
  .libm.fPropagateNaN
-                  0x000458         0x12 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000458         0x12 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(futil.eo)
                   0x000458                  __fPropagateNaN
  .libm.fbobExit
-                  0x00046a          0x8 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x00046a          0x8 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(futil.eo)
                   0x00046a                  __fbopExit
  .libm.fbopReturnNaN
-                  0x000472          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000472          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(futil.eo)
                   0x000472                  __fbopReturnNaN
- .libm.mulsf3     0x000478         0x68 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+ .libm.mulsf3     0x000478         0x68 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(mulsf3.eo)
                   0x000478                  ___mulsf3
  .libm.floatdisf
-                  0x0004e0         0x20 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                  0x0004e0         0x20 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatdisf.eo)
                   0x0004e0                  ___floatdisf
  .libm.floatundisf
-                  0x000500         0x5e /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                  0x000500         0x5e c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatundisf.eo)
                   0x000500                  ___floatundisf
 
 usercode
@@ -435,17 +437,17 @@ __CONFIG1         0x0057fe          0x2
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x3730
+.debug_info       0x000000       0x3708
  *(.debug_info)
- .debug_info      0x000000        0x2f0 build/default/production/main.o
- .debug_info      0x0002f0        0x667 build/default/production/time.o
- .debug_info      0x000957        0x87a build/default/production/LcTLCD.o
- .debug_info      0x0011d1        0x39d build/default/production/AuTAudio.o
- .debug_info      0x00156e        0x508 build/default/production/AdTADC.o
- .debug_info      0x001a76        0xceb build/default/production/SiTSio.o
- .debug_info      0x002761        0x483 build/default/production/PrTPropaganda.o
- .debug_info      0x002be4        0x484 build/default/production/TPWM.o
- .debug_info      0x003068        0x6c8 build/default/production/TRF.o
+ .debug_info      0x000000        0x2e5 build/default/production/main.o
+ .debug_info      0x0002e5        0x65c build/default/production/time.o
+ .debug_info      0x000941        0x86f build/default/production/LcTLCD.o
+ .debug_info      0x0011b0        0x392 build/default/production/AuTAudio.o
+ .debug_info      0x001542        0x4fd build/default/production/AdTADC.o
+ .debug_info      0x001a3f        0xce0 build/default/production/SiTSio.o
+ .debug_info      0x00271f        0x478 build/default/production/PrTPropaganda.o
+ .debug_info      0x002b97        0x4b4 build/default/production/TPWM.o
+ .debug_info      0x00304b        0x6bd build/default/production/TRF.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0x975
@@ -460,19 +462,19 @@ __CONFIG1         0x0057fe          0x2
  .debug_abbrev    0x0007ca         0xc2 build/default/production/TPWM.o
  .debug_abbrev    0x00088c         0xe9 build/default/production/TRF.o
 
-.debug_line       0x000000        0x7c6
+.debug_line       0x000000        0x859
  *(.debug_line)
- .debug_line      0x000000         0x99 build/default/production/main.o
- .debug_line      0x000099         0xae build/default/production/time.o
- .debug_line      0x000147        0x139 build/default/production/LcTLCD.o
- .debug_line      0x000280         0xb6 build/default/production/AuTAudio.o
- .debug_line      0x000336         0x92 build/default/production/AdTADC.o
- .debug_line      0x0003c8         0xdc build/default/production/SiTSio.o
- .debug_line      0x0004a4        0x13a build/default/production/PrTPropaganda.o
- .debug_line      0x0005de         0xbe build/default/production/TPWM.o
- .debug_line      0x00069c        0x12a build/default/production/TRF.o
+ .debug_line      0x000000         0xab build/default/production/main.o
+ .debug_line      0x0000ab         0xc0 build/default/production/time.o
+ .debug_line      0x00016b        0x14b build/default/production/LcTLCD.o
+ .debug_line      0x0002b6         0xc8 build/default/production/AuTAudio.o
+ .debug_line      0x00037e         0xa4 build/default/production/AdTADC.o
+ .debug_line      0x000422         0xee build/default/production/SiTSio.o
+ .debug_line      0x000510        0x13a build/default/production/PrTPropaganda.o
+ .debug_line      0x00064a         0xd3 build/default/production/TPWM.o
+ .debug_line      0x00071d        0x13c build/default/production/TRF.o
 
-.debug_frame      0x000000        0x968
+.debug_frame      0x000000        0x984
  *(.debug_frame)
  .debug_frame     0x000000         0x4c build/default/production/main.o
  .debug_frame     0x00004c        0x106 build/default/production/time.o
@@ -481,8 +483,8 @@ __CONFIG1         0x0057fe          0x2
  .debug_frame     0x0003fe         0x4c build/default/production/AdTADC.o
  .debug_frame     0x00044a        0x188 build/default/production/SiTSio.o
  .debug_frame     0x0005d2        0x1c4 build/default/production/PrTPropaganda.o
- .debug_frame     0x000796         0x52 build/default/production/TPWM.o
- .debug_frame     0x0007e8        0x180 build/default/production/TRF.o
+ .debug_frame     0x000796         0x6e build/default/production/TPWM.o
+ .debug_frame     0x000804        0x180 build/default/production/TRF.o
 
 .debug_str        0x000000         0xfc
  *(.debug_str)
@@ -502,7 +504,7 @@ __CONFIG1         0x0057fe          0x2
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000        0x544
+                  0x000000        0x556
  *(.debug_pubnames)
  .debug_pubnames
                   0x000000         0x41 build/default/production/main.o
@@ -519,9 +521,9 @@ __CONFIG1         0x0057fe          0x2
  .debug_pubnames
                   0x00031b        0x118 build/default/production/PrTPropaganda.o
  .debug_pubnames
-                  0x000433         0x2a build/default/production/TPWM.o
+                  0x000433         0x3c build/default/production/TPWM.o
  .debug_pubnames
-                  0x00045d         0xe7 build/default/production/TRF.o
+                  0x00046f         0xe7 build/default/production/TRF.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -1123,9 +1125,9 @@ __CONFIG1         0x0057fe          0x2
                     0x0230                  UART2 = 0x230
                     0x0230                  _UART2 = 0x230
 START GROUP
-LOAD /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a
-LOAD /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a
-LOAD /opt/microchip/xc16/v1.31/bin/bin/../../lib/libc-elf.a
+LOAD c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a
+LOAD c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a
+LOAD c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libc-elf.a
 END GROUP
 OUTPUT(dist/default/production/PhaseTwo.production.elf elf32-pic30)
 LOAD default_isr
@@ -1173,29 +1175,29 @@ __c30_signature
  __c30_signature
                   0x00045c          0x6 build/default/production/TRF.o
  __c30_signature
-                  0x000462          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
+                  0x000462          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
  __c30_signature
-                  0x000468          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
+                  0x000468          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
  __c30_signature
-                  0x00046e          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                  0x00046e          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(addsf3.eo)
  __c30_signature
-                  0x000474          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+                  0x000474          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fixsfsi.eo)
  __c30_signature
-                  0x00047a          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                  0x00047a          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatsisf.eo)
  __c30_signature
-                  0x000480          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(fpack.eo)
+                  0x000480          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(fpack.eo)
  __c30_signature
-                  0x000486          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(funpack.eo)
+                  0x000486          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(funpack.eo)
  __c30_signature
-                  0x00048c          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                  0x00048c          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(funpack2.eo)
  __c30_signature
-                  0x000492          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000492          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(futil.eo)
  __c30_signature
-                  0x000498          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+                  0x000498          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(mulsf3.eo)
  __c30_signature
-                  0x00049e          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                  0x00049e          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatdisf.eo)
  __c30_signature
-                  0x0004a4          0x6 /opt/microchip/xc16/v1.31/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                  0x0004a4          0x6 c:/program files (x86)/microchip/xc16/v1.31/bin/bin/../../lib\libm-elf.a(floatundisf.eo)
 
 .nbss               0x0800         0x32
  .nbss              0x0800          0xc build/default/production/PrTPropaganda.o
@@ -1238,7 +1240,7 @@ __c30_signature
                     0x8733                  _cadena
  .const             0x8764          0xc build/default/production/main.o
 
-.text             0x000770       0x139c
+.text             0x000770       0x13a6
  .text            0x000770        0x56a build/default/production/PrTPropaganda.o
                   0x000770                  _Menu
                   0x00079a                  _initPropaganda
@@ -1294,35 +1296,36 @@ __c30_signature
                   0x001642                  _SiGetChar
                   0x00164a                  _SiSendChar
                   0x001708                  __U1RXInterrupt
- .text            0x001734        0x168 build/default/production/TPWM.o
+ .text            0x001734        0x172 build/default/production/TPWM.o
                   0x001734                  _PwInit
-                  0x00175a                  _MotorPWM
- .text            0x00189c        0x10e build/default/production/time.o
-                  0x00189c                  _TimerInit
-                  0x0018a2                  __T1Interrupt
-                  0x0018fa                  _TiInit
-                  0x00192a                  _TiGetTimer
-                  0x001960                  _TiResetTics
-                  0x001974                  _TiGetTics
-                  0x001990                  _TiCloseTimer
-                  0x0019a4                  _TiEnd
- .text            0x0019aa         0xf4 build/default/production/AuTAudio.o
-                  0x0019aa                  _AuInit
-                  0x0019c0                  _getAudioPeriode
-                  0x0019c8                  _setAudioPeriode
-                  0x0019ee                  _turnOffAudio
-                  0x0019f8                  _getAudioStatus
-                  0x001a0a                  _MotorAudio
-                  0x001a68                  _changeAudioStatus
-                  0x001a88                  _seguentFrequencia
- .text            0x001a9e         0x6e build/default/production/AdTADC.o
-                  0x001a9e                  _AdInit
-                  0x001b04                  _AdGetMostra
+                  0x00175a                  _incrementaPWM
+                  0x00178a                  _MotorPWM
+ .text            0x0018a6        0x10e build/default/production/time.o
+                  0x0018a6                  _TimerInit
+                  0x0018ac                  __T1Interrupt
+                  0x001904                  _TiInit
+                  0x001934                  _TiGetTimer
+                  0x00196a                  _TiResetTics
+                  0x00197e                  _TiGetTics
+                  0x00199a                  _TiCloseTimer
+                  0x0019ae                  _TiEnd
+ .text            0x0019b4         0xf4 build/default/production/AuTAudio.o
+                  0x0019b4                  _AuInit
+                  0x0019ca                  _getAudioPeriode
+                  0x0019d2                  _setAudioPeriode
+                  0x0019f8                  _turnOffAudio
+                  0x001a02                  _getAudioStatus
+                  0x001a14                  _MotorAudio
+                  0x001a72                  _changeAudioStatus
+                  0x001a92                  _seguentFrequencia
+ .text            0x001aa8         0x6e build/default/production/AdTADC.o
+                  0x001aa8                  _AdInit
+                  0x001b0e                  _AdGetMostra
 
-.dinit            0x001b0c         0x68
- .dinit           0x001b0c         0x68 data_init
+.dinit            0x001b16         0x68
+ .dinit           0x001b16         0x68 data_init
 
-.text             0x001b74         0x4a
- .text            0x001b74         0x4a build/default/production/main.o
-                  0x001b74                  _initCPU
-                  0x001b7e                  _main
+.text             0x001b7e         0x4a
+ .text            0x001b7e         0x4a build/default/production/main.o
+                  0x001b7e                  _initCPU
+                  0x001b88                  _main

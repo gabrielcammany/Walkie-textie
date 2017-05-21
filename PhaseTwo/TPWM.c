@@ -8,6 +8,10 @@
 #include "TPWM.h"
 
 #define MAX_ID 3
+#define PWM0 LATBbits.LATB10 
+#define PWM1 LATBbits.LATB11 
+#define PWM2 LATBbits.LATB12
+
 static char estatPWM;
 static char timerPWM, temps;
 static char PWM[MAX_ID];
@@ -23,7 +27,13 @@ void PwInit(){
     TRISBbits.TRISB12 = 0;
 }
 
-void MotorPWM (int quin) {
+void incrementaPWM(unsigned char quin){
+    //Post: Incrementa el PWM si es diferent al ID, en cas contrari 
+    //no el modifica
+    PWM[quin] = ((PWM[quin] != getIDPos(quin)) ? (PWM[quin] + 1) : PWM[quin]);
+}
+
+void MotorPWM (unsigned char quin) {
 	switch(estatPWM) {
 	case 0:
 		PWM[quin] = (PWM[quin]<':' ? PWM[quin] : '0');
@@ -51,21 +61,21 @@ void MotorPWM (int quin) {
 		}
 		break;
     case 2:
-        PWM[quin] = ((PWM[quin] != getIDPos(quin)) ? (PWM[quin] + 1) : PWM[quin]);
+        incrementaPWM(quin);
         if(quin == ((MAX_ID)-1)){
             estatPWM = 0;
         }
 		break; 
     case 3:
-        LATBbits.LATB10 = (PWM[0] >= temps ? 1 : 0);
+        PWM0 = (PWM[0] >= temps ? 1 : 0);
         estatPWM = 1;
         break;
     case 4:
-        LATBbits.LATB11 = (PWM[1] >= temps ? 1 : 0);
+        PWM1 = (PWM[1] >= temps ? 1 : 0);
         estatPWM = 1;
 		break;
     case 5:
-        LATBbits.LATB12 = (PWM[2] >= temps ? 1 : 0);
+        PWM2 = (PWM[2] >= temps ? 1 : 0);
         estatPWM = 1;
 		break;
 	}
