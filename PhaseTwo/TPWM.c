@@ -8,6 +8,7 @@
 #include "TPWM.h"
 
 #define MAX_ID 3
+#define MAX_PWM 3
 #define PWM0 LATBbits.LATB10 
 #define PWM1 LATBbits.LATB11 
 #define PWM2 LATBbits.LATB12
@@ -28,56 +29,47 @@ void PwInit(){
 }
 
 void incrementaPWM(unsigned char quin){
+    //Pre: 0<= quin < MAX_PWM
     //Post: Incrementa el PWM si es diferent al ID, en cas contrari 
     //no el modifica
     PWM[quin] = ((PWM[quin] != getIDPos(quin)) ? (PWM[quin] + 1) : PWM[quin]);
 }
 
+
+void changePWM(unsigned char quin){
+    //Pre: 0<= quin < MAX_PWM
+    //Post: Posa a 1 o 0 el PWM especificat, depenent del temps que estigui
+    switch (quin){
+    case 0:
+        PWM0 = (PWM[quin] >= temps ? 1 : 0);
+        break;
+    case 1:
+        PWM1 = (PWM[quin] >= temps ? 1 : 0);
+        break;
+    case 2:
+        PWM2 = (PWM[quin] >= temps ? 1 : 0);
+        break;
+    }
+}
+
+
 void MotorPWM (unsigned char quin) {
 	switch(estatPWM) {
 	case 0:
 		PWM[quin] = (PWM[quin]<':' ? PWM[quin] : '0');
-		if(quin == ((MAX_ID)-1)){
+		if(quin == ((MAX_PWM)-1)){
             estatPWM = 1;
             TiResetTics(timerPWM);
         }
 		break;
 	case 1:
 		if(TiGetTics(timerPWM)>=20){
-            estatPWM = 2;
+            incrementaPWM(quin);
+            if(quin == ((MAX_PWM)-1))estatPWM = 0;
 		}else{
             temps = '9' - (TiGetTics(timerPWM) >> 1);
-            switch (quin){
-            case 0:
-                estatPWM = 3;
-                break;
-            case 1:
-                estatPWM = 4;
-                break;
-            case 2:
-                estatPWM = 5;
-                break;
-            }
+            changePWM(quin);
 		}
-		break;
-    case 2:
-        incrementaPWM(quin);
-        if(quin == ((MAX_ID)-1)){
-            estatPWM = 0;
-        }
-		break; 
-    case 3:
-        PWM0 = (PWM[0] >= temps ? 1 : 0);
-        estatPWM = 1;
-        break;
-    case 4:
-        PWM1 = (PWM[1] >= temps ? 1 : 0);
-        estatPWM = 1;
-		break;
-    case 5:
-        PWM2 = (PWM[2] >= temps ? 1 : 0);
-        estatPWM = 1;
 		break;
 	}
 }
-
