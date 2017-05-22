@@ -7,15 +7,12 @@
 
 #include "TPWM.h"
 
-#define EXTRA_SPACES            16
-#define MAX_MESSAGE             (300 + EXTRA_SPACES)
-#define MAX_DIGITS_RECIEVED     2
 #define END_BYTE                0x40
 #define START_BYTE              0x40
 #define IN                      PORTBbits.RB13
 
-static char estatRF,input,tramaRebudaPropia[MAX_DIGITS_RECIEVED] = {'0','0'}, 
-        tramaRebudaTotals[MAX_DIGITS_RECIEVED] = {'0','0'};
+static char estatRF,input,tramaRebudaPropia[MAX_DIGITS_RECIEVED] = {'0','0','\r','\0'}, 
+        tramaRebudaTotals[MAX_DIGITS_RECIEVED] = {'0','0','\r','\0'};
 static char timerRF, sincronized;
 static int caracter, totalBytesMessage;
 static unsigned char pos;
@@ -36,7 +33,9 @@ void inicializaID(){
 }
 
 void RFInit(){
-    TRISBbits.TRISB13 = 0;
+    TRISBbits.TRISB13 = 1;
+    AD1PCFGbits.PCFG11 = 1; //No vull entrada analògica (AN11)!!
+    CNPU1bits.CN13PUE = 1;
     timerRF = TiGetTimer();
     
     estatRF = 0;
@@ -50,11 +49,11 @@ void RFInit(){
 void incrementa(char *comptador){
     //Pre: comptador ha de tenir valors entre '0' <= comptador[MAX_DIGITS_RECIEVED] <= '9' 
     //Post: Incrementa el contingut
-    if(comptador[0] == '9'){
-       comptador[0] = '0'; 
-       comptador[1]++;
+    if(comptador[1] == '9'){
+       comptador[1] = '0'; 
+       comptador[0]++;
     }else{
-        comptador[0]++;
+        comptador[1]++;
     }
 }
 
@@ -117,14 +116,18 @@ void MotorRF () {
 		break;
 	case 2:
 		if(IN == 1){
-            if(TiGetTics(timerRF) < 14){
-                estatRF = 0;
+            if(TiGetTics(timerRF) < 5){
+                   estatRF = 0;
             }else{
-                inValue = 0;
-                pos = 0;
-                TiResetTics(timerRF);
-                estatRF = 3;
-                caracter = 0;
+                if(TiGetTics(timerRF) < 14){
+                    estatRF = 0;
+                }else{
+                    inValue = 0;
+                    pos = 0;
+                    TiResetTics(timerRF);
+                    estatRF = 3;
+                    caracter = 0;
+                }
             }
         }
 		break;
@@ -209,8 +212,8 @@ char* getTramesPropies(){
     return tramaRebudaPropia;
 }
 
-unsigned char* getMessage(){
-    return missatge;
+unsigned char* getMessage(unsigned char offset){
+    return (missatge+offset);
 }
 
 int getLength(){

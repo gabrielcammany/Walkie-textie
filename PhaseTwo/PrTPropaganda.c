@@ -48,6 +48,9 @@ void MotorPropaganda(void){
                 opcio= SiGetChar();
                 if ((opcio <= '7') && (opcio >= '1')){
                     estatPropaganda = opcio-'0';
+                    SiSendChar('\r');
+                    SiSendChar(opcio);
+                    SiSendChar('\n');
                 }else{
                     SiSendChar('\r');
                     SiSendChar(opcio);
@@ -87,7 +90,7 @@ void MotorPropaganda(void){
             break;
         case 5:
             SiPutsCooperatiu("L'ultim missatge rebut es: ");
-            SiPutsCooperatiu((char*)getMessage());
+            SiPutsCooperatiu((char*)getMessage(15));
             estatPropaganda=50;    
             break;
         case 18:
@@ -101,18 +104,20 @@ void MotorPropaganda(void){
             if (SiCharAvail() != 0){
                 setIDPos(2,SiGetChar());
                 SiSendChar(getIDPos(2));
-                estatPropaganda=0;
+                estatPropaganda=20;
             }
             break;
         case 20:
             if(SiCharAvail() != 0){
                 if (SiGetChar() == 27){
                     id[3] = '\r';
+                    SiPutsCooperatiu("\r\n");
                     SiPutsCooperatiu("Has introduit el ID: ");
                     SiPutsCooperatiu(id);
                     setCadena(1);
                     estatPropaganda=50;
                 }else{
+                    SiPutsCooperatiu("\r\n");
                     SiPutsCooperatiu("Ja has introduit el ID!");
                     SiPutsCooperatiu(" Prem ESC per tornar al Menu!");
                     SiPutsCooperatiu("\r\n");
@@ -172,6 +177,7 @@ unsigned char mostrarMissatge(){
         turnOffAudio();
         return 1;
     }else{
+        if(getLength() > 0)seguentFrequencia();
         j = 0;
         caracterIniciTrama = 0;
         return 0;
@@ -211,10 +217,10 @@ void incrementaIDs(){
 void actualitzaTramesLCD(){
     //Post: Actualiza les columnes 0,1,3,4 del LCD amb les dades de 
     //trames propies i totals
-    segonaLinia[0]=getTramesPropies()[1];
-    segonaLinia[1]=getTramesPropies()[0];
-    segonaLinia[3]=getTramesTotals()[1];
-    segonaLinia[4]=getTramesTotals()[0];
+    segonaLinia[0]=getTramesPropies()[0];
+    segonaLinia[1]=getTramesPropies()[1];
+    segonaLinia[3]=getTramesTotals()[0];
+    segonaLinia[4]=getTramesTotals()[1];
 }
 
 void actualitzaIDLCD(){
@@ -246,7 +252,7 @@ void MotorLCD(void){
             }
             break;
         case 1:
-            LcPutChar(getMessage()[(j)]);
+            LcPutChar(getMessage(0)[(j)]);
             j++;
             if (j >= getLength()) j = 0;
             estatLCD = 3;
