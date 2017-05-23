@@ -1,13 +1,10 @@
 build/default/production/PrTPropaganda.o:  \
 PrTPropaganda.c  \
 PrTPropaganda.h  \
- BlTBacklight.h  \
+ SiTSio.h  \
 time.h  \
-SiTSio.h  \
-PbTPushbutton.h  \
 AuTAudio.h  \
 LcTLCD.h  \
- AdTADC.h  \
-SwTSwitch.h  \
+AdTADC.h  \
 TPWM.h  \
 TRF.h 

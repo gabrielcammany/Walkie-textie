@@ -15,13 +15,10 @@
 #ifndef PRTPROPAGANDA_H
 #define	PRTPROPAGANDA_H
 #include <xc.h>
-#include "BlTBacklight.h"
 #include "SiTSio.h"
-#include "PbTPushbutton.h"
 #include "AuTAudio.h"
 #include "LcTLCD.h"
 #include "AdTADC.h"
-#include "SwTSwitch.h"
 #include "TPWM.h"
 #include "TRF.h"
 
