@@ -7,7 +7,7 @@
 
 #include "TPWM.h"
 
-#define END_BYTE                0x40
+#define END_BYTE                0x00
 #define START_BYTE              0x40
 #define IN                      PORTBbits.RB13
 
@@ -180,7 +180,8 @@ void MotorRF () {
                 estatRF = 3;
                 exitStateInstructions();
             }else{
-                estatRF = 7;
+                if(sincronized != 4)estatRF = 7;
+                else estatRF = 0;sincronized = 0;
             }
         }
 		break;
@@ -193,6 +194,7 @@ void MotorRF () {
             caracter++;
         }else{
             estatRF = 0;
+            sincronized = 4;
             incrementa(tramaRebudaTotals);
         }
         exitStateInstructions();

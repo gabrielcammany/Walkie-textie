@@ -19,7 +19,7 @@ public class MainWindowController implements ActionListener{
 	private PortThread portThread = null;
     private final byte end_byte = (byte) (Integer.parseInt("88",16));
     private final byte start_byte_rf = (byte) (Integer.parseInt("40",16));
-    private final byte end_byte_rf = (byte) (Integer.parseInt("40",16));
+    private final byte end_byte_rf = (byte) (Integer.parseInt("00",16));
     private final byte flag_desar_msg = (byte) (Integer.parseInt("81",16));
     private final byte flag_enviar_rf_msg = (byte) (Integer.parseInt("82",16));
     private final byte flag = (byte) (Integer.parseInt("84",16));
