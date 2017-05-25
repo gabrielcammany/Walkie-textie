@@ -174,15 +174,20 @@ void MotorRF () {
             caracter = 0;
             exitStateInstructions();
         }else{
-            if (caracter < 3 ){
-                id_trama[caracter] = inValue;
-                caracter++;
-                estatRF = 3;
-                exitStateInstructions();
+            if(sincronized == 2){
+                if (caracter < 3 ){
+                    id_trama[caracter] = inValue;
+                    caracter++;
+                    estatRF = 3;
+                    exitStateInstructions();
+                }else{
+                    if(sincronized != 4)estatRF = 7;
+                    else estatRF = 0;sincronized = 0;
+                }
             }else{
-                if(sincronized != 4)estatRF = 7;
-                else estatRF = 0;sincronized = 0;
+                estatRF = 0;sincronized = 0;
             }
+            
         }
 		break;
     case 7:
