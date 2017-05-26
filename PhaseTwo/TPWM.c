@@ -28,13 +28,14 @@ void PwInit(){
     TRISBbits.TRISB12 = 0;
 }
 
-void incrementaPWM(unsigned char quin){
+void incrementaPWM(){
     //Pre: 0<= quin < MAX_PWM
-    //Post: Incrementa el PWM si es diferent al ID, en cas contrari 
+    //Post: Incrementa els PWMs si es diferent al ID, en cas contrari 
     //no el modifica
-    PWM[quin] = ((PWM[quin] != getIDPos(quin)) ? (PWM[quin] + 1) : PWM[quin]);
+    PWM[0] = ((PWM[0] != getIDPos(0)) ? (PWM[0] + 1) : PWM[0]);
+    PWM[1] = ((PWM[1] != getIDPos(1)) ? (PWM[1] + 1) : PWM[1]);
+    PWM[2] = ((PWM[2] != getIDPos(2)) ? (PWM[2] + 1) : PWM[2]);
 }
-
 
 void changePWM(unsigned char quin){
     //Pre: 0<= quin < MAX_PWM
@@ -63,9 +64,9 @@ void MotorPWM (unsigned char quin) {
         }
 		break;
 	case 1:
-		if(TiGetTics(timerPWM)>=20){
-            incrementaPWM(quin);
-            if(quin == ((MAX_PWM)-1))estatPWM = 0;
+		if(quin == ((MAX_PWM)-1) && TiGetTics(timerPWM)>=20){
+            incrementaPWM();
+            estatPWM = 0;
 		}else{
             temps = '9' - (TiGetTics(timerPWM) >> 1);
             changePWM(quin);

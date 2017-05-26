@@ -161,9 +161,9 @@ void initMotorLCD(void){
     segonaLinia[7]=' ';
     segonaLinia[8]=' ';
     segonaLinia[9] = ' ';
-    segonaLinia[10] = ' ';
-    segonaLinia[11]=' ';
-    segonaLinia[12]=' ';
+    segonaLinia[10] = 'I';
+    segonaLinia[11]='D';
+    segonaLinia[12]=':';
 }
 
 void startToCount(){
