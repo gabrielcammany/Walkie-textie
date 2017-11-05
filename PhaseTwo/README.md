@@ -28,7 +28,7 @@ An example of how the message will appear:
 
 The board has a potentiometer that will serve as an analog input to the system. It will be used to regulate the speed of the LCD. The minimum value will be 200ms to 2s per letter. A graph of the following equation shown below.
 
-![Screenshot](images/ADGraph.PNG)
+![Screenshot](images/ADCGraph.PNG)
 
 ## Speaker
 
