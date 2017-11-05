@@ -1,4 +1,4 @@
-# RFtext
+# Walkie-textie
 
 The proposed challenge of this project is the creation of a telecommunications network based on radio frequency links 
 controlled by microcontrollers. The main idea is to have a central emitter that will communicate with receivers sending text messages wirelessly.
