@@ -13,11 +13,11 @@ The problem using Radio Frequency is that, everybody who is on the same channel 
 Besides that, each receiver and emitter, must have the same RF protocol to be able to extract data from the channel. So I created the following protocol (using the [Manchester Code](https://en.wikipedia.org/wiki/Manchester_code) together with a 100bps transmission rate).
 
 Manchester codification example
-![Screenshot](PhaseOne/images/Manchester.PNG)
+![Screenshot](images/Manchester.PNG)
 
 As the receivers are constantly listening to the channel, they need a synchronization sequence, so they know when they are receiving meaningful data or just noise.
 
-![Screenshot](PhaseOne/images/RF.PNG)
+![Screenshot](images/RF.PNG)
 
 Each frame of data will have 10 pulses together with a 15 ms 0 value gap, after the gap, it will receive a 8 bit value that both the emitter and receiver will have. 
 After the synchronization is completed, the ID of the target receiver are the first bits of the sequence, so if it detects that the data is not targeted to him, it stops processing the frame.
@@ -33,7 +33,7 @@ The LEDs will have various states:
 
 To send a message, the user will have to write it through the following interface:
 
-![Screenshot](PhaseOne/images/Interface.PNG)
+![Screenshot](images/Interface.PNG)
 
 The maximum length of the message will be 300 bytes, because of the restrictions of the micro controller. The data is going to be send using the serial port and the RS-232 protocol. On the other hand, the user will also be able to change the baudrate and the serial port of the computer.
 
@@ -41,10 +41,10 @@ The maximum length of the message will be 300 bytes, because of the restrictions
 
 The following image shows how the hole system works using a sequence diagram.
 
-![Screenshot](PhaseOne/images/SequenceDiagram.PNG)
+![Screenshot](images/SequenceDiagram.PNG)
 
 ## Board
 
 Finally, here is a picture of how it looks physically. This project was done in the same year, as [Hangman](https://github.com/gabrielcammany/Hangman), so I used the same board that was used to display the game state.
 
-![Screenshot](PhaseOne/images/Board.jpg)
+![Screenshot](images/Board.jpg)
