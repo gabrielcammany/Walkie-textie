@@ -8,13 +8,9 @@ the project: the transmitter and receiver.
 
 ## [Phase One - Transmitter](PhaseOne/)
  
-The first phase, consists of a PIC18F4321 microcontroller programmed in the assembler. This system is capable of (1) communicating with a computer through RS-232 serial communication protocol, (2) receiving a text message from the computer and (3) forwarding the message by radio frequency. The following figure shows a general diagram of Phase 1.
+The first phase, consists of a PIC18F4321 microcontroller programmed in the assembler. This system is capable of (1) communicating with a computer through RS-232 serial communication protocol, (2) receiving a text message from the computer and (3) forwarding the message by radio frequency. The following figure shows a general diagram of Phase 1. Regarding the user interface, to allow the user to communicate with the transmitter, a Java interface is provided.
 
 ![Screenshot](PhaseOne/images/Diagram.PNG)
-
-Regarding the user interface, to allow the user to communicate with the transmitter, a Java interface is provided:
-
-![Screenshot](PhaseOne/images/Interface.PNG)
 
 ## [Phase Two - Receiver](PhaseTwo/)
 
