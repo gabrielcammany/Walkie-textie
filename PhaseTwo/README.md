@@ -10,6 +10,10 @@ Explanation of each module.
 ## [C Cooperative Programming](CODE.md)
 How I've developed and structured the code to accomplish the project using C and the cooperative programming approach.
 
+## Electric Schema
+
+![Screenshot](images/ElectricSchema.PNG)
+![Screenshot](images/ElectricSchema_2.PNG)
 
 ## Board
 
